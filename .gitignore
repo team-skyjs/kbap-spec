@@ -1,0 +1,13 @@
+# Claude Code / agent local state (may contain credentials or auth tokens)
+.claude/settings.local.json
+.claude/*.local.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs / temp
+*.log
+.tmp/
