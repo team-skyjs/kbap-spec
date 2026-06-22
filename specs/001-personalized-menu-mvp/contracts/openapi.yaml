@@ -1,0 +1,473 @@
+openapi: 3.1.0
+info:
+  title: K-Food Companion (kfood) — MVP API
+  version: 0.1.0
+  description: >
+    1차 MVP API 계약(SSOT). FE(React Native/Expo)와 BE(Kotlin/Spring Boot)가 이 문서를 기준으로
+    구현한다. 변경은 이 spec 레포에서 먼저 한다(헌법 VI). reader 언어 = 사용자 UI 언어,
+    place 언어 = 매장 언어(MVP=ko). 위험도 상태: safe|caution|danger|unable(판정불가).
+servers:
+  - url: https://api.kfood.example/v1
+    description: placeholder (호스팅 확정 시 갱신)
+
+tags:
+  - name: auth
+  - name: me
+  - name: foods
+  - name: scan
+  - name: reviews
+  - name: home
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/email/request-code:
+    post:
+      tags: [auth]
+      security: []
+      summary: 이메일 인증코드 요청
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        "204": { description: 코드 발송됨 }
+
+  /auth/email/verify:
+    post:
+      tags: [auth]
+      security: []
+      summary: 이메일 인증코드 검증 → 토큰 발급
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, code]
+              properties:
+                email: { type: string, format: email }
+                code: { type: string }
+      responses:
+        "200":
+          description: 인증 성공
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthTokens" }
+
+  /auth/social:
+    post:
+      tags: [auth]
+      security: []
+      summary: 애플/구글 소셜 로그인
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provider, idToken]
+              properties:
+                provider: { type: string, enum: [apple, google] }
+                idToken: { type: string }
+      responses:
+        "200":
+          description: 로그인 성공
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthTokens" }
+
+  /auth/refresh:
+    post:
+      tags: [auth]
+      security: []
+      summary: 액세스 토큰 재발급
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken: { type: string }
+      responses:
+        "200":
+          description: 재발급 성공
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthTokens" }
+
+  /me:
+    get:
+      tags: [me]
+      summary: 내 프로필 조회
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+    patch:
+      tags: [me]
+      summary: 내 프로필 수정 (닉네임/국적/언어/매운맛/제약)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UserUpdate" }
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+    delete:
+      tags: [me]
+      summary: 계정 삭제 (민감정보 즉시 완전삭제, 리뷰 익명화) — FR-032
+      responses:
+        "204": { description: 삭제됨 }
+
+  /me/consent:
+    post:
+      tags: [me]
+      summary: 안전 고지 동의 기록 (온보딩 1회) — FR-030
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [version]
+              properties:
+                version: { type: string }
+      responses:
+        "204": { description: 기록됨 }
+
+  /me/reviews:
+    get:
+      tags: [me]
+      summary: 내가 쓴 리뷰 — FR-024
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Review" }
+
+  /me/ranking:
+    get:
+      tags: [me]
+      summary: 내 랭킹 등급/점수 — FR-025
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Ranking" }
+
+  /home:
+    get:
+      tags: [home]
+      summary: 홈 — 최근 스캔/조회 + 추천 (개인화 위험도 포함) — FR-034/035
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recent:
+                    type: array
+                    items: { $ref: "#/components/schemas/FoodCard" }
+                  recommended:
+                    type: array
+                    items: { $ref: "#/components/schemas/FoodCard" }
+
+  /scan/menu:
+    post:
+      tags: [scan]
+      summary: 메뉴판 스캔 결과 처리 (온디바이스 OCR 텍스트 입력) — FR-008/011/031/033
+      description: >
+        앱이 온디바이스 OCR로 추출한 메뉴 원문 배열을 보낸다(이미지 미전송). BE는 각 원문을
+        카탈로그에 매칭하고 reader 언어로 번역하며, 사용자 프로필 기준 위험도를 산출한다.
+        bounding box는 앱이 보유하므로 응답의 rawText로 오버레이 위치를 매칭한다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items, readerLanguage]
+              properties:
+                readerLanguage: { type: string, description: BCP-47 }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [rawText]
+                    properties:
+                      rawText: { type: string, description: OCR 인식 원문(ko 등) }
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items: { $ref: "#/components/schemas/ScanResultItem" }
+
+  /foods:
+    get:
+      tags: [foods]
+      summary: 음식 탐색/검색 — FR-020
+      parameters:
+        - { name: q, in: query, schema: { type: string } }
+        - { name: category, in: query, schema: { type: string } }
+        - { name: popular, in: query, schema: { type: boolean }, description: 온보딩 인기순 9개용 }
+        - { name: relatedTo, in: query, schema: { type: string }, description: 연관 음식(9+9 펼침) }
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/FoodCard" }
+
+  /foods/{foodId}:
+    get:
+      tags: [foods]
+      summary: 음식 디테일 (개인화 위험도 포함) — FR-016/021
+      parameters:
+        - { name: foodId, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FoodDetail" }
+        "404": { description: 미등록 음식 }
+
+  /foods/{foodId}/owner-confirmation:
+    get:
+      tags: [foods]
+      summary: 사장님 확인 문구 (place 언어=ko) — FR-017/018/019
+      parameters:
+        - { name: foodId, in: path, required: true, schema: { type: string } }
+        - { name: ingredientCode, in: query, required: true, schema: { type: string } }
+        - name: scannedMenuName
+          in: query
+          required: false
+          schema: { type: string }
+          description: 스캔 인식 메뉴명(일치 보장용, FR-019)
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OwnerConfirmation" }
+
+  /foods/{foodId}/reviews:
+    get:
+      tags: [reviews]
+      summary: 음식 리뷰 목록 (같은 국적 필터/번역) — FR-023
+      parameters:
+        - { name: foodId, in: path, required: true, schema: { type: string } }
+        - { name: nationality, in: query, schema: { type: string }, description: 같은 국적만 }
+        - { name: translateTo, in: query, schema: { type: string }, description: BCP-47 번역 대상 }
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  overall: { $ref: "#/components/schemas/RatingAggregate" }
+                  sameNationality: { $ref: "#/components/schemas/RatingAggregate" }
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/Review" }
+    post:
+      tags: [reviews]
+      summary: 리뷰 작성 (5점 별점 + 본문) — FR-022
+      parameters:
+        - { name: foodId, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rating]
+              properties:
+                rating: { type: integer, minimum: 1, maximum: 5 }
+                body: { type: string }
+                bodyLanguage: { type: string }
+      responses:
+        "201":
+          description: 작성됨
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Review" }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    RiskState:
+      type: string
+      enum: [safe, caution, danger, unable]
+      description: unable=판정불가(미등록/근거 부재)
+
+    AuthTokens:
+      type: object
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+        isNewUser: { type: boolean }
+
+    DietaryRestriction:
+      type: object
+      properties:
+        kind: { type: string, enum: [allergy, diet, religion] }
+        code: { type: string, example: "allergy:shellfish" }
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        nickname: { type: string }
+        nationality: { type: string, description: ISO 3166-1 alpha-2 }
+        readerLanguage: { type: string, description: BCP-47 }
+        spiceTolerance: { type: integer, minimum: 0, maximum: 10, nullable: true }
+        restrictions:
+          type: array
+          items: { $ref: "#/components/schemas/DietaryRestriction" }
+        rank: { $ref: "#/components/schemas/Ranking" }
+
+    UserUpdate:
+      type: object
+      properties:
+        nickname: { type: string }
+        nationality: { type: string }
+        readerLanguage: { type: string }
+        spiceTolerance: { type: integer, minimum: 0, maximum: 10, nullable: true }
+        restrictions:
+          type: array
+          items: { $ref: "#/components/schemas/DietaryRestriction" }
+
+    Ranking:
+      type: object
+      properties:
+        tier: { type: string, example: "Explorer" }
+        level: { type: integer }
+        score: { type: number }
+        nextTier: { type: string, nullable: true }
+        pointsToNext: { type: number, nullable: true }
+
+    RatingAggregate:
+      type: object
+      properties:
+        average: { type: number, nullable: true, description: 1–5, 리뷰 0건이면 null }
+        count: { type: integer }
+
+    FoodCard:
+      type: object
+      description: 목록/홈/추천용 요약 (개인화 위험도 포함)
+      properties:
+        foodId: { type: string }
+        name: { type: string, description: reader 언어 표시명 }
+        nameKo: { type: string }
+        photoUrl: { type: string, nullable: true }
+        risk: { $ref: "#/components/schemas/RiskState" }
+        overall: { $ref: "#/components/schemas/RatingAggregate" }
+
+    IngredientRisk:
+      type: object
+      properties:
+        code: { type: string }
+        name: { type: string, description: reader 언어 }
+        percentage: { type: number, nullable: true }
+        risk: { $ref: "#/components/schemas/RiskState" }
+        note: { type: string, nullable: true, description: 예 "store-dependent" }
+
+    RiskBasis:
+      type: object
+      description: 판정 근거 (FR-012, 추적 가능)
+      properties:
+        ingredientCode: { type: string }
+        restrictionCode: { type: string }
+        percentage: { type: number, nullable: true }
+        reason: { type: string }
+
+    FoodDetail:
+      type: object
+      description: FR-016 순서대로의 필드 묶음
+      properties:
+        foodId: { type: string }
+        name: { type: string }
+        nameKo: { type: string }
+        risk: { $ref: "#/components/schemas/RiskState" }
+        riskBasis:
+          type: array
+          items: { $ref: "#/components/schemas/RiskBasis" }
+        overall: { $ref: "#/components/schemas/RatingAggregate" }
+        sameNationality: { $ref: "#/components/schemas/RatingAggregate" }
+        description: { type: string, description: reader 언어, ≤150자(EN 기준) }
+        photoUrl: { type: string, nullable: true }
+        ingredients:
+          type: array
+          description: 90%+ 포함, 위험/주의/안전 순 (FR-014)
+          items: { $ref: "#/components/schemas/IngredientRisk" }
+        isRegistered: { type: boolean, description: false면 unable 처리(FR-033) }
+
+    ScanResultItem:
+      type: object
+      properties:
+        rawText: { type: string, description: 요청 원문(오버레이 매칭 키) }
+        foodId: { type: string, nullable: true, description: 미매칭이면 null }
+        name: { type: string, description: reader 언어 표시명(번역 또는 카탈로그명) }
+        risk: { $ref: "#/components/schemas/RiskState" }
+        note: { type: string, nullable: true }
+        registered: { type: boolean }
+
+    OwnerConfirmation:
+      type: object
+      description: place 언어=ko (헌법 I)
+      properties:
+        questionKo: { type: string, example: "김치찌개에 새우젓이 들어가나요?" }
+        explanationKo: { type: string, example: "저는 새우 알레르기가 있어서 위험할 수 있어요." }
+        menuNameKo: { type: string, description: 스캔 인식 메뉴명과 일치(FR-019) }
+        placeLanguage: { type: string, default: ko }
+
+    Review:
+      type: object
+      properties:
+        id: { type: string }
+        foodId: { type: string }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        body: { type: string, nullable: true }
+        bodyLanguage: { type: string }
+        translatedBody: { type: string, nullable: true, description: translateTo 요청 시 }
+        authorNationality: { type: string, nullable: true }
+        authorRankTier: { type: string, nullable: true }
+        anonymized: { type: boolean }
+        createdAt: { type: string, format: date-time }
