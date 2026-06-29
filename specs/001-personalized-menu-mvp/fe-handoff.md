@@ -253,4 +253,42 @@ BE 실제 구현(`meogo.handev.site` swagger)이 우리 `openapi.yaml`과 일부
 - [ ] 온보딩(+스파이스)  - [ ] 홈  - [ ] 카메라/스캔(mock OCR)  - [ ] 음식 탐색
 - [ ] 음식 디테일  - [ ] 사장님 확인  - [ ] 리뷰 작성  - [ ] 프로필  - [ ] 상태(빈/로딩/에러)
 ```
+
+---
+
+## 13. 스캔 스파이크 — FE↔BE 실연결 + 온디바이스 OCR (카메라 화면 단계에서만)
+
+> ⚠️ **기반/디자인시스템/앱 셸 단계에선 무시.** 이 절은 **카메라/스캔 화면을 만들 때** 적용한다.
+> 목적: 스캔 기능(앱 핵심)을 실제 BE에 한 번 붙여 흐름 + OCR 패키지를 검증하는 **스파이크**다.
+> 이 API는 **확정 계약이 아니라 잠정**이다(재조정 예정). 그래도 mock seam 덕에 갈아끼우기 쉽다.
+
+### 13-1. 한 훅만 실연결
+- `useScan()` 만 `MOCK_MODE=false`로 실제 BE에 연결. 나머지 화면 훅은 mock 유지.
+- BE 베이스: `https://meogo.handev.site` · 응답은 `BaseResponse{success,payload,message}` 래퍼.
+
+### 13-2. BE 실제 모양 (이대로 코딩, 우리 옛 계약과 다름)
+```
+POST /api/v1/menu-scans
+req:  { items: [{ itemId:int, rawMenuName:string, boundingBox:{x,y,width,height} }] }   // 1~100개
+res:  payload { scanId, results: [{ id, itemId, riskLevel, reason }] }
+      riskLevel: "SAFE" | "CAUTION" | "DANGER" | "UNKNOWN"
+
+GET /api/v1/foods/detail?menuName=<한국어명>&lang=<reader lang>
+res:  payload { name, imageRef, ingredients:[{ name, iconRef, inclusionPercent, riskStatus }] }
+```
+- **enum 매핑은 어댑터에서**: BE `UNKNOWN` → 앱 내부 `unable`(판정불가). 화면은 내부 4상태만 안다.
+- 스캔 응답에는 **번역 이름이 없다** → 오버레이 전략은 13-4.
+
+### 13-3. 온디바이스 OCR — dev build 필수
+- `@react-native-ml-kit/text-recognition`은 네이티브 모듈 → **Expo Go에서 안 돈다.**
+- **EAS dev build(custom dev client)** 로 빌드해서 실기기/시뮬레이터에서 테스트. (`npx expo run:ios` 또는 EAS dev build)
+- OCR로 텍스트 + bounding box 추출 → box는 **기기 보관**(오버레이용), 텍스트만 `menu-scans`로 전송.
+
+### 13-4. 오버레이 전략 (객관적 권장 = A, 느리면 B)
+- **A (기본)**: 스캔 응답의 `riskLevel`로 박스에 **위험도 색만 즉시** 표시. 사용자가 박스를 **탭하면** 그때 `GET /foods/detail`로 번역명+성분. → 첫 결과 가장 빠름. **전부 미리 부르지 말 것.**
+- **B (이름이 꼭 보여야 하면)**: BE에 "스캔 응답에 displayName 1필드 추가" 요청. → 1호출로 이름+위험도.
+
+### 13-5. 반드시 테스트 (안전, 헌법 III)
+- 테스트 케이스에 **미등록 음식**(예: "신상 화채")을 꼭 넣어, 스캔 결과가 `UNKNOWN`(→unable)으로
+  나오고 **절대 SAFE가 아님**을 확인(false-safe 0, SC-003). SAFE로 나오면 BE에 즉시 보고.
 ```
