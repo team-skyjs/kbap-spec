@@ -63,7 +63,7 @@ description: "Task list for 001-personalized-menu-mvp"
 - [ ] T016 [FE] API 클라이언트(React Query + fetch, 인증 토큰 인터셉터, 401 refresh) in `kbap-fe/lib/api/client.ts` (T006 의존)
 - [ ] T017 [FE] i18n 초기화(i18next + expo-localization, 영어 우선, 하드코딩 금지 규약) in `kbap-fe/lib/i18n/` (헌법 I)
 - [ ] T018 [P] [FE] 디자인 시스템 프리미티브 + **위험도 4상태 아이콘 컴포넌트**(safe=원+체크 / caution=삼각+! / danger=팔각+X / unable=마름모+? · SVG, 기본 이모지 금지) in `kbap-fe/components/` (와이어프레임 검증본 이식, 헌법 추가제약)
-- [ ] T019 [P] [FE] 앱 셸 + 탭 네비게이션(홈/음식/카메라/프로필) + 온보딩 스택 라우팅 in `kbap-fe/app/` (AppShell 와이어프레임)
+- [ ] T019 [P] [FE] 앱 셸 + **5-탭 네비게이션**(home · food · scan[중앙 FAB] · **community[잠김, phase2 예약]** · profile) + 알림 패널 UI(정적, 푸시는 2차) + 온보딩 스택 라우팅 in `kbap-fe/app/` (hifi-shell 목업)
 - [ ] T020 [FE] 안전 고지 상시 배너 컴포넌트(위험 화면 공통) in `kbap-fe/components/` (헌법 III, FR-030)
 
 **Checkpoint**: 인증·DB·위험엔진·어댑터·디자인시스템 준비 완료 → 스토리 병렬 착수 가능

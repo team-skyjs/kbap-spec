@@ -77,10 +77,9 @@ specs/001-personalized-menu-mvp/contracts/openapi.yaml   # 계약 원본
 .specify/memory/constitution.md                          # 원칙
 
 # 레포 2: kbap-fe (React Native + Expo)
-app/                      # Expo Router 화면 (홈/음식/카메라/프로필 + 온보딩)
+app/                      # Expo Router 화면
 ├── (onboarding)/
-├── (tabs)/
-│   ├── home, food, camera, profile
+├── (tabs)/                # 5-탭: home · food · scan(중앙 FAB) · community(잠김/phase2) · profile
 components/               # 디자인 시스템(위험도 4상태 등, 와이어프레임 기반)
 features/                 # scan(OCR), risk-overlay, reviews ...
 lib/api/                  # openapi.yaml에서 생성한 타입 + 클라이언트
