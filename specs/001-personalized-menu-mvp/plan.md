@@ -31,7 +31,8 @@ Spring Data MongoDB, springdoc-openapi, 외부 번역 API 어댑터(기본 Googl
 
 **Performance Goals**: 스캔 결과 표시 평균 10초 이내(SC-002), 가입→프로필 5분 이내(SC-001)
 
-**Constraints**: i18n 필수(하드코딩 금지), 기본 이모지 금지, false-safe 0(SC-003),
+**Constraints**: i18n 필수(하드코딩 금지), **MVP 9개 언어 출시**(en/zh-Hans/zh-Hant/ja/vi/id/th/
+ru/es) + 폰트 라틴·CJK·태국·키릴 커버, 기본 이모지 금지, false-safe 0(SC-003),
 스캔/사장님 확인 메뉴명 일치(SC-006), MVP 마감 2026-07-10
 
 **Scale/Scope**: MVP 1차. 화면 ~10개(A~J), 핵심 엔티티 ~8, REST 엔드포인트 ~16
@@ -42,7 +43,7 @@ Spring Data MongoDB, springdoc-openapi, 외부 번역 API 어댑터(기본 Googl
 
 | 원칙/제약 | 계획상 준수 방법 | 상태 |
 |-----------|-----------------|------|
-| I. 국제화 우선 | reader 텍스트 전부 i18next, place 언어(ko)는 데이터(OwnerConfirmation.placeLanguage)로 모델링, BE 번역 일원화 | ✅ |
+| I. 국제화 우선 | reader 텍스트 전부 i18next(MVP 9개 언어 리소스 + 라틴/CJK/태국/키릴 폰트), place 언어(ko)는 데이터(OwnerConfirmation.placeLanguage)로 모델링, BE 번역 9개 대상 | ✅ |
 | II. 음식 중심 | API/데이터가 canonical Food ID 기준, 식당 엔티티 없음 | ✅ |
 | III. 안전 정확성(NON-NEGOTIABLE) | 위험도는 큐레이션 데이터 기반, 미매칭/불확실=unable·caution(safe 단정 금지), `riskBasis`로 근거 추적, 온보딩 동의+상시 고지 | ✅ |
 | IV. 개인화 | 위험도=User.restrictions×성분, 민감정보 즉시 완전삭제+리뷰 익명화 | ✅ |
@@ -83,7 +84,7 @@ app/                      # Expo Router 화면
 components/               # 디자인 시스템(위험도 4상태 등, 와이어프레임 기반)
 features/                 # scan(OCR), risk-overlay, reviews ...
 lib/api/                  # openapi.yaml에서 생성한 타입 + 클라이언트
-lib/i18n/                 # 언어 리소스(영어 우선)
+lib/i18n/                 # 언어 리소스(9개: en/zh-Hans/zh-Hant/ja/vi/id/th/ru/es)
 tests/
 
 # 레포 3: kbap-be (Kotlin + Spring Boot)

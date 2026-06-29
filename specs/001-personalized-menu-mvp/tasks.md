@@ -55,13 +55,13 @@ description: "Task list for 001-personalized-menu-mvp"
 - [ ] T010 [BE] Spring Security + JWT(access/refresh) 골격 + 인증 필터 in `kbap-be/.../auth/security/`
 - [ ] T011 [P] [BE] 베이스 엔티티/도큐먼트: `User`(restrictions·consent 임베디드), `Review`, `ScanItemLog`, `UnregisteredFoodLog`, `UserActivityScore` in `kbap-be/.../<domain>/domain/` (data-model.md A)
 - [ ] T012 [P] [BE] **큐레이션 DB 어댑터 인터페이스 + stub**(`CurationCatalogPort`, 읽기 전용: Food/Ingredient 조회) in `kbap-be/.../curation/` — 외부 팀 계약 미확정이므로 인터페이스+표본 stub로 격리(D5)
-- [ ] T013 [P] [BE] **번역 API 어댑터 인터페이스 + 기본 구현**(`TranslationPort`, 기본 Google Cloud Translation, 교체 가능) in `kbap-be/.../translation/` (D4)
+- [ ] T013 [P] [BE] **번역 API 어댑터 인터페이스 + 기본 구현**(`TranslationPort`, 기본 Google Cloud Translation, 교체 가능, **번역 대상 9개 언어** en/zh-Hans/zh-Hant/ja/vi/id/th/ru/es) in `kbap-be/.../translation/` (D4, FR-027)
 - [ ] T014 [BE] **위험도 산출 엔진 골격** `RiskAssessmentService`(User.restrictions × Ingredient.tags/percentage → safe/caution/danger/unable + riskBasis) in `kbap-be/.../food/risk/` (헌법 III, data-model.md C)
 - [ ] T015 [P] [BE] (test) 위험도 엔진 단위 테스트: 충돌→danger, 변동/저비율→caution, **미매칭/데이터부재→unable(절대 safe 아님)**, basis 존재 in `kbap-be/src/test/kotlin/.../risk/` (SC-003 false-safe 0)
 
 ### FE 기반
 - [ ] T016 [FE] API 클라이언트(React Query + fetch, 인증 토큰 인터셉터, 401 refresh) in `kbap-fe/lib/api/client.ts` (T006 의존)
-- [ ] T017 [FE] i18n 초기화(i18next + expo-localization, 영어 우선, 하드코딩 금지 규약) in `kbap-fe/lib/i18n/` (헌법 I)
+- [ ] T017 [FE] i18n 초기화(i18next + expo-localization, **9개 로케일 리소스** en/zh-Hans/zh-Hant/ja/vi/id/th/ru/es, 하드코딩 금지 규약) in `kbap-fe/lib/i18n/` (헌법 I, FR-027) — 번역 리소스 적재는 T070, 폰트는 T071
 - [ ] T018 [P] [FE] 디자인 시스템 프리미티브 + **위험도 4상태 아이콘 컴포넌트**(safe=원+체크 / caution=삼각+! / danger=팔각+X / unable=마름모+? · SVG, 기본 이모지 금지) in `kbap-fe/components/` (와이어프레임 검증본 이식, 헌법 추가제약)
 - [ ] T019 [P] [FE] 앱 셸 + **5-탭 네비게이션**(home · food · scan[중앙 FAB] · **community[잠김, phase2 예약]** · profile) + 알림 패널 UI(정적, 푸시는 2차) + 온보딩 스택 라우팅 in `kbap-fe/app/` (hifi-shell 목업)
 - [ ] T020 [FE] 안전 고지 상시 배너 컴포넌트(위험 화면 공통) in `kbap-fe/components/` (헌법 III, FR-030)
@@ -195,10 +195,12 @@ description: "Task list for 001-personalized-menu-mvp"
 
 - [ ] T064 [P] [SPEC] quickstart.md end-to-end 검증 시나리오 실행 + 합격 기준(SC) 확인
 - [ ] T065 [BE] 위험도/번역 결과 캐싱(성능 SC-002) + 미등록 로그 집계 점검
-- [ ] T066 [P] [FE] i18n 누락 키 점검(하드코딩 0) + 기본 이모지 사용 0 점검(헌법 추가제약)
+- [ ] T066 [P] [FE] i18n 누락 키 점검(하드코딩 0) + 기본 이모지 사용 0 점검(헌법 추가제약) + **9개 언어 레이아웃/폰트 깨짐(두부) 0 QA**(긴 번역·CJK·태국·키릴 포함)
 - [ ] T067 [P] [FE] 접근성/빈상태/에러상태(States 와이어프레임) 마감
 - [ ] T068 [SPEC] 계약 변경분 openapi.yaml 역반영 확인(FE/BE drift 0, 헌법 VI)
 - [ ] T069 보안 점검(JWT 만료/refresh, 민감정보 로그 마스킹, idToken 검증)
+- [ ] T070 [FE] **9개 언어 i18n 리소스 번들 작성**(en/zh-Hans/zh-Hant/ja/vi/id/th/ru/es) — 기계번역 초안 + 핵심 화면(온보딩/위험도/사장님확인) 검수, 키 누락 0 in `kbap-fe/lib/i18n/locales/` (FR-027)
+- [ ] T071 [FE] **다중 스크립트 폰트 통합**(라틴=Baloo2/NunitoSans, CJK=Noto Sans SC/TC/JP, 태국=Noto Sans Thai, 키릴=NunitoSans/Noto) + 로케일별 폰트 폴백 매핑 + 글자 깨짐(두부) 0 검증 in `kbap-fe/lib/theme.ts`·폰트 로더 (FR-027, 헌법 I)
 
 ---
 
@@ -244,7 +246,7 @@ description: "Task list for 001-personalized-menu-mvp"
 
 ## 작업 요약
 
-- 총 **69개** 작업(T001~T069)
+- 총 **71개** 작업(T001~T071) — 다국어 9개(B안): T070(리소스), T071(다중 스크립트 폰트)
 - 테스트 **13개**: 단위 1(T015) · 계약 7(T021/T031/T041/T045/T053/T060 + auth) · 통합/E2E 5(T022/T032/T042/T046/T054/T061)
 - Repo 분포: SPEC 3 · BE 다수 · FE 다수
 - MVP 코어(P1) = US1+US2, 핵심 7/10 = US1~US3

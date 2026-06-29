@@ -75,7 +75,10 @@ export const font = {
   ko: 'NotoSansKR',           // 한국어(사장님 확인 등 place=ko)
 } as const;
 ```
-> 폰트는 `expo-font`로 로드(Baloo 2, Nunito Sans, Noto Sans KR). 나머지 그림자·간격은 `hifi-g.css` 참고.
+> 폰트는 `expo-font`로 로드. **MVP 9개 언어 출시(B안)** 이므로 라틴만으론 부족 — **다중 스크립트
+> 폰트 필수**: 라틴=Baloo 2/Nunito Sans, **CJK=Noto Sans SC/TC/JP**, **태국=Noto Sans Thai**,
+> **키릴=Nunito Sans/Noto**(+ place=ko 표시용 Noto Sans KR). 로케일별 폰트 폴백을 매핑해 **글자
+> 깨짐(두부 □) 0**. 나머지 그림자·간격은 `hifi-g.css` 참고. (상세: spec.md Session 2026-06-29, tasks T071)
 
 ---
 
@@ -159,7 +162,7 @@ export function useHome() {
 ## 7. 헌법 게이트 (구현 중 상시 체크)
 
 - [ ] **기본 이모지 0** — 모든 아이콘은 SVG(`RiskMark`/`Icon*`). 🍜🚫 같은 유니코드 이모지 금지.
-- [ ] **i18n 하드코딩 0** — 모든 reader 텍스트는 `t('key')`. MVP는 영어 리소스 우선. (place=ko 문구는 데이터/`OwnerConfirmation`에서 옴, UI 하드코딩 아님.)
+- [ ] **i18n 하드코딩 0** — 모든 reader 텍스트는 `t('key')`. **MVP 9개 언어 출시(B안)**: en·zh-Hans·zh-Hant·ja·vi·id·th·ru·es 로케일 리소스 9개(영어로 먼저 짠 뒤 9개 채움, T070). (place=ko 문구는 데이터/`OwnerConfirmation`에서 옴, UI 하드코딩 아님.)
 - [ ] **위험도 4상태 일관** — 색/실루엣/글리프 고정. safe를 임의로 표시하지 않기(데이터가 safe일 때만).
 - [ ] **음식 중심** — '식당' 화면/필드 없음.
 - [ ] **안전 고지** — 위험 화면에 상시 고지 배너(FR-030).

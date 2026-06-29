@@ -24,6 +24,7 @@ Template alignment:
   - .specify/templates/checklist-template.md ✅ aligned (generic)
 
 Version change: 1.0.0 → 1.0.1  (서비스명 확정: K-Bap)
+Version change: 1.0.1 → 1.0.2  (MVP 지원 언어 9개 확정: en/zh-Hans/zh-Hant/ja/vi/id/th/ru/es)
 
 Deferred TODOs:
   - (해소됨) 서비스명 확정 = K-Bap (표시명) / 슬러그 kbap.
@@ -48,7 +49,9 @@ Deferred TODOs:
   않고 **데이터/설정값으로 모델링한다(MUST)**. MVP에서 장소 언어는 한국어(`ko`)로 고정한다.
 - 데이터 모델·API 응답은 다국어 확장이 가능한 구조여야 한다(MUST). 텍스트 필드는 언어
   코드와 함께 다룰 수 있어야 하며, 단일 언어 컬럼을 전제하지 않는다.
-- 지원 언어 우선순위는 **영어 우선**, 이후 **동남아 인구 규모 순**으로 확장한다.
+- 지원 언어: **MVP부터 9개를 모두 제공**한다 — `en`, `zh-Hans`, `zh-Hant`, `ja`, `vi`, `id`,
+  `th`, `ru`, `es`(한국 인바운드 관광객 다수 언어). 폰트는 라틴·CJK·태국·키릴을 모두 커버해야
+  한다(MUST, 글자 깨짐 0). 9개 이후 추가 확장 시 인구 규모 순을 우선순위로 한다. (Session 2026-06-29)
 - 근거: 타겟 사용자가 한국어를 못 읽는 외국인이므로, 국제화는 부가 기능이 아니라 제품의
   전제 조건이다. 초기 설계에서 누락하면 전면 재작업 비용이 발생한다.
 
@@ -137,4 +140,4 @@ Deferred TODOs:
 - 준수 검토: 명세·계획·태스크 리뷰 시 본 헌법 준수 여부를 확인한다. 복잡성은 정당화되어야
   한다.
 
-**Version**: 1.0.1 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-29
+**Version**: 1.0.2 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-29

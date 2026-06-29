@@ -209,7 +209,7 @@ paths:
               type: object
               required: [items, readerLanguage]
               properties:
-                readerLanguage: { type: string, description: BCP-47 }
+                readerLanguage: { type: string, description: "BCP-47; MVP 9개: en|zh-Hans|zh-Hant|ja|vi|id|th|ru|es", enum: [en, zh-Hans, zh-Hant, ja, vi, id, th, ru, es] }
                 items:
                   type: array
                   items:
@@ -356,7 +356,7 @@ components:
         id: { type: string }
         nickname: { type: string }
         nationality: { type: string, description: ISO 3166-1 alpha-2 }
-        readerLanguage: { type: string, description: BCP-47 }
+        readerLanguage: { type: string, description: "BCP-47; MVP 9개: en|zh-Hans|zh-Hant|ja|vi|id|th|ru|es", enum: [en, zh-Hans, zh-Hant, ja, vi, id, th, ru, es] }
         spiceTolerance: { type: integer, minimum: 0, maximum: 10, nullable: true }
         restrictions:
           type: array
@@ -368,7 +368,7 @@ components:
       properties:
         nickname: { type: string }
         nationality: { type: string }
-        readerLanguage: { type: string }
+        readerLanguage: { type: string, enum: [en, zh-Hans, zh-Hant, ja, vi, id, th, ru, es] }
         spiceTolerance: { type: integer, minimum: 0, maximum: 10, nullable: true }
         restrictions:
           type: array
