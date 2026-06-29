@@ -282,10 +282,33 @@ res:  payload { name, imageRef, ingredients:[{ name, iconRef, inclusionPercent, 
 - **enum 매핑은 어댑터에서**: BE `UNKNOWN` → 앱 내부 `unable`(판정불가). 화면은 내부 4상태만 안다.
 - 스캔 응답에는 **번역 이름이 없다** → 오버레이 전략은 13-4.
 
-### 13-3. 온디바이스 OCR — dev build 필수
+### 13-3. 온디바이스 OCR — dev build 필수 + 환경별 가능 여부
 - `@react-native-ml-kit/text-recognition`은 네이티브 모듈 → **Expo Go에서 안 돈다.**
-- **EAS dev build(custom dev client)** 로 빌드해서 실기기/시뮬레이터에서 테스트. (`npx expo run:ios` 또는 EAS dev build)
+- **🔴 iOS 시뮬레이터에서 ML Kit OCR은 안 돌 가능성이 높다**(특히 애플 실리콘 arm64). 갤러리로
+  이미지를 넣어줘도 **OCR 단계가 시뮬레이터에서 실패**할 수 있다. → **신뢰 가능한 OCR 검증 =
+  실물폰 dev build.** 에뮬레이터로 보려면 **Android 에뮬레이터**가 iOS 시뮬레이터보다 호환이 낫다.
+- 환경별 정리:
+  | 환경 | 앱 실행 | 갤러리 선택 | **OCR** | BE 왕복+오버레이 |
+  |---|---|---|---|---|
+  | 웹/Expo Go | △/✅ | — | ❌(네이티브 없음) | ✅(sample scan) |
+  | iOS 시뮬레이터 | ✅ | ✅ | ❌/불확실 | ✅ |
+  | Android 에뮬레이터 | ✅ | ✅ | △(대체로 ✅) | ✅ |
+  | **실물폰 + dev build** | ✅ | ✅ | **✅** | ✅ |
+- **OCR 모듈은 lazy import**(호출 직전) 또는 Platform 가드 — 모듈 없는 환경에서 화면 진입만으로
+  크래시하지 않게. (sample-scan·갤러리+BE 등 OCR 무관 경로 보호)
 - OCR로 텍스트 + bounding box 추출 → box는 **기기 보관**(오버레이용), 텍스트만 `menu-scans`로 전송.
+- **bbox 정렬**: 표시되는 이미지의 실제 크기·스케일(contain/cover) 기준으로 정규화/매핑.
+  카메라 프리뷰 경로와 갤러리 이미지 경로의 스케일 처리를 분리 검증(letterbox 어긋남 주의).
+
+### 13-3b. 갤러리 가져오기 (목업 D1 좌하단)
+- `expo-image-picker`, `allowsMultipleSelection: false`(**1장만**). 선택 URI → `TextRecognition.recognize(uri)`
+  → 동일 파이프라인. 카메라 셔터(중앙)·플립(우)와 함께 하단 행 구성.
+
+### 13-3c. 실물폰 테스트 (TestFlight 불필요)
+- **가장 간단(Android 폰)**: USB 디버깅 켜고 `npx expo run:android` → dev build가 폰에 바로 설치.
+  계정/서명 불필요. (또는 `eas build -p android --profile development` → APK 링크로 설치)
+- **iPhone + Mac**: `npx expo run:ios --device`(USB) → Xcode가 무료 Apple ID로 서명·설치(7일 재서명).
+- 최초 빌드만 무겁고, 이후 JS 변경은 Metro로 핫리로드(재빌드 X). **TestFlight은 외부 배포용이라 개발 테스트엔 불필요.**
 
 ### 13-4. 오버레이 전략 (객관적 권장 = A, 느리면 B)
 - **A (기본)**: 스캔 응답의 `riskLevel`로 박스에 **위험도 색만 즉시** 표시. 사용자가 박스를 **탭하면** 그때 `GET /foods/detail`로 번역명+성분. → 첫 결과 가장 빠름. **전부 미리 부르지 말 것.**
