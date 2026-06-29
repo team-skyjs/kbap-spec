@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
-  title: K-Food Companion (kfood) — MVP API
+  title: K-Bap (kbap) — MVP API
   version: 0.1.0
   description: >
     1차 MVP API 계약(SSOT). FE(React Native/Expo)와 BE(Kotlin/Spring Boot)가 이 문서를 기준으로
     구현한다. 변경은 이 spec 레포에서 먼저 한다(헌법 VI). reader 언어 = 사용자 UI 언어,
     place 언어 = 매장 언어(MVP=ko). 위험도 상태: safe|caution|danger|unable(판정불가).
 servers:
-  - url: https://api.kfood.example/v1
+  - url: https://api.kbap.example/v1
     description: placeholder (호스팅 확정 시 갱신)
 
 tags:

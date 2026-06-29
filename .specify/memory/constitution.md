@@ -23,14 +23,16 @@ Template alignment:
   - .specify/templates/tasks-template.md ✅ aligned (no constitution references)
   - .specify/templates/checklist-template.md ✅ aligned (generic)
 
+Version change: 1.0.0 → 1.0.1  (서비스명 확정: K-Bap)
+
 Deferred TODOs:
-  - 서비스명 미정 → 프로젝트명은 작업명(working title) "K-Food Companion" 사용. 확정 시 PATCH로 갱신.
+  - (해소됨) 서비스명 확정 = K-Bap (표시명) / 슬러그 kbap.
 -->
 
-# K-Food Companion (working title) Constitution
+# K-Bap Constitution
 
-본 헌법은 한국 여행/거주 외국인을 위한 한식 안내 서비스의 모든 명세·설계·구현을 구속한다.
-서비스명은 아직 미정이며, 확정 전까지 작업명 "K-Food Companion"을 사용한다.
+본 헌법은 한국 여행/거주 외국인을 위한 한식 안내 서비스 **K-Bap**의 모든 명세·설계·구현을 구속한다.
+표시명(브랜드)은 **K-Bap**, 기술 슬러그는 `kbap`(레포 kbap-fe/kbap-be, 패키지 com.kbap)다.
 
 ## Core Principles
 
@@ -135,4 +137,4 @@ Deferred TODOs:
 - 준수 검토: 명세·계획·태스크 리뷰 시 본 헌법 준수 여부를 확인한다. 복잡성은 정당화되어야
   한다.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-15
+**Version**: 1.0.1 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-29

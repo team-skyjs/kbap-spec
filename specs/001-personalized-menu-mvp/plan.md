@@ -76,7 +76,7 @@ specs/001-personalized-menu-mvp/
 specs/001-personalized-menu-mvp/contracts/openapi.yaml   # 계약 원본
 .specify/memory/constitution.md                          # 원칙
 
-# 레포 2: kfood-fe (React Native + Expo)
+# 레포 2: kbap-fe (React Native + Expo)
 app/                      # Expo Router 화면 (홈/음식/카메라/프로필 + 온보딩)
 ├── (onboarding)/
 ├── (tabs)/
@@ -87,7 +87,7 @@ lib/api/                  # openapi.yaml에서 생성한 타입 + 클라이언�
 lib/i18n/                 # 언어 리소스(영어 우선)
 tests/
 
-# 레포 3: kfood-be (Kotlin + Spring Boot)
+# 레포 3: kbap-be (Kotlin + Spring Boot)
 src/main/kotlin/.../
 ├── auth/                 # JWT, Apple/Google OAuth, 이메일 인증
 ├── user/                 # 프로필, 제약, 동의, 계정삭제/익명화

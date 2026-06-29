@@ -1,4 +1,6 @@
 <!-- SPECKIT START -->
+Product: K-Bap (display name) · slug `kbap` (repos kbap-fe/kbap-be, package com.kbap) · codename kfood (this dir)
+
 Active feature: 001-personalized-menu-mvp
 - Plan: specs/001-personalized-menu-mvp/plan.md
 - Spec: specs/001-personalized-menu-mvp/spec.md
