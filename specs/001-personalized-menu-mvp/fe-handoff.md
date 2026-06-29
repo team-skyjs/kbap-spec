@@ -145,6 +145,15 @@ export function useHome() {
   `TopBar`(온보딩 진행바) · `ObTitle` · `Stars`(별점) · **`RiskMark`**(위험도 4상태 SVG: safe=원+체크 / caution=삼각+! / danger=팔각+X / unable=마름모+?) · `Icon*` 세트.
 - **전부 SVG**(`react-native-svg`). **기본 이모지 절대 금지**(헌법).
 
+### 헤더는 무조건 scroll-aware sticky (필수)
+모든 스크롤 화면의 상단 헤더(`Header`/`SubHeader`)는 **scroll-aware sticky header**로 구현한다:
+- 스크롤해도 **상단 고정**(sticky), 콘텐츠는 헤더 아래로 흐른다.
+- 스크롤 위치에 따라 **축약/그림자 전환**: 최상단=투명/큰 타이틀, 스크롤 시작 시 배경 채움 +
+  하단 hairline/그림자(`--sh-1`) + (해당 시) 타이틀 축약. `Animated`/`react-native-reanimated`의
+  scrollY로 보간. iOS large-title 느낌.
+- 구현 권장: 화면별 `ScrollView`/`FlatList`의 `onScroll`(또는 reanimated `useAnimatedScrollHandler`)로
+  공유 `StickyHeader` 컴포넌트의 상태를 구동. 화면마다 재발명하지 말고 **공유 컴포넌트 1개**로.
+
 ---
 
 ## 7. 헌법 게이트 (구현 중 상시 체크)
@@ -206,4 +215,42 @@ BE 실제 구현(`meogo.handev.site` swagger)이 우리 `openapi.yaml`과 일부
 **현재 재조정 논의 중.** FE는 mock 데이터로 UI만 만드는 단계라 **이 논의와 독립** — 그대로 진행.
 단, mock 타입은 "재조정 중인 계약"이므로 **음식 식별자(foodId vs menuName) 같은 미확정 필드에
 화면 로직을 강하게 묶지 말 것**. UI 렌더링에는 영향 없음. 확정 후 sync 시 타입 교체.
+
+---
+
+## 12. 작업 진행 방식 — 체크리스트 기반 (필수)
+
+큰 작업을 한 세션에 통째로 던지면 컨텍스트가 비대해져 실수가 는다. 그래서 **진행 상황을
+파일로 남기고, 세션이 그걸 보며 한 단위씩** 진행한다. 두 겹으로 운영:
+
+1. **`kbap-fe/PROGRESS.md`** (durable, 커밋됨) — FE 세션이 **가장 먼저 생성**한다. 아래 빌드
+   순서(§8)를 체크박스로 옮기고, 각 항목을 `[ ]`→`[~]`(진행중)→`[x]`(완료)로 갱신한다.
+   세션이 리셋돼도 여기서 이어간다. 항목 완료 시 커밋.
+2. **세션 내 todo**(Claude Code 기본 todo) — 현재 항목을 더 잘게 쪼갠 단기 추적.
+
+규칙:
+- **한 번에 1개 단위만** 진행(예: "디자인시스템 컴포넌트", 다음 "앱 셸", 다음 "온보딩 화면").
+  여러 화면을 한 프롬프트에 몰지 않는다.
+- 각 단위 시작 시 PROGRESS.md에서 해당 항목 `[~]` 표시 + 무엇을 할지 1줄 메모, 끝나면 `[x]` +
+  결과/이탈점 1줄. **다음 단위로 넘어가기 전에 목업과 1:1 대조**.
+- 막히거나 결정이 필요하면 PROGRESS.md에 `❓`로 적고 사용자에게 질문(임의 가정 금지).
+
+### PROGRESS.md 초기 템플릿(FE 세션이 생성)
+```markdown
+# kbap-fe Build Progress
+> 규칙: 한 번에 1개. [ ]→[~]→[x]. 각 화면 완료 시 목업 대조 + 커밋.
+
+## 기반
+- [ ] Expo(TS+expo-router) 초기화 + 의존성
+- [ ] lib/theme.ts (토큰/폰트)
+- [ ] mock seam (types / mocks / useXxx, MOCK_MODE=true)
+## 디자인시스템
+- [ ] RiskMark + Icon* (SVG)
+- [ ] Btn / StickyHeader(scroll-aware) / SubHeader / TabBar / TopBar / Stars / 상태 컴포넌트
+## 앱 셸
+- [ ] 5-탭 + Scan FAB + Community(잠김) + 검색/알림 패널
+## 화면 (각: 목업 대조 후 [x])
+- [ ] 온보딩(+스파이스)  - [ ] 홈  - [ ] 카메라/스캔(mock OCR)  - [ ] 음식 탐색
+- [ ] 음식 디테일  - [ ] 사장님 확인  - [ ] 리뷰 작성  - [ ] 프로필  - [ ] 상태(빈/로딩/에러)
+```
 ```
