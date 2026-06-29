@@ -291,4 +291,15 @@ res:  payload { name, imageRef, ingredients:[{ name, iconRef, inclusionPercent, 
 ### 13-5. 반드시 테스트 (안전, 헌법 III)
 - 테스트 케이스에 **미등록 음식**(예: "신상 화채")을 꼭 넣어, 스캔 결과가 `UNKNOWN`(→unable)으로
   나오고 **절대 SAFE가 아님**을 확인(false-safe 0, SC-003). SAFE로 나오면 BE에 즉시 보고.
+
+### 13-6. 현재 BE 상태 (2026-06-29 테스트 기준) — 가정 금지
+- **BE 스캔은 아직 mock(스텁)이다.** 위험도가 음식이 아니라 **itemId 순서로 순환**해서 나온다
+  (0→SAFE, 1→CAUTION, 2→DANGER, 3→UNKNOWN, reason에 `"mock:"` 접두사). 실제 카탈로그 매칭·
+  개인화 위험도는 미구현. → **FE는 "itemId=위험도" 매핑을 절대 가정하지 말고**, 응답 `riskLevel`을
+  그대로 그린다. (지금은 4상태 UI를 모두 시험할 fixture로만 활용.)
+- **detail 미등록 응답**: `GET /foods/detail`에 카탈로그에 없는 이름을 주면
+  `{ success:false, payload:null, message:"..." }`(한국어)를 준다. FE 처리 규칙:
+  ① **`success` 플래그로 분기**(HTTP 상태 아님), payload null 방어.
+  ② **BE `message`를 사용자에게 표시 금지** — FE 자체 i18n "정보 없음/판정불가(unable)" 상태로 렌더.
+- 안전(false-safe) 검증은 **BE 실제 판정 탑재 후 재테스트** 대상(된장찌개=콩 개인화, 미등록 음식 포함).
 ```
