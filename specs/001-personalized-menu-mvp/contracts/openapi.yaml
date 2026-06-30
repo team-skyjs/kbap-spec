@@ -432,6 +432,7 @@ components:
         overall: { $ref: "#/components/schemas/RatingAggregate" }
         sameNationality: { $ref: "#/components/schemas/RatingAggregate" }
         description: { type: string, description: reader 언어, ≤150자(EN 기준) }
+        spiceLevel: { type: integer, minimum: 0, maximum: 10, nullable: true, description: 메뉴별 맵기(목업 X/10 표기), 미등록·미상이면 null. 사용자 spiceTolerance와 비교용 }
         photoUrl: { type: string, nullable: true }
         ingredients:
           type: array
