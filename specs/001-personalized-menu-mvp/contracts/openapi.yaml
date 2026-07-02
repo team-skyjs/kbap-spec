@@ -377,11 +377,24 @@ components:
     Ranking:
       type: object
       properties:
-        tier: { type: string, example: "Explorer" }
-        level: { type: integer }
+        tier: { type: string, enum: [newcomer, taster, explorer, regular, gourmet, kfood_master, korean_at_heart], description: 안정 키(등급명은 reader 언어로 FE i18n) }
+        level: { type: integer, description: 1–7 }
         score: { type: number }
-        nextTier: { type: string, nullable: true }
+        nextTier: { type: string, nullable: true, description: 최고 등급이면 null }
         pointsToNext: { type: number, nullable: true }
+        breakdown:
+          type: object
+          description: 점수 기여 내역 (FR-025) — 랭킹 디테일 화면 표시용
+          properties:
+            reviews: { $ref: "#/components/schemas/RankingFactor" }
+            diversity: { $ref: "#/components/schemas/RankingFactor" }
+            scans: { $ref: "#/components/schemas/RankingFactor" }
+
+    RankingFactor:
+      type: object
+      properties:
+        count: { type: integer, description: 활동 수(리뷰 수 / 고유 음식 종류 수 / 스캔 수) }
+        points: { type: number, description: 이 요소가 기여한 점수 }
 
     RatingAggregate:
       type: object
