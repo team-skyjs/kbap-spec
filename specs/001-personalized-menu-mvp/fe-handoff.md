@@ -386,28 +386,38 @@ res:  payload { name, imageRef, ingredients:[{ name, iconRef, inclusionPercent, 
 - 빈 프로필 사용자에겐 스캔 결과에서도 개인화 '안전' 금지 → `personalRisk()` 경로 그대로 통과.
 - 오버레이 마커 겹침: 마커는 점/작은 배지라 겹침 적음. 겹치면 살짝 오프셋 또는 List 토글로 회피.
 
-## 15. 랭킹 디테일 화면 (신규, 2026-07-02 설계 확정)
+## 15. 랭킹 디테일 화면 (신규, 디자인 확정 2026-07-02)
 
-프로필의 랭킹(Rosette ladder) 탭 → 랭킹 디테일. **P3라 정적 화면**(GET /me/ranking 데이터를 거의
-그대로 표시). 계약: `Ranking`(tier/level/score/nextTier/pointsToNext/**breakdown**), `RankingFactor`(count/points).
+**디자인 원본 = Claude Design 프로젝트 "Kfood" → `My Ranking.html`** (다른 화면과 동일 파이프라인).
+`My Ranking.html`의 기본 tweak이 **선택안 그대로**라 파일 열면 바로 렌더됨. 로직은 `my-ranking.jsx`.
+
+### 15-0. 확정 조합 (tweak)
+`cardStyle: department(VIP 플레이트)` · `emblem: medal` · `gauge/shape: bar` · `ranksLayout: path` ·
+level 3 미리보기 · accent 주황(#E2580C). ← **이 조합으로 포팅.** (café/retail 히어로, crown, ring/stars,
+list 레이아웃 변형은 무시.)
 
 ### 15-1. 라우트·데이터
-- 라우트: `app/profile/ranking` (또는 `(tabs)/profile/ranking`). 프로필 랭킹 카드 탭으로 진입.
-- 훅: `useRanking()` + mock(계약 `Ranking` 타입 만족). MOCK_MODE seam 유지.
+- 라우트: `app/profile/ranking` (프로필 랭킹 카드 탭으로 진입). 헤더 "My Ranking / 내 랭킹"(이중언어, sticky).
+- 훅: `useRanking()` + mock(계약 `Ranking` 타입 만족). MOCK_MODE seam.
+- **데이터→계약 매핑:** 히어로 "tasted N dishes" = `breakdown.diversity.count` · 점수내역 3행 =
+  `breakdown.{reviews,diversity,scans}`의 count/points · 진행바 = `score`·`nextTier`·`pointsToNext`(구간=현재 tier at→다음 at).
 
-### 15-2. 화면 구성 (위→아래, 풀 버전)
-1. **현재 등급 히어로**: 큰 Rosette(SVG) + 등급명(i18n) + level + 한 줄 플레이버.
-2. **다음 등급까지**: 진행바 + "X점 남음 → [nextTier 등급명]" (pointsToNext/nextTier). 최고 등급이면 "최고 등급 달성".
-3. **점수 내역**(breakdown): 리뷰 / 음식 다양성 / 스캔 — 각 `count` + `points` 표시. ("리뷰 하나 더 = +10점" 감각).
-4. **전체 등급 사다리**: 7단계 전부. 현재 강조 / 지난 등급 unlock / 다음부터 잠금 + 진입 점수.
-5. **등급 올리기**: "리뷰 쓰기"·"메뉴 스캔" 딜링크(각각 리뷰 작성/스캔 라우트).
+### 15-2. 화면 구성 (My Ranking.html 그대로, 위→아래)
+1. **히어로 = VIP 플레이트**(`.rk-hero.dp`): 크림 배경 + 주황 헤어라인 테두리, 중앙 정렬. "VIP MEMBERSHIP"
+   eyebrow → **medal 엠블럼(레벨 숫자)** → 등급명(EN 크게) → "탐험가 · LEVEL 3" → divider → 플레이버 → "N total points".
+2. **다음 등급 = bar 게이지**(`.rk-next`+`.rk-track/.rk-fill/.rk-knob`): "**60** pts to Regular / 단골까지" +
+   총점 칩(120 pts) + 진행바(구간 눈금 80→180). 최고 등급이면 "Top tier reached" 카드.
+3. **점수 내역**(`.rk-break`): Reviews/리뷰 · Food variety/음식 다양성 · Scans/스캔, 각 아이콘+detail+`+점수` 칩.
+   하단 점선 "One more review · +10 pts".
+4. **전체 등급 사다리 = path**(`.rk-path`): 7등급을 연결선(climb trail)으로. 지난 등급=medallion 체크,
+   현재=강조 노드+"NOW"+`at+ pts`, 다음부터=muted+자물쇠+진입점수. medallion 색은 웜 램프(TIER_COLOR).
+5. **CTA**: "Write a review +10"(채움) / "Scan a menu +2"(ghost) → 리뷰작성/스캔 라우트.
 
 ### 15-3. 7단계 등급 (안정키 → i18n)
-`newcomer`/`taster`/`explorer`/`regular`/`gourmet`/`kfood_master`/`korean_at_heart`.
-누적점수 구간: 0 / 30 / 80 / 180 / 350 / 600 / 1000. 가중치(BE 산출, FE는 표시만):
-리뷰=10, 고유음식=5, 스캔=2. **등급명은 tier 키로 i18n 매핑**(BE가 번역명 안 줌, 안정키만).
+`newcomer`/`taster`/`explorer`/`regular`/`gourmet`/`kfood_master`/`korean_at_heart` (EN/KO 병기).
+누적 진입점수 0/30/80/180/350/600/1000. 가중치(BE 산출, FE 표시): 리뷰10·다양성5·스캔2.
+**등급명은 tier 키로 i18n**(BE가 번역명 안 줌). my-ranking.jsx의 TIERS 데이터가 SSOT(FR-025)와 일치.
 
 ### 15-4. 규칙
-- 이모지 금지(Rosette·아이콘 전부 SVG). 모든 텍스트 i18n 키(영어만 채움, 등급명도 키로).
-- scroll-aware sticky 헤더(SubHeader 뒤로+타이틀). tsc 0 + web 대조.
-- 위험도 렌더 없음(personalRisk 무관).
+- 이모지 금지(엠블럼·medallion·아이콘 전부 SVG — my-ranking.jsx에 SVG로 그려져 있음). 모든 텍스트 i18n 키.
+- scroll-aware sticky 헤더(§6). tsc 0 + web 대조. 위험도 렌더 없음(personalRisk 무관).
