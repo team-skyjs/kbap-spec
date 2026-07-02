@@ -147,6 +147,8 @@ export function useHome() {
 - `Header`(브랜드+검색+알림) · `SubHeader`(뒤로+타이틀) · `TabBar`(5-탭+FAB) · `Btn`(variant/sm) ·
   `TopBar`(온보딩 진행바) · `ObTitle` · `Stars`(별점) · **`RiskMark`**(위험도 4상태 SVG: safe=원+체크 / caution=삼각+! / danger=팔각+X / unable=마름모+?) · `Icon*` 세트.
 - **전부 SVG**(`react-native-svg`). **기본 이모지 절대 금지**(헌법).
+- **Header 아이콘(검색·알림) = 라인(outline) 스타일**(2026-07-02): fill 아니라 stroke(≈2px), ink 색,
+  뒤 배경 pill/원형 없음 = 유튜브식 "맨 아이콘". 알림 안읽음 배지는 유지, 탭 타깃 ≥40(투명 hitSlop).
 
 ### 헤더는 hide-on-scroll (Blind 패턴) (필수) — 갱신 2026-07-02
 모든 스크롤 화면의 상단 헤더(`Header`/`SubHeader`)는 **스크롤 방향에 반응해 숨김/표시**한다
