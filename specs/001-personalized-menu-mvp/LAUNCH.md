@@ -1,10 +1,11 @@
 # K-Bap MVP 출시 체크리스트
 
-> 목표 출시: **2026-07-10** · 최종 갱신: 2026-07-02
+> 목표 출시: **2026-07-10** · 최종 갱신: 2026-07-02 18:53 KST
 > **이 파일이 할일 정본**(메모리 의존 X). "뭐 해야 하지?" 싶으면 여기부터 보고 갱신. 완료=✅ 진행=🔄 대기=⬜ 파킹=⏸
 
 ## 🔜 지금/다음 할 일 큐 (In Progress)
-- **FE 큐(자동 진행 중):** 헤더 아이콘(라인) → 랭킹 디테일 → i18n(9개 언어+폰트+언어전환)
+- **FE 큐:** ✅ 헤더 hide-on-scroll(`3e60f69`) · ✅ G2 정렬(`e528b60`) · ✅ 랭킹 디테일(`482037f`, done 07-02 18:53)
+  → **남음: i18n(9개 언어+폰트+언어전환)** ← 다음 FE 작업. (+ 헤더 라인아이콘 반영 여부 확인)
 - ⏸ **[파킹] 브랜드/로고 적용** — ① Claude Design "K-Bap Brand Kit"에서 자산 export → `kbap-fe/assets/images/`
   ② app.json 배선 + 인앱 Logo/Wordmark SVG(FE) ③ 아이콘·스플래시는 **재빌드 필요**(네이티브, OTA 불가). (🟢 브랜딩 참조)
 - **오늘 밤:** BE 회의 → be-handoff 4안건 결정 → 결과 SSOT(openapi/spec) 반영.
@@ -64,9 +65,8 @@
 > 사용자가 실물 앱 보며 발견. 3·6·7·언어전환은 "실 API 통합"이 공통 뿌리.
 
 ### 🔴 버그 / 안전 관련
-- [ ] **헤더 패턴 변경 → hide-on-scroll (Blind식)** 🔄 FE — 기존 §6은 "무조건 상단 고정"이었는데
-  사용자 의도는 hide-on-scroll-down/show-on-scroll-up. §6 갱신 완료 → FE가 공유 헤더를 그 패턴으로
-  (reanimated translateY, large-title 축약 제거). 담당: FE.
+- [x] **헤더 패턴 → hide-on-scroll (Blind식)** ✅ done 07-02 18:53 (`3e60f69`) — §6 갱신 + FE 구현
+  (reanimated translateY, large-title 축약 제거). 폰 확인 완료.
 - [ ] **프로필 수정 불가**(`PATCH /me`, FR-006) — 조회만 됨. ⚠️ **안전 등급 높음**: 알러지/제약을
   수정 못 하면 옛 정보로 개인화되어 false-safe 위험. 담당: FE+BE.
 - [ ] **reader 언어 전환 no-op** — 9개 언어 MVP인데 앱에서 언어 변경이 안 됨. T070/T071에 "언어
@@ -79,8 +79,8 @@
 - [ ] **실 API 통합 우산 작업**: MOCK_MODE off + 화면별 실 엔드포인트 연결(위 항목들 일괄 활성).
 
 ### 🟣 기획/디자인부터 없던 것 (처음부터 잡기)
-- [~] **랭킹 디테일 화면** — ✅ 기획+디자인 확정(Claude Design My Ranking.html: VIP/medal/bar/path,
-  fe-handoff §15, FR-025/025a, 커밋 84a96a5). **FE 구현 대기**(mock, BE 무관 → 지금 가능).
+- [x] **랭킹 디테일 화면** ✅ done 07-02 18:53 (`482037f`) — Claude Design My Ranking.html(VIP/medal/bar/path)
+  RN 포팅 완료, 원본 대조 수정 완료. CTA "Write a review"→/food 유지. (설계 §15/FR-025/025a)
 
 ### 🟢 콘텐츠 / 브랜딩 자산
 - [ ] **음식 사진 데이터 수집** — 계약 `photoUrl` 있음, 데이터 없음. ⚠️ 출처/저작권 확인. 담당: 큐레이션 팀.
