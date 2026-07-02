@@ -56,8 +56,9 @@
 > 사용자가 실물 앱 보며 발견. 3·6·7·언어전환은 "실 API 통합"이 공통 뿌리.
 
 ### 🔴 버그 / 안전 관련
-- [ ] **sticky 헤더 미동작** 🔄 FE 진행 중(수정 프롬프트 전달) — fe-handoff §6 "무조건 scroll-aware
-  sticky"인데 실기기서 스크롤 시 헤더가 사라짐. 전 화면 점검+수정(웹은 통과, 네이티브서 깨짐). 담당: FE.
+- [ ] **헤더 패턴 변경 → hide-on-scroll (Blind식)** 🔄 FE — 기존 §6은 "무조건 상단 고정"이었는데
+  사용자 의도는 hide-on-scroll-down/show-on-scroll-up. §6 갱신 완료 → FE가 공유 헤더를 그 패턴으로
+  (reanimated translateY, large-title 축약 제거). 담당: FE.
 - [ ] **프로필 수정 불가**(`PATCH /me`, FR-006) — 조회만 됨. ⚠️ **안전 등급 높음**: 알러지/제약을
   수정 못 하면 옛 정보로 개인화되어 false-safe 위험. 담당: FE+BE.
 - [ ] **reader 언어 전환 no-op** — 9개 언어 MVP인데 앱에서 언어 변경이 안 됨. T070/T071에 "언어

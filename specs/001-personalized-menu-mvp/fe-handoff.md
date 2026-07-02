@@ -148,14 +148,19 @@ export function useHome() {
   `TopBar`(온보딩 진행바) · `ObTitle` · `Stars`(별점) · **`RiskMark`**(위험도 4상태 SVG: safe=원+체크 / caution=삼각+! / danger=팔각+X / unable=마름모+?) · `Icon*` 세트.
 - **전부 SVG**(`react-native-svg`). **기본 이모지 절대 금지**(헌법).
 
-### 헤더는 무조건 scroll-aware sticky (필수)
-모든 스크롤 화면의 상단 헤더(`Header`/`SubHeader`)는 **scroll-aware sticky header**로 구현한다:
-- 스크롤해도 **상단 고정**(sticky), 콘텐츠는 헤더 아래로 흐른다.
-- 스크롤 위치에 따라 **축약/그림자 전환**: 최상단=투명/큰 타이틀, 스크롤 시작 시 배경 채움 +
-  하단 hairline/그림자(`--sh-1`) + (해당 시) 타이틀 축약. `Animated`/`react-native-reanimated`의
-  scrollY로 보간. iOS large-title 느낌.
-- 구현 권장: 화면별 `ScrollView`/`FlatList`의 `onScroll`(또는 reanimated `useAnimatedScrollHandler`)로
-  공유 `StickyHeader` 컴포넌트의 상태를 구동. 화면마다 재발명하지 말고 **공유 컴포넌트 1개**로.
+### 헤더는 hide-on-scroll (Blind 패턴) (필수) — 갱신 2026-07-02
+모든 스크롤 화면의 상단 헤더(`Header`/`SubHeader`)는 **스크롤 방향에 반응해 숨김/표시**한다
+(Blind 앱 패턴 = hide-on-scroll-down / show-on-scroll-up). ※ 이전 스펙은 "무조건 상단 고정
+(always-pinned)"이었으나, 사용자 의도가 hide/show여서 이 패턴으로 변경함.
+- 헤더는 상단에 **오버레이 고정 배치**(absolute)되고 콘텐츠는 그 아래로 흐른다.
+- **맨 위(scrollY≈0)에선 항상 표시.** 아래로 스크롤 → 헤더가 위로 슬라이드되어 **숨김**,
+  위로 스크롤 → 즉시 **다시 표시**. 스크롤 **방향 + delta**를 감지해 show/hide 트리거.
+- 전환: RN이므로 CSS `position:fixed`/`transition`이 아니라 **reanimated `transform: translateY`
+  + `withTiming`** 으로 부드럽게(개념 동일, 구현만 네이티브). 방향 판정에 작은 threshold(≈6~8px)로 떨림 방지.
+- **표시 중엔 항상 solid 배경 + 하단 hairline/그림자(`--sh-1`)** (컴팩트 헤더). **iOS large-title 축약은
+  쓰지 않는다**(hide/show와 충돌).
+- 구현: 화면별 `ScrollView`/`FlatList`의 `useAnimatedScrollHandler`로 공유 헤더 컴포넌트의 translateY를
+  구동. 화면마다 재발명하지 말고 **공유 컴포넌트 1개**로.
 
 ---
 
@@ -397,7 +402,7 @@ level 3 미리보기 · accent 주황(#E2580C). ← **이 조합으로 포팅.**
 list 레이아웃 변형은 무시.)
 
 ### 15-1. 라우트·데이터
-- 라우트: `app/profile/ranking` (프로필 랭킹 카드 탭으로 진입). 헤더 "My Ranking / 내 랭킹"(이중언어, sticky).
+- 라우트: `app/profile/ranking` (프로필 랭킹 카드 탭으로 진입). 헤더 "My Ranking / 내 랭킹"(이중언어, hide-on-scroll §6).
 - 훅: `useRanking()` + mock(계약 `Ranking` 타입 만족). MOCK_MODE seam.
 - **데이터→계약 매핑:** 히어로 "tasted N dishes" = `breakdown.diversity.count` · 점수내역 3행 =
   `breakdown.{reviews,diversity,scans}`의 count/points · 진행바 = `score`·`nextTier`·`pointsToNext`(구간=현재 tier at→다음 at).
@@ -420,4 +425,4 @@ list 레이아웃 변형은 무시.)
 
 ### 15-4. 규칙
 - 이모지 금지(엠블럼·medallion·아이콘 전부 SVG — my-ranking.jsx에 SVG로 그려져 있음). 모든 텍스트 i18n 키.
-- scroll-aware sticky 헤더(§6). tsc 0 + web 대조. 위험도 렌더 없음(personalRisk 무관).
+- hide-on-scroll 헤더(§6). tsc 0 + web 대조. 위험도 렌더 없음(personalRisk 무관).
