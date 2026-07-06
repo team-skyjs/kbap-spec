@@ -9,15 +9,18 @@
 - `id`, `email`(소셜은 null 가능), `authProviders`[email|apple|google], `nickname`,
   `nationality`(ISO 3166-1 alpha-2), `readerLanguage`(BCP-47, MVP 영어 우선),
   `spiceTolerance`(0–10, optional), `createdAt`.
-- `restrictions`: DietaryRestriction[] (임베디드).
+- `avoidedIngredients`: string[] — 안 먹는 재료 81종 중 부분집합(평면 재료코드, 카테고리 없음). 임베디드.
 - `consent`: ConsentRecord (임베디드).
-- 규칙: `restrictions`는 온보딩에서 **최소 입력 필수**(FR-003). 계정 삭제 시 본 문서 + 민감정보
+- 규칙: `nationality`는 **전체 국가(ISO 3166-1) 허용**, `readerLanguage`는 **MVP 9개로 제한**
+  (en/zh-Hans/zh-Hant/ja/vi/id/th/ru/es). 가입 시 국적→언어 자동선택은 9개 내에서 매핑하고,
+  매핑되는 언어가 없으면 en 폴백. (국적을 언어 9개에 맞춰 제한하지 말 것.)
+- 규칙: `avoidedIngredients`는 온보딩에서 입력받되 **건너뛸 수 있다**(FR-003, skip 가능·강력 권장). 계정 삭제 시 본 문서 + 민감정보
   즉시 완전 삭제, 작성 리뷰는 익명화(FR-032).
 
-### DietaryRestriction (User 임베디드)
-- `kind`: allergy | diet | religion
-- `code`: 표준 코드(예: allergy:shellfish, diet:vegan, religion:halal-no-pork)
-- 민감정보로 취급. 위험도 계산의 입력.
+### AvoidedIngredients (User.avoidedIngredients)
+- 사용자가 안 먹는 **재료코드의 평면 목록**(81종 중 부분집합). 카테고리(알러지/종교/식이) 구분 없음 — 이유 불문 회피 대상.
+- 재료코드는 BE 81종 카탈로그 기준. 민감정보로 취급(회피 이유가 알러지·종교일 수 있음). 위험도 계산의 입력.
+- 판정 로직 상세: `local-handoff/kbap/risk-display-policy.md`.
 
 ### ConsentRecord (User 임베디드)
 - `safetyNoticeAcceptedAt`, `version`. (FR-030)
@@ -54,16 +57,16 @@
 - 규칙: 스캔 원문은 이 카탈로그로 정규화. 없으면 '미등록'.
 
 ### Ingredient/Component
-- `foodId`, `name`{locale}, `percentage`, `tags`[allergen/diet/religion codes].
-- 규칙: "90% 이상 포함" 필터(FR-014)와 위험도 판정의 근거.
+- `foodId`, `name`{locale}, `code`(81종 표준 재료코드), `inclusionPercent`(포함확률 0–100).
+- 규칙: 위험도 판정의 근거(회피 재료 × 포함확률 밴드).
 
 ## C. 결합 계산 (저장 아님, 응답 시 산출 · 캐시 가능)
 
 ### FoodRiskAssessment (User × Food)
-- 입력: User.restrictions(A) + Food.Ingredient.tags/percentage(B).
-- 출력: `state`(safe|caution|danger|**unable**), `basis`[{ingredient, tag, percentage, reason}].
+- 입력: User.avoidedIngredients(A, 회피 재료코드) + Food.Ingredient.code/inclusionPercent(B).
+- 출력: `state`(safe|caution|danger|**unable**), `basis`[{ingredient, inclusionPercent, reason}].
 - 규칙(헌법 III):
-  - 매칭 성분이 사용자 제약과 충돌·고비율 → danger.
+  - 회피 재료 포함확률: ≥60% → danger · 10–60% → caution · <10% → safe. 최악 재료 승자(risk-display-policy).
   - 매장별 변동/저비율/불확실 → caution(임의로 safe 단정 금지).
   - 카탈로그 미매칭(미등록) 또는 성분 데이터 부재 → **unable**(FR-011/033).
   - `basis`로 판정 근거 추적 가능(FR-012). 근거 없는 safe 금지.
