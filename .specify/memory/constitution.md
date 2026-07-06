@@ -25,6 +25,7 @@ Template alignment:
 
 Version change: 1.0.0 → 1.0.1  (서비스명 확정: K-Bap)
 Version change: 1.0.1 → 1.0.2  (MVP 지원 언어 9개 확정: en/zh-Hans/zh-Hant/ja/vi/id/th/ru/es)
+Version change: 1.0.2 → 1.1.0  (API 계약 SSOT를 BE Swagger로 이관 — 원칙 VI·워크플로 §개정, 2026-07-02 회의 결정)
 
 Deferred TODOs:
   - (해소됨) 서비스명 확정 = K-Bap (표시명) / 슬러그 kbap.
@@ -97,10 +98,12 @@ Deferred TODOs:
 
 - 본 레포(spec)는 spec / fe / be 3-레포 구조에서 **단일 진실의 원천(SSOT)** 이다(MUST).
   기능 명세·설계·태스크는 여기서 생성·관리된다.
-- 프론트엔드와 백엔드 간 계약은 본 레포의 **API 계약(예: OpenAPI 등 기계가독 형식)** 을
-  기준으로 한다(MUST). FE/BE 구현이 계약과 어긋나면 계약 또는 구현 중 하나를 수정해 정합을
-  회복해야 하며, 침묵의 드리프트를 금지한다(MUST NOT).
-- 근거: 레포가 분리된 팀에서 계약 드리프트는 통합 단계의 최대 리스크다. SSOT가 이를 막는다.
+- 프론트엔드와 백엔드 간 **API 계약의 SSOT는 백엔드가 게시하는 Swagger/OpenAPI(런타임 생성)**
+  이다(MUST) — 2026-07-02 결정. 본 레포의 `contracts/openapi.yaml`은 **참고용**이며 계약 정본이
+  아니다. FE/BE 구현이 Swagger 계약과 어긋나면 계약 또는 구현 중 하나를 수정해 정합을 회복해야
+  하며, 침묵의 드리프트를 금지한다(MUST NOT).
+- 근거: BE가 계약을 코드로 생성·게시하므로 구현과 계약의 드리프트가 원천 차단된다. (스펙·설계·
+  태스크의 SSOT는 여전히 본 레포다 — API 계약만 BE Swagger로 이관.)
 
 ## 추가 제약 (Additional Constraints)
 
@@ -128,7 +131,8 @@ Deferred TODOs:
   `/speckit-plan` → `/speckit-tasks` → `/speckit-implement`.
 - `/speckit-plan`의 Constitution Check 게이트에서 본 헌법 위반이 발견되면, 명세 또는 설계를
   수정해 해소하거나 Complexity Tracking에 정당화 근거를 명시해야 한다.
-- API 계약 변경은 본 레포에서 먼저 갱신한 뒤 FE/BE에 전파한다(SSOT 원칙).
+- API 계약 변경은 **BE Swagger(정본)에 먼저 반영**하고 FE는 거기에 맞춘다. 본 레포
+  `contracts/openapi.yaml`(참고용)은 필요 시 뒤따라 갱신한다(2026-07-02 결정).
 
 ## Governance
 
@@ -140,4 +144,4 @@ Deferred TODOs:
 - 준수 검토: 명세·계획·태스크 리뷰 시 본 헌법 준수 여부를 확인한다. 복잡성은 정당화되어야
   한다.
 
-**Version**: 1.0.2 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-29
+**Version**: 1.1.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-07-06

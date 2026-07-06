@@ -4,7 +4,7 @@ Product: K-Bap (display name) · slug `kbap` (repos kbap-fe/kbap-be, package com
 Active feature: 001-personalized-menu-mvp
 - Plan: specs/001-personalized-menu-mvp/plan.md
 - Spec: specs/001-personalized-menu-mvp/spec.md
-- API contract (SSOT): specs/001-personalized-menu-mvp/contracts/openapi.yaml
+- API contract (SSOT): **BE Swagger** — https://meogo.handev.site/swagger-ui (meeting 2026-07-02). This repo's specs/001-personalized-menu-mvp/contracts/openapi.yaml is reference-only, NOT the contract SSOT.
 - Constitution: .specify/memory/constitution.md
 
 Stack: FE = React Native + Expo (TypeScript); BE = Kotlin + Spring Boot + MongoDB
