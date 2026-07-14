@@ -6,7 +6,8 @@
 ## A. App/BE 소유 (MongoDB)
 
 ### User
-- `id`, `email`(소셜은 null 가능), `authProviders`[email|apple|google], `nickname`,
+- `id`, `email`(소셜 계정에서 수집, null 가능), `authProviders`[apple|google] — 소셜 전용,
+  자체 이메일 로그인 없음(2026-07-08), `nickname`,
   `nationality`(ISO 3166-1 alpha-2), `readerLanguage`(BCP-47, MVP 영어 우선),
   `spiceTolerance`(0–10, optional), `createdAt`.
 - `avoidedIngredients`: string[] — 안 먹는 재료 81종 중 부분집합(평면 재료코드, 카테고리 없음). 임베디드.
