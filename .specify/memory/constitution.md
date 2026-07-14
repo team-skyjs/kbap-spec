@@ -26,6 +26,12 @@ Template alignment:
 Version change: 1.0.0 → 1.0.1  (서비스명 확정: K-Bap)
 Version change: 1.0.1 → 1.0.2  (MVP 지원 언어 9개 확정: en/zh-Hans/zh-Hant/ja/vi/id/th/ru/es)
 Version change: 1.0.2 → 1.1.0  (API 계약 SSOT를 BE Swagger로 이관 — 원칙 VI·워크플로 §개정, 2026-07-02 회의 결정)
+Version change: 1.1.0 → 2.0.0  (2026-07-14 레포 역할 전환 — MAJOR)
+  - 원칙 VI 비호환 재정의: "스펙이 진실의 원천" → "정본 지도(SSOT Map)".
+    본 레포 = FE 커맨드 센터(판단·조율·프롬프트 설계·검토 게이트). 직접 구현하지 않으며,
+    정본은 도메인별 분산(Jira·Swagger·Claude Design·local-handoff)되고 본 레포가 그 지도를 유지.
+  - 원칙 V 갱신: 회원가입 소셜 전용(2026-07-08 결정), 리뷰 조건부, 제출 목표 2026-07-16.
+  - 개발 워크플로 §: spec-kit 흐름은 "신규 기능 명세 시"로 한정.
 
 Deferred TODOs:
   - (해소됨) 서비스명 확정 = K-Bap (표시명) / 슬러그 kbap.
@@ -87,23 +93,29 @@ Deferred TODOs:
 
 ### V. 단계별 출시 (Phased Delivery)
 
-- 출시는 다음 순서를 따른다(MUST): **1차 MVP** — 메뉴판 개인화(알러지/종교/비건) + 리뷰 +
-  회원가입(애플/구글/자체), 목표일 **2026-07-10**. **2차** — 가공식품, 커뮤니티.
-  **3차** — 길거리 음식 사진 판별.
+- 출시는 다음 순서를 따른다(MUST): **1차 MVP** — 메뉴판 개인화(알러지/종교/비건) +
+  회원가입(**소셜 전용: 애플/구글** — 이메일 가입 없음, 2026-07-08 결정) + 리뷰(**조건부** —
+  2026-07-13 결정에 따라 미포함 시 2차 이월), 앱 제출 목표 **2026-07-16**, 7월 내 스토어 출시.
+  **2차** — 가공식품, 커뮤니티. **3차** — 길거리 음식 사진 판별.
 - 후순위 단계의 기능을 위해 현재 단계의 범위를 확장하지 않는다(MUST NOT). 단, 미래 단계를
   가로막는 비가역적 설계 결정은 피한다(SHOULD).
 - 근거: 마감(2026-07-10)이 촉박하다. 범위 통제가 출시 가능성을 좌우한다.
 
-### VI. 스펙이 진실의 원천 (Spec as Source of Truth)
+### VI. 정본 지도 (SSOT Map) — 2026-07-14 재정의
 
-- 본 레포(spec)는 spec / fe / be 3-레포 구조에서 **단일 진실의 원천(SSOT)** 이다(MUST).
-  기능 명세·설계·태스크는 여기서 생성·관리된다.
-- 프론트엔드와 백엔드 간 **API 계약의 SSOT는 백엔드가 게시하는 Swagger/OpenAPI(런타임 생성)**
-  이다(MUST) — 2026-07-02 결정. 본 레포의 `contracts/openapi.yaml`은 **참고용**이며 계약 정본이
-  아니다. FE/BE 구현이 Swagger 계약과 어긋나면 계약 또는 구현 중 하나를 수정해 정합을 회복해야
-  하며, 침묵의 드리프트를 금지한다(MUST NOT).
-- 근거: BE가 계약을 코드로 생성·게시하므로 구현과 계약의 드리프트가 원천 차단된다. (스펙·설계·
-  태스크의 SSOT는 여전히 본 레포다 — API 계약만 BE Swagger로 이관.)
+- 본 레포(spec)는 **FE 트랙의 커맨드 센터**다: Jira 기반 할일 관리, 디자인/FE 세션 프롬프트
+  설계, 검토 게이트(리뷰)를 담당한다. **직접 코드를 구현하지 않는다(MUST NOT)** — 구현은
+  kbap-fe/kbap-server 세션에 프롬프트로 위임한다.
+- 정본(SSOT)은 도메인별로 분산되며, 본 레포는 그 **지도**를 유지한다(MUST):
+  - **이슈/태스크 상태** = Jira(KB) · **API 계약** = BE Swagger(런타임 생성) ·
+    **디자인** = Claude Design 프로젝트 · **BE 공유 정책** = local-handoff/kbap ·
+    **출시 큰그림** = LAUNCH.md · **제품 원칙/제약** = 본 헌법 · **기능 의도(FR)** = spec.md.
+  - 본 레포의 `contracts/openapi.yaml`·`tasks.md`는 **참고/기록용**이며 정본이 아니다.
+- 정본 간 어긋남을 발견하면 정본 쪽을 따르고 지도를 갱신한다. **침묵의 드리프트를 금지한다
+  (MUST NOT)** — 특히 여기서 생성하는 프롬프트는 낡은 문서가 아니라 정본을 인용해야 한다(MUST).
+- 근거: 태스크는 Jira, 계약은 Swagger, 디자인은 Claude Design에서 코드/도구로 생성·관리되는
+  현실에서, 단일 레포 SSOT 선언은 유지 불가능한 허구가 된다. 커맨드 센터의 가치는 모든 정본을
+  갖는 것이 아니라 **어디가 정본인지 항상 정확히 아는 것**이다.
 
 ## 추가 제약 (Additional Constraints)
 
@@ -127,8 +139,9 @@ Deferred TODOs:
 
 ## 개발 워크플로 (Development Workflow)
 
-- 모든 기능은 spec-kit 흐름을 따른다: `/speckit-specify` → `/speckit-clarify`(선택) →
-  `/speckit-plan` → `/speckit-tasks` → `/speckit-implement`.
+- **신규 기능을 명세할 때만** spec-kit 흐름을 따른다: `/speckit-specify` → `/speckit-clarify`(선택)
+  → `/speckit-plan` → `/speckit-tasks`. 일상 운영(할일·프롬프트·리뷰)은 커맨드 센터 스킬
+  (`todo`·`jira`·`design-prompt`·`fe-prompt`·`review-gate`)로 한다. 태스크 실행 관리는 Jira(KB).
 - `/speckit-plan`의 Constitution Check 게이트에서 본 헌법 위반이 발견되면, 명세 또는 설계를
   수정해 해소하거나 Complexity Tracking에 정당화 근거를 명시해야 한다.
 - API 계약 변경은 **BE Swagger(정본)에 먼저 반영**하고 FE는 거기에 맞춘다. 본 레포
@@ -144,4 +157,4 @@ Deferred TODOs:
 - 준수 검토: 명세·계획·태스크 리뷰 시 본 헌법 준수 여부를 확인한다. 복잡성은 정당화되어야
   한다.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-07-06
+**Version**: 2.0.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-07-14

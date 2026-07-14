@@ -4,6 +4,11 @@ description: "Task list for 001-personalized-menu-mvp"
 
 # Tasks: 개인화 한식 메뉴 안전 안내 (MVP)
 
+> ⚠️ **동결 (2026-07-14)** — 태스크 관리는 **Jira(KB)로 승계**됐다(2026-07-06 결정, 이슈 상태
+> 정본 = Jira). 이 파일은 더 이상 갱신하지 않으며, FR↔태스크 추적 기록으로만 보존한다.
+> 체크박스가 비어 있는 것은 미완이 아니라 **이 파일에서 추적을 중단했기 때문**이다.
+> 현재 할 일 = Jira + `LAUNCH.md`(큰그림).
+
 **Input**: `specs/001-personalized-menu-mvp/` (plan.md, spec.md, research.md, data-model.md, contracts/openapi.yaml, quickstart.md)
 
 **Constitution**: `.specify/memory/constitution.md` (I 국제화 · II 음식중심 · III 안전정확성 NON-NEGOTIABLE · IV 개인화 · V 단계출시 · VI 스펙=SSOT)
