@@ -1,5 +1,11 @@
 # FE 핸드오프 — K-Bap MVP (목업 → React Native 구현)
 
+> ⚠️ **시대 구분 (2026-07-14)** — 이 문서는 "목업→mock UI" 단계(**완료됨**)의 핸드오프다.
+> 현재는 **실연결 단계**이며, API 계약 정본은 **BE Swagger**(2026-07-02 결정, `https://meogo.handev.site/swagger-ui`)다.
+> 지금도 유효: §4 디자인 토큰 · §5 mock seam(MOCK_MODE 토글) · §6 화면 매핑 · §7 헌법 게이트 ·
+> §12 진행 방식 · §14 스캔 세그멘테이션 · §15 랭킹. 나머지는 역사 기록으로 읽을 것.
+> 실연결 작업 지시는 §9 템플릿(구식)이 아니라 spec 레포 **`fe-prompt` 스킬**로 생성한다.
+
 이 문서는 **kbap-fe 레포에서 FE를 구현하는 세션/개발자**를 위한 단일 안내서다. 목표:
 **API 없이(다음 주 연결), high-fi 목업대로 전 화면을 mock 데이터로 보이게** 만든다.
 
@@ -27,12 +33,13 @@
 | 무엇 | 위치 |
 |---|---|
 | **high-fi 목업** | Claude Design 프로젝트 `43cc8ad0-38d8-4afa-a66f-a7412eae2a49`, 파일 `KLens Hi-Fi (Direction G).html` + `hifi-*.jsx` + `hifi-g.css` + `screenshots/*hifi-g*` |
-| **API 계약(SSOT)** | spec 레포 `specs/001-personalized-menu-mvp/contracts/openapi.yaml` |
+| **API 계약(SSOT)** | **BE Swagger** `https://meogo.handev.site/swagger-ui` (2026-07-02 결정) — spec 레포 `contracts/openapi.yaml`은 **참고용, 정본 아님** |
 | **헌법(제약)** | spec 레포 `.specify/memory/constitution.md` |
 | **디자인 브리프** | spec 레포 `specs/001-personalized-menu-mvp/design-brief.md` |
 | **유저 스토리/FR** | spec 레포 `specs/001-personalized-menu-mvp/spec.md` |
 
-원칙: **계약·디자인이 바뀌면 spec 레포에서 먼저** 바꾼다(헌법 VI). FE는 소비만.
+원칙: **API 계약은 BE Swagger가 먼저** 바뀌고 FE가 맞춘다(헌법 VI, 2026-07-02 개정).
+디자인·스펙·정책은 spec 레포/정본 문서에서 먼저 바꾼다. FE는 소비만.
 
 ---
 
@@ -92,13 +99,16 @@ export const font = {
 [화면]  →  [useXxx() 훅 (계약 타입 반환)]  →  MOCK_MODE ? mock JSON : API client
 ```
 
-### 5-1. 계약에서 타입 생성 (다음 주 sync 전까지 임시 가능)
+### 5-1. 계약에서 타입 생성
+> **갱신(2026-07-14):** 계약 정본은 BE Swagger. 타입은 **Swagger가 게시하는 스키마 기준**으로
+> 생성/수기 정합한다(`https://meogo.handev.site/v3/api-docs` 등 런타임 스펙 활용). 아래는 목업
+> 단계의 기록.
 ```bash
-# 다음 주: spec 레포 openapi.yaml → 타입 생성 (sync 스크립트는 그때 셋업)
+# (구) spec 레포 openapi.yaml → 타입 생성
 npx openapi-typescript <openapi.yaml> -o kbap-fe/lib/api/schema.ts
 ```
 지금 당장 타입이 없으면, **계약의 스키마 이름과 동일하게** 임시 `types.ts`를 손으로 만들되,
-필드명을 openapi.yaml과 **정확히 일치**시킨다(다음 주 생성 타입으로 교체).
+필드명을 계약 정본과 **정확히 일치**시킨다(생성 타입으로 교체).
 
 ### 5-2. mock JSON은 계약 타입을 만족해야 함 (컴파일러가 드리프트를 잡음)
 ```ts
@@ -188,7 +198,7 @@ export function useHome() {
 
 ---
 
-## 9. FE 세션에 붙여넣을 프롬프트 (템플릿)
+## 9. FE 세션에 붙여넣을 프롬프트 (템플릿) — ⚠️ 목업 단계용(구식). 실연결 단계는 `fe-prompt` 스킬 사용.
 
 ```
 너는 kbap-fe(React Native + Expo, TypeScript) 레포에서 K-Bap 앱의 UI를 구현한다.
@@ -196,7 +206,7 @@ export function useHome() {
 
 [필독]
 - 이 문서 전체: specs/001-personalized-menu-mvp/fe-handoff.md (spec 레포)
-- API 계약(데이터 모양 SSOT): .../contracts/openapi.yaml
+- API 계약(데이터 모양 SSOT): BE Swagger https://meogo.handev.site/swagger-ui (openapi.yaml은 참고용)
 - 헌법(제약): .specify/memory/constitution.md
 - 목업: Claude Design 프로젝트, "KLens Hi-Fi (Direction G)" + hifi-*.jsx + hifi-g.css
 

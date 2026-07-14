@@ -7,7 +7,7 @@
 > **타임라인(2026-07-13 갱신)**: 실연결 완료 **7/14~15** → 앱 제출 **7/16(목)** → **최종 목표: 7월 내 스토어 다운로드 가능.**
 > 리뷰 기능 포함 여부 = 7/13 밤 회의 결정(미포함 시 2차).
 > **API SSOT**: BE Swagger = 진리 (`https://meogo.handev.site/swagger-ui`). 이 레포 `contracts/openapi.yaml`은 참고용(정본 아님).
-> **완료 게이트**: 구현 세션은 완료 시 Jira `검토 중`으로만 전환 + 진행로그 댓글. `완료` 전환·BE플래그는 리뷰(예진+Claude) 후. (`.claude/skills/jira` §5)
+> **완료 게이트**: 구현 세션은 완료 시 Jira `검토 중`으로만 전환 + 진행로그 댓글. `완료` 전환·BE플래그는 리뷰(예진+Claude) 후. (규칙 = `jira` 스킬 §5 · 리뷰 절차 = `review-gate` 스킬)
 
 ---
 
@@ -46,7 +46,7 @@ BE Swagger(현재 2개) ──────┤
 | KB-65 실 API 통합(FE) | 공통 레이어(KB-66) — FE 공통 기반 |
 | KB-31/42/33/34/35/39 | DB·도메인·수집·인프라·예외·기타 (BE) |
 
-## 🗣️ 회의 결정 (2026-07-07~08) — 요지 (전체·반영상태는 [meeting-agenda](../../../local-handoff/kbap/meeting-agenda.md))
+## 🗣️ 회의 결정 (2026-07-07~08) — 요지 (전체·반영상태는 [meeting-agenda](/Users/yejinkim/dev/local-handoff/kbap/meeting-agenda.md))
 1. ✅ **회원가입 MVP 필수** · 소셜 전용(email 삭제, 공식 버튼) · OAuth 코드는 클라(KB-109).
 2. 🟠 **리뷰 = 조건부**(7/10까지 여유 시 MVP, 아니면 2차) + **포함 시 사진도** → 포함 확정 시 UGC 모더레이션(Apple 1.2) 즉시 이슈화.
 3. ✅ **언어 = BE가 유저 프로필로 판단**(인증 배포 전까지 lang 쿼리 임시 유지).
@@ -58,18 +58,18 @@ BE Swagger(현재 2개) ──────┤
 ## 🗣️ 회의 결정 (2026-07-02) — 반영 상태
 1. ✅ 화면 9개국어 표시 (완료).
 2. ✅ **API SSOT = BE Swagger.** URL 확보(`meogo.handev.site`). 남음: CLAUDE.md/헌법 문구 반영.
-3. ✅ **위험도 표시 정책** → [risk-display-policy](../../../local-handoff/kbap/risk-display-policy.md). 모델 대전환: 카테고리 폐기 → "안 먹는 재료" 평면 81종 필터. 밴드 p<10 안전/10~60 위험/≥60 금지, 최악승자, 빈목록=SAFE, 미등록=UNKNOWN. **✅ 종한 전달+Swagger 반영 완료.**
+3. ✅ **위험도 표시 정책** → [risk-display-policy](/Users/yejinkim/dev/local-handoff/kbap/risk-display-policy.md). 모델 대전환: 카테고리 폐기 → "안 먹는 재료" 평면 81종 필터. 밴드 p<10 안전/10~60 위험/≥60 금지, 최악승자, 빈목록=SAFE, 미등록=UNKNOWN. **✅ 종한 전달+Swagger 반영 완료.**
 4. 🟠 **모든 리스트 API = no-offset(cursor)** → FE 무한스크롤(KB-71 등). BE 설계 대기.
 5. 🟠 **랭킹 정책 전달**(예진→종한): FR-025 가중치·7등급·breakdown. be-handoff §6-2.
 
 ## 📎 정책·핸드오프 문서 (BE 공유용)
-- [be-handoff.md](../../../local-handoff/kbap/be-handoff.md) — BE 종합 핸드오프. ✅ 전달+Swagger 반영 완료.
-- [risk-display-policy.md](../../../local-handoff/kbap/risk-display-policy.md) — 위험도 4-state 판정 로직. ✅ 전달+반영 완료(스캔/상세 엔드포인트가 4-state+포함% 반환).
-- [auth-onboarding-policy.md](../../../local-handoff/kbap/auth-onboarding-policy.md) — 인증/온보딩/게이팅. ⚠️ **종한 전달 남음** (+ 열린 질문: 온보딩 완료상태·비회원→회원 임시선택 이관).
+- [be-handoff.md](/Users/yejinkim/dev/local-handoff/kbap/be-handoff.md) — BE 종합 핸드오프. ✅ 전달+Swagger 반영 완료.
+- [risk-display-policy.md](/Users/yejinkim/dev/local-handoff/kbap/risk-display-policy.md) — 위험도 4-state 판정 로직. ✅ 전달+반영 완료(스캔/상세 엔드포인트가 4-state+포함% 반환).
+- [auth-onboarding-policy.md](/Users/yejinkim/dev/local-handoff/kbap/auth-onboarding-policy.md) — 인증/온보딩/게이팅. ⚠️ **종한 전달 남음** (+ 열린 질문: 온보딩 완료상태·비회원→회원 임시선택 이관).
 
 ## ⚠️ 리스크 레지스터
 - **BE 완성도**: 현재 실 엔드포인트 2개뿐. 나머지(인증·프로필·홈·검색·리뷰·랭킹) 배포 일정이 출시 최대 변수. → 종한과 일정 확정 필요(§7 플래그 후보).
-- **UGC 모더레이션(Apple 1.2 / Google Play)** 🔴 **조건부 런치 블로커**: 리뷰는 7/10까지 여유 시에만 MVP(+사진 포함 결정). **리뷰 착수 확정 순간** 신고·차단·24h 처리·연락처 + 이미지 모더레이션이 필수 → 즉시 KB-32 이슈화. 리뷰가 2차로 가면 이 리스크는 v2로 이월. 상세: [meeting-agenda.md](../../../local-handoff/kbap/meeting-agenda.md) G.
+- **UGC 모더레이션(Apple 1.2 / Google Play)** 🔴 **조건부 런치 블로커**: 리뷰는 7/10까지 여유 시에만 MVP(+사진 포함 결정). **리뷰 착수 확정 순간** 신고·차단·24h 처리·연락처 + 이미지 모더레이션이 필수 → 즉시 KB-32 이슈화. 리뷰가 2차로 가면 이 리스크는 v2로 이월. 상세: [meeting-agenda.md](/Users/yejinkim/dev/local-handoff/kbap/meeting-agenda.md) G.
 - **심사 시간**: 애플 심사 1~3일. 7/15 제출이면 여유 빠듯. 처리방침(KB-81) 선행.
 - **9개 언어 범위**: 앱+스토어 메타까지 9개면 부담. 스토어 메타는 축소 검토 가능.
 - **디자인 롱폴**: 인트로 일러스트가 가장 느린 자산 → 급하면 텍스트 없는 스타일라이즈드 목업으로 대체.
