@@ -7,7 +7,8 @@ spec-kit 스펙 레포로 출발했으나 지금은 **FE 트랙의 커맨드 센
 
 1. **할일 관리** — Jira(KB) 정본 기반 종합 보고 (`todo` 스킬) · 이슈 생성/전환 (`jira` 스킬)
 2. **디자인 프롬프트 설계** — 디자인 세션(Claude Design)에 보낼 프롬프트 (`design-prompt` 스킬)
-3. **FE 프롬프트 설계** — kbap-fe 구현 세션에 보낼 프롬프트 (`fe-prompt` 스킬)
+3. **FE 프롬프트 설계** — kbap-fe 구현 세션에 보낼 프롬프트 (`fe-prompt` 스킬).
+   전달은 **`bridge/PROMPTS.md`**(ID+상태, 최상단 추가)로, FE 보고는 `bridge/REPORTS.md`로 (2026-07-15 도입)
 4. **검토 게이트** — Jira `검토 중` 이슈를 코드·DoD 대조 후 완료/반려 (`review-gate` 스킬)
 
 # SSOT 지도 (어디가 정본인가 — 헌법 VI)
