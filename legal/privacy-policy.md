@@ -40,7 +40,7 @@ To run the Service we use the following processors. Data may be processed outsid
 ### 4. Retention and Deletion
 
 - Account and profile data: deleted without undue delay when you delete your account (in-app: Profile → Delete account).
-- Scanned menu photos: used for scan processing; files failing validation are deleted immediately, and processed photos are deleted within a short operational period.
+- Scanned menu photos: used for scan processing; files failing validation are deleted immediately, and uploaded photos are retained for up to **3 months** and then deleted.
 - Logs kept only as long as needed for security and legal obligations.
 
 ### 5. Your Rights
@@ -49,7 +49,7 @@ You can view and edit profile data in the app, delete your account at any time, 
 
 ### 6. Contact
 
-K-Bap Team — qja086351@gmail.com
+K-Bap Team — teamskyjs@gmail.com
 
 Material changes to this policy will be announced in the app.
 
@@ -91,7 +91,7 @@ K-Bap("서비스")은 한국 방문·거주 외국인이 자신의 식이 제한
 ### 4. 보유 및 파기
 
 - 계정·프로필 정보: 회원 탈퇴(앱 내 프로필 → 계정 삭제) 시 지체 없이 파기합니다.
-- 스캔 사진: 스캔 처리에 사용하며, 검증 실패 파일은 즉시 삭제하고 처리된 사진도 단기 운영 기간 내 삭제합니다.
+- 스캔 사진: 스캔 처리에 사용하며, 검증 실패 파일은 즉시 삭제하고 업로드된 사진은 **3개월** 보관 후 삭제합니다.
 - 접속 기록은 보안·법령 준수에 필요한 기간만 보관합니다.
 
 ### 5. 이용자의 권리
@@ -100,6 +100,6 @@ K-Bap("서비스")은 한국 방문·거주 외국인이 자신의 식이 제한
 
 ### 6. 문의처
 
-K-Bap 팀 — qja086351@gmail.com
+K-Bap 팀 — teamskyjs@gmail.com
 
 본 방침이 중요하게 변경되는 경우 앱 내 공지로 알립니다.
