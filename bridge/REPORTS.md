@@ -7,6 +7,27 @@
 
 ---
 
+## [P-005] KB-162 탈퇴 시 애플 재인증 + 토큰 revoke — 경로 A (2026-07-16)
+
+**커밋**: `bc2d051` (main) · **검증**: tsc 0 · jest 91/91 (16 suites, +11 tests)
+
+### 작업 결과
+1. **재인증 게이트**: `appleRevoke.ts` 신규 — 기존 expo-apple-authentication 경로 재사용(새 라이브러리 없음). 로그인과 달리 Firebase credential을 만들지 않아 nonce/scope 불필요, `signInWithCredential` 미호출(타계정 인증 시 앱 세션이 갈아타지는 사고 차단)
+2. **revoke**: `revokeToken(auth, authorizationCode)` — RNFB v25 modular API(iOS 네이티브 브릿지) 실측 확인. code 수명 5분 → 본인 대조 직후 즉시 호출, 성공 시에만 기존 탈퇴 흐름(withdrawBe→logOut→/login) 진행
+3. **엣지 3종**: 시트 취소 / 타계정(credential.user ≠ 현재 apple.com providerData.uid — **식별자 부재로 대조 불가여도 거부**) / revoke·시트 실패 — 전부 탈퇴 중단 + 사유별 안내 카드, 계정 유지. revoke 없는 탈퇴 경로 없음
+4. **구글 회원·웹·안드로이드 무변**: 분기 판별은 `currentIsAppleUser()`(providerData 기준) 한 곳 — iOS에서만 require(웹 번들 네이티브 모듈 격리 유지)
+5. i18n +5키 ×10 로케일
+
+### 테스트 (신규 11건)
+provider 판별 4단(google→false 잠금 포함, 미로그인 크래시 없음) · 타계정/식별자 부재/코드 부재 거부 · 시트 취소/타계정/실패 시 revokeToken 미호출 + 중단 신호 · 성공 경로 code 전달 잠금
+
+### 특이사항
+- Firebase 유저 자체(auth 계정)는 기존 탈퇴 흐름대로 로컬 로그아웃만 — Firebase 계정 삭제는 기존 범위 밖 유지(변경 없음). revoke가 심사 요건의 핵심이라 여기까지가 경로 A
+- withdrawBe 실패 시에도 로컬 세션 정리하는 기존 동작 유지(변경 없음) — revoke는 그보다 앞 단계라 "revoke 성공 없이 탈퇴 API 진행"은 없음
+
+### 실기기 확인 포인트
+애플 계정 탈퇴 완주 → iOS 설정→Apple 계정→로그인 및 보안→Apple로 로그인 목록에서 K-Bap **소멸** / 재가입 시 이메일 선택(가리기 포함) 화면 **재등장** / 구글 계정 탈퇴는 게이트 없이 기존과 동일 / 시트 취소·다른 Apple ID 선택 시 계정 유지 + 안내 카드
+
 ## [P-002] KB-72 스캔 실연결 마무리 — imagePath + 가격 (2026-07-16)
 
 **커밋**: `be9aae5` (main) · **검증**: tsc 0 · jest 80/80 (15 suites, +1 suite/+7 tests)
