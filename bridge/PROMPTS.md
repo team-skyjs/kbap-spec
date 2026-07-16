@@ -7,7 +7,7 @@
 
 ---
 
-## [P-002] 🔄 KB-72 스캔 실연결 마무리 — 사진 전송(imagePath) + 가격 표시
+## [P-002] ✅ KB-72 스캔 실연결 마무리 — 사진 전송(imagePath) + 가격 표시 — `be9aae5`
 
 Swagger 재배포(7/16 새벽) 실측 기반. 착수 시 https://meogo.handev.site/v3/api-docs 를 다시 실측할 것 — 특히 **presigned 발급 API 존재 여부** (아래 참조).
 
