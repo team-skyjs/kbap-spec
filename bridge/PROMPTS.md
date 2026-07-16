@@ -7,6 +7,40 @@
 
 ---
 
+## [P-003] ⬜ 맵기 -1 센티널 반영 + presigned 발급 연동 (KB-150 후속·KB-72 마무리)
+
+7/16 회의 확정 + presigned 발급 API 배포 직후 상황. ⚠️ 착수 시 Swagger 실측 필수 — 지금 서버 재배포 중(502)이라 계약 세부는 실측으로 확인할 것.
+
+### 작업 1 — 맵기 "미설정 = -1" 정책 반영 (회의 확정, Swagger 무관)
+
+BE 확정: 미설정 유저는 DB에 **int `-1`** 저장, 응답도 `-1`로 옴. 해제도 **PATCH에 `-1` 전송**.
+현재 FE는 null/누락 방어라 **-1이 오면 "맵기 -1"이라는 값으로 오작동** (SPICE_SCALE[-1]=undefined, 칩에 "-1/10" 노출 위험).
+
+1. memberAdapter: `spicinessPreference === -1` (또는 0~10 범위 밖) → FE 내부 표현 null(미설정). 로컬 fallback은 서버가 -1 정책으로 항상 값을 주므로 서버값 우선으로 단순화 가능 — 마이그레이션 주석 갱신
+2. useMe PATCH: "설정 해제" 시 필드 생략(로컬만) → **`spicinessPreference: -1` 전송**으로 전환. 해제 후 재조회 시 값 되살아나던 한계 소멸 — 관련 주석·PROGRESS 갱신
+3. 온보딩 submit: 스킵 시 필드 생략 유지 여부를 스펙/종한 확정에 맞춤 — 생략이 미설정으로 저장되면 유지, 아니면 -1 전송 (실측·판단 후 진행로그에 기록)
+4. 테스트 갱신: -1 수신→미설정 렌더 / 해제→-1 전송 / 0은 유효값 유지 (0과 -1 경계 잠금)
+
+### 작업 2 — presigned 발급 연동 (scanImage.ts TODO(KB-72) 채우기) — 계약 실측 완료(7/16 오후)
+
+**`POST /api/v1/images/upload-url`** (로그인 필수) `{ purpose: "MENU_SCAN", contentType, contentLength(정확한 바이트) }`
+→ `{ uploadUrl, method(PUT), requiredHeaders, publicUrl(만료 없음), objectKey, expiresAt }`
+
+흐름: 발급 → `uploadUrl`로 PUT (⚠️ **requiredHeaders를 그대로 실을 것** — Content-Type·Content-Length 불일치 시 스토리지 거절) → `completeImageUpload({ path: objectKey, contentType, size })` → 반환 path를 imagePath로.
+
+- 발급 단계에서 용도·형식·크기 검증 — 400이면 텍스트-only 폴백(null 반환) 유지. imagePath `''` 허용은 BE 확정됨(7/16 체크리스트 3번)
+- contentLength는 "정확값" — expo FileSystem.getInfoAsync의 size 사용
+- KB-137 파일 정리보다 업로드 선행 순서 유지
+- 테스트: 발급→업로드→complete 성공 경로 1건(요청 body·헤더 잠금) + 발급/업로드 실패 시 null 폴백 1건
+
+### DoD
+
+- [ ] -1 수신 시 프로필/수정 화면 "미설정" 표시 (칩에 -1 노출 없음), 해제→서버 왕복 후에도 미설정 유지
+- [ ] 실기기 스캔 시 사진이 업로드되어 imagePath가 실경로로 전송됨 (progress 로그 등으로 확인 가능하게)
+- [ ] tsc 0 · jest 통과 (0/-1 경계 테스트 포함)
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-003].
+
 ## [P-002] ✅ KB-72 스캔 실연결 마무리 — 사진 전송(imagePath) + 가격 표시 — `be9aae5`
 
 Swagger 재배포(7/16 새벽) 실측 기반. 착수 시 https://meogo.handev.site/v3/api-docs 를 다시 실측할 것 — 특히 **presigned 발급 API 존재 여부** (아래 참조).
