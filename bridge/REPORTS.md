@@ -7,6 +7,15 @@
 
 ---
 
+## [OPS] 프로덕션 OTA 발행 — P-002~P-005 묶음 테플 배포 (2026-07-16)
+
+**요청 경로**: 예진 직접 지시. **결과**: iOS 정상 발행, runtime `8d0d5504`(설치 빌드 a6aebbf8 일치), update `019f6a21-8998`. [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/3c048736-0ed1-4752-864c-2c8d571646d8)
+
+- 포함: `be9aae5`(P-002 스캔 신계약+가격) · `bc2d051`(P-005 애플 revoke) · `db95536`(P-003 맵기 -1+presigned) · `4afd89e`(P-004 프로필 이미지) — 전부 JS-only 확인(스왑 시 fingerprint 일치)
+- `_photostyle` gitignore 스왑 절차 적용(7/16 OPS 선례) — 발행 순간만 라인 제거 후 복원, 트리 클린
+- 실기기 확인 대기 항목은 각 P 보고 참조. 특히: 스캔 업로드 imagePath 실경로 / 프로필 purpose 추정값(발급 400 가능) / 애플 탈퇴 revoke
+- 테스터 적용법: 앱 완전 종료 후 재실행 2번
+
 ## [P-004] KB-149 프로필 이미지 업로드 — 온보딩·수정·조회 실연결 (2026-07-16)
 
 **커밋**: `4afd89e` (main) · **검증**: tsc 0 · jest 107/107 (18 suites, +4 tests)
