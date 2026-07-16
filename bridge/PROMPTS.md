@@ -7,6 +7,23 @@
 
 ---
 
+## [P-006] ⬜ KB-149 후속 — profileImageUrl 전송값 publicUrl → path(objectKey) 교체 (BE 확정 반영)
+
+종한 확정(7/16 저녁): ① purpose `PROFILE_IMAGE` 그대로 확정 (BE가 그 값으로 개발) ② **profileImageUrl 필드에는 전체 URL이 아니라 path(objectKey)만 전송** — CDN distribution 교체 대응을 위해 도메인 조합은 백엔드가 담당.
+
+### 할 일
+
+1. profileImage.ts: 업로드 후 전송값을 `publicUrl` → **`path`(objectKey)**로 교체 (온보딩·프로필 수정 PATCH 동일). P-004에서 명시해둔 전환 지점 그대로
+2. 조회 렌더: 설계상 MyProfileResponse.profileImageUrl은 **서버가 도메인을 조합한 절대 URL**이어야 FE가 렌더 가능 (FE는 CDN 도메인을 모름 — 그게 이 설계의 목적). 방어: 값이 `http`로 시작하지 않으면 플레이스홀더 처리 + 진행로그에 "조회 응답이 path로 옴 — BE 확인 필요" 기록
+3. 업로드 직후 화면 반영: PATCH 후 재조회(['me'] invalidate)로 서버 조합 URL을 받아 렌더 — 로컬 미리보기는 가능하나 재조회 값이 진실
+4. 테스트 갱신: PATCH/온보딩 body에 path 전송 잠금 · 조회 비-http 값 방어 1건
+
+### DoD
+
+- [ ] 전송=path, 렌더=서버 절대 URL(비-http 방어 포함) · 기존 테스트 전체 통과 · tsc 0
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-006].
+
 ## [P-005] ✅ KB-162 탈퇴 시 애플 재인증 + 토큰 revoke (경로 A — 심사 요건) — `bc2d051`
 
 7/16 결정: 경로 A(클라이언트) 확정. BE 무변. 배경은 Jira KB-162·KB-122 참조.
