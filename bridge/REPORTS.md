@@ -7,6 +7,30 @@
 
 ---
 
+## [P-004] KB-149 프로필 이미지 업로드 — 온보딩·수정·조회 실연결 (2026-07-16)
+
+**커밋**: `4afd89e` (main) · **검증**: tsc 0 · jest 107/107 (18 suites, +4 tests)
+
+### 사전 확인
+- **expo-image-picker 이미 설치**(스캔 갤러리에서 사용 중) → **네이티브 변경 없음, 리빌드 불필요** — 7/24 전 빌드에 태울 항목 아님, OTA로 나감
+- profileImageUrl: Onboarding·Update·MyProfile 3계약 전부 optional string 배포 확인
+
+### 작업 결과
+1. **업로드 공용화 이행**: P-003의 `uploadImage(file, purpose)` 재사용 — 반환만 `{ path, publicUrl }`로 확장(스캔=path, 프로필=publicUrl). 프로필 전용 로직은 `profileImage.ts` 40줄(1:1 크롭 픽커 + 업로드 래퍼)뿐
+2. **온보딩 profile 스텝**: 아바타+카메라 뱃지(선택 사항) — 선택 즉시 업로드, **draft에 URL 보존**(중단 복귀 시 사진 유지), 제출 body 포함/미선택 시 필드 생략
+3. **프로필 수정**: 사진은 국적 행과 같은 **즉시 적용** 시맨틱(선택→업로드→PATCH) — Save 대기 없음. 조회(탭·수정 화면)는 profileImageUrl 렌더, 없으면 기존 플레이스홀더
+4. **실패 폴백**: 픽커/업로드 실패 → 정직한 에러 문구(전용 i18n 키 ×10) + 사진 없이 가입/수정 계속 가능
+
+### BE 질의 2건 (지시대로 값 제외 나머지 완성)
+1. **프로필용 purpose 값 미명시** (스펙 예시 MENU_SCAN뿐, enum 없음) — `PROFILE_IMAGE` 추정 사용. 상수 한 곳(profileImage.ts)이라 확정 시 한 줄 교체. 계정 필요라 에러 메시지 실측 불가 — 실기기에서 발급 400 나면 그 메시지로 역산 가능
+2. **profileImageUrl에 publicUrl vs objectKey** — 지시대로 **publicUrl 우선** 채택(필드명이 Url + "만료 없는 표시용" 설명 부합). 반증되면 path로 전환
+
+### 테스트 (신규/확장 4건)
+uploadImage `{path, publicUrl}` 반환 · adaptProfile 매핑(URL 그대로/누락·빈문자열→null) · PATCH body 포함+`['me']` invalidate · 온보딩 body 포함/미선택 생략
+
+### 실기기 확인 포인트
+온보딩 사진 선택→가입 후 프로필 탭 표시 / 수정 교체 즉시 반영·앱 재시작 후 유지 / 미설정 플레이스홀더 / 비행기 모드 업로드 실패 시 에러 문구+진행 가능 / ⚠️ **purpose 추정값 — 발급 400 시 에러 메시지 공유 요망**
+
 ## [P-003] 맵기 -1 센티널 + presigned 발급 실연동 (2026-07-16)
 
 **커밋**: `db95536` (main) · **검증**: tsc 0 · jest 103/103 (18 suites, +12 tests)
