@@ -7,6 +7,30 @@
 
 ---
 
+## [P-003] 맵기 -1 센티널 + presigned 발급 실연동 (2026-07-16)
+
+**커밋**: `db95536` (main) · **검증**: tsc 0 · jest 103/103 (18 suites, +12 tests)
+
+### 계약 재실측 (착수 시 — 서버 재배포 완료 상태)
+- `POST /images/upload-url` 배포 확인: req 3필드 전부 required / res 6필드 전부 required — 프롬프트의 계약 그대로
+- `spicinessPreference`: MyProfileResponse required int / ProfileUpdateRequest·OnboardingRequest optional
+
+### 작업 1 — 맵기 -1 센티널
+1. `adaptSpice()` 신설: **-1 포함 0..10 밖·비정수 → null(미설정)** — 칩 "-1/10" 노출 오작동 차단. 서버가 항상 값을 주므로 서버값이 진실 — -1 수신 시 로컬 fallback도 타지 않음(fallback은 필드 누락=구서버일 때만). P-001의 BE 질의 2건(미설정 표현/해제 전달) 이것으로 소멸
+2. 해제: PATCH `spicinessPreference: -1` 전송 — "해제 후 재조회 시 값 되살아남" 한계 소멸(기존 로컬-only 처리 폐기)
+3. **온보딩 스킵 = 필드 생략 유지 (판단)**: 계약상 optional + BE 정책이 "미설정 유저 DB -1 저장"이라 생략이 미설정으로 수렴 — 실측으로 반증되면 -1 명시 전송 전환(submit.ts 주석에 전환 지점). 계정 생성이 필요해 서버 왕복 실측은 못 함 → 실기기 확인 포인트에 포함
+
+### 작업 2 — presigned 실연동 (scanImage.ts TODO(KB-72) 해소)
+- `uploadImage(file, purpose)`: 발급 → PUT(**requiredHeaders 발급값 그대로**, BINARY_CONTENT, contentLength는 getInfoAsync 정확값) → complete(objectKey). contentType 확장자 매핑(png/heic/webp/gif, 기본 jpeg)
+- **purpose 파라미터화 완료** — P-004(프로필, purpose만 다름)가 이 함수 재사용하면 됨 (중복 구현 금지 이행)
+- 실패 폴백: 발급 400/PUT 비2xx/파일 소실 어디서든 null → imagePath `''`(텍스트-only, BE 허용 확정 반영). PUT 실패 시 complete 미호출(IMAGE-002 신고값 불일치 방지). KB-137 파일 삭제보다 업로드 선행 유지
+
+### 테스트 (신규/갱신 12건)
+adaptSpice 경계 4건(-1→null, **0 유효값 유지**, 10/11/3.5, 누락 시만 fallback) · 해제→-1 전송 + 0 전송 경계(useUpdateMe) · 업로드 성공 경로(발급 body·requiredHeaders·complete body 잠금) + 실패 3경로 폴백(scanImage 신규) · 검증 path 전송/실패 '' 폴백(useScan)
+
+### 실기기 확인 포인트
+스캔 → Metro 로그 `[scan] upload-url issued → image upload complete → POST /scans | imagePath = scan/...` 실경로 / 맵기 해제 → 앱 재시작 후에도 미설정 / 미설정 계정 프로필 칩에 "-1" 없음 / **온보딩 맵기 스킵 → 프로필 미설정 표시** (생략=미설정 수렴 검증 — 아니면 보고 요망)
+
 ## [P-005] KB-162 탈퇴 시 애플 재인증 + 토큰 revoke — 경로 A (2026-07-16)
 
 **커밋**: `bc2d051` (main) · **검증**: tsc 0 · jest 91/91 (16 suites, +11 tests)
