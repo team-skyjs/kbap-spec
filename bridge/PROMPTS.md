@@ -7,6 +7,55 @@
 
 ---
 
+## [P-005] ⬜ KB-162 탈퇴 시 애플 재인증 + 토큰 revoke (경로 A — 심사 요건)
+
+7/16 결정: 경로 A(클라이언트) 확정. BE 무변. 배경은 Jira KB-162·KB-122 참조.
+
+### 할 일
+
+1. delete-account 화면 분기: **애플 가입 회원**이면 탈퇴 확정 전에 "탈퇴를 완료하려면 Apple로 본인 확인이 필요해요" 안내 → 애플 로그인 시트 재호출 (기존 useSocialAuth의 애플 플로우 재사용 — 새 라이브러리 금지, 기존 경로에서 authorizationCode만 뽑아올 것)
+2. 받은 `authorizationCode`(수명 5분)로 즉시 `auth().revokeToken(code)` (RNFB) → 성공 시 기존 탈퇴 API 진행
+3. 엣지 처리:
+   - 시트 취소 → 탈퇴 중단 + 안내 (계정 유지)
+   - **다른 애플 계정으로 인증** → 거부 (현재 로그인 사용자와 대조 — credential의 user/sub 비교)
+   - revoke 실패(네트워크 등) → 탈퇴 진행하지 말고 안내 후 중단 (심사 요건이라 revoke 없는 탈퇴를 만들지 않는다)
+4. 구글 가입 회원: 기존 흐름 무변 (분기 누락 주의 — provider 판별 근거를 테스트로 잠글 것)
+5. i18n: 신규 문구 ×10 로케일
+
+### DoD
+
+- [ ] 애플 회원 탈퇴 플로우에 재인증 게이트, 구글 회원 무변
+- [ ] 엣지 3종(취소/타계정/실패) 처리 + provider 분기 테스트
+- [ ] tsc 0 · jest 통과. 실기기 확인 포인트 보고에 명시 (설정→Apple로 로그인 목록에서 앱 소멸 / 재가입 시 이메일 선택 재등장)
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-005].
+
+## [P-004] ⬜ KB-149 프로필 이미지 업로드 — 온보딩·프로필 수정/조회 실연결
+
+presigned 파이프라인(P-003과 동일: upload-url → PUT → complete)을 프로필 사진에 적용. 착수 시 Swagger 실측.
+
+### 계약 참고 (7/16 실측)
+
+- `POST /images/upload-url` `{ purpose, contentType, contentLength }` — purpose 예시는 "MENU_SCAN"이었음. **프로필용 purpose 값은 실측/에러 메시지로 확인**하고, 스펙에 없으면 진행로그에 질의 기록 후 그 값 제외 나머지 완성
+- 응답의 `publicUrl`(만료 없는 표시용) vs `objectKey` — `profileImageUrl` 필드에 어느 쪽을 넣는지 계약 명시가 없으면 **publicUrl 우선 시도**(필드명이 Url) + 진행로그 기록
+- 회원 API: OnboardingRequest·ProfileUpdateRequest·MyProfileResponse 모두 `profileImageUrl` 보유 (배포 확인됨)
+
+### 할 일
+
+1. 사진 선택: **expo-image-picker 설치 여부 먼저 확인** — 미설치면 추가가 네이티브 변경이라 **리빌드 필요를 보고에 명시** (7/24 전 빌드에 태울 것)
+2. 업로드 공용화: scanImage.ts의 발급→PUT→complete 흐름을 프로필과 공유 (purpose 파라미터화 — 중복 구현 금지)
+3. 온보딩 profile 스텝: 사진 선택(선택 사항) → 업로드 → OnboardingRequest.profileImageUrl 포함. 스킵 시 필드 생략
+4. 프로필 수정: 이미지 교체 → ProfileUpdateRequest.profileImageUrl. 조회(프로필 탭): MyProfileResponse.profileImageUrl 렌더 (없으면 기존 플레이스홀더)
+5. 업로드 실패: 정직한 에러 + 사진 없이 진행 가능 (가입/수정 자체를 막지 않음)
+
+### DoD
+
+- [ ] 온보딩 사진 선택→가입 후 프로필 표시 / 수정에서 교체 / 미설정 플레이스홀더
+- [ ] 테스트: 업로드 흐름(발급 body·헤더) + profileImageUrl 왕복 + 실패 폴백
+- [ ] tsc 0 · jest 통과 · purpose/URL 필드 실측 결과 진행로그 기록
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-004].
+
 ## [P-003] ⬜ 맵기 -1 센티널 반영 + presigned 발급 연동 (KB-150 후속·KB-72 마무리)
 
 7/16 회의 확정 + presigned 발급 API 배포 직후 상황. ⚠️ 착수 시 Swagger 실측 필수 — 지금 서버 재배포 중(502)이라 계약 세부는 실측으로 확인할 것.
