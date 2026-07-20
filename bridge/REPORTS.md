@@ -7,6 +7,26 @@
 
 ---
 
+## [P-018] KB-194 스플래시 개선 — 태그라인 제거 + 부트 게이팅 (2026-07-20)
+
+**커밋**: `096a954` (main) · **검증**: tsc 0 · jest 155/155 (31 suites, +4 tests)
+
+### 에셋 (네이티브 — 빌드 7 확인 항목)
+- 원본 소스 부재 → png 직접 처리: 알파 밴드 분석으로 태그라인 스트립(838..857, h20) 식별·제거, 콘텐츠 bbox 크롭+여백 정리(900×1200 → 391×535, 패딩 24·하단은 태그라인 직전 캡)
+- **미리보기 첨부**: `dropbox/yj/splash-v2-preview.png` (주황 배경 합성본, 푸시됨)
+- app.json `imageWidth` 280→230 원복 — `_comment`가 예약해둔 그 원복, 주석 갱신
+
+### 부트 게이팅 (JS — OTA 검증 가능)
+- `gateSplash`: **min 1200ms**(조기 완료여도 채움 — 반짝임 소멸) / **cap 4000ms**(초과 시 진입 — KB-174 스켈레톤/J4 인계). 프리페치 reject=settle 취급 — **오프라인이 스플래시를 붙잡지 않음**
+- `prefetchBootData`: 홈·음식 목록(+세션 시 me). **실키 일치 보장** — 훅 queryFn 3개를 fetchHome/fetchFoodsPage/fetchMe로 추출 공유하고, `resolveInitialLang()`로 저장 언어를 LocaleProvider 마운트 전에 선적용(캐시 키·Accept-Language 정합 — 키 불일치로 프리페치가 무의미해지는 함정 차단)
+- 게이트 유닛 테스트 4종: min 전 hide 절대 없음 / min~cap settle 즉시 / cap 강제 / reject 무지연
+
+### ⚠️ 다음 OTA 주의
+이 커밋은 네이티브(에셋·app.json)+JS 혼합. **빌드 7 전에 게이팅만 OTA로 내려면 발행 순간 app.json·splash-icon.png를 직전 커밋 상태로 스왑**(기존 _photostyle 스왑에 추가 — 스킬 3-1 선례). 빌드 7 재베이스라인 후 스왑 전부 소멸.
+
+### 실기기 확인 포인트 (DoD)
+(OTA 후) 빠른 네트워크: ~1.2초 균일 스플래시 후 진입 / 기내모드: 최대 4초 후 스켈레톤·J4 / (빌드 7) 태그라인 없는 스플래시·230 크기
+
 ## [P-017] KB-176 Android 첫 빌드 — 공기계 스모크 apk (2026-07-20)
 
 **빌드 성공** (첫 빌드 ~26분, 콜드 캐시) · **코드 무변경** (PROGRESS 기록만 `0e9f884`)
