@@ -7,6 +7,20 @@
 
 ---
 
+## [P-024] KB-197 재수정 — 언어 선택 회색 = elevation (2026-07-20)
+
+**커밋**: `567d461` (main) · **검증**: tsc 0 · jest 162/162 · **preview OTA 발행(build1 호환)**
+
+### 수정 (내 P-021 오진 정정 — 지적 정확)
+- P-021의 android_ripple은 **원인 오진**이었음. 실제 회색 padding = LanguagePicker `row`의 **`...shadow.sh1`(elevation:1) + `overflow:'hidden'`(P-021이 추가) 공존** — 안드에서 elevation 그림자가 클립되며 padding을 회색으로 채우는 조합. (증거: 같은 파일 closeBtn은 sh1 있지만 overflow 없어 멀쩡)
+- `row`에서 `...shadow.sh1` 제거 — borderWidth 1(C.hair)로 이미 구분, sh1 opacity 0.04라 시각 손실 미미. overflow·android_ripple은 유지(무해·정상), rowOn 무변
+
+### ⚠️ preview OTA — P-022 상호작용 (중요)
+- **Android update `019f7f2f-05a0-72f9`** (runtime `cbbec117` = 공기계 build1 일치). [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/a2b6e8e2-e555-4fb4-b7c6-201597403744)
+- **함정 발견·해결**: P-022가 expo-sensors(네이티브)를 트리에 추가한 뒤라, HEAD를 그냥 OTA하면 ① fingerprint 불일치로 build1 미도달(orphan) ② 번들의 scan.tsx가 DeviceMotion(build1엔 없는 네이티브) 호출 → **Android 스캔 크래시**. → 발행 순간 app.json·splash·**package.json**을 `0e9f884`(preview 빌드 시점)로 + **scan.tsx를 `eecbe52~1`(P-022 직전, 센서 없음)로** 스왑해 build1 안전 번들 생성(JS엔 P-024만 실림), 후 전량 복원. (첫 발행분 runtime `0251c0a0`은 orphan — 무해, 폐기)
+- FE 세션 메모리에 절차 기록. **build2(P-018·P-022 포함) 나오면 이 스왑 전부 폐기**
+- 예진: 강제중지→2회 실행 후 언어 선택 화면 재확인 (padding 회색 없음)
+
 ## [P-022] KB-198 Android 스캔 가로 감지 — expo-sensors 포팅 (2026-07-20)
 
 **커밋**: `eecbe52` (main) · **검증**: tsc 0 · jest 162/162 (+5) · ⚠️ **OTA 아님 — 재빌드 필요**
