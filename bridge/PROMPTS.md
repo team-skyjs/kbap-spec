@@ -29,6 +29,25 @@
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-015].
 
+## [P-017] ⬜ KB-176 Android 첫 빌드 — 공기계 스모크용 apk
+
+예진이 안드 공기계 확보 — 설치용 apk가 필요하다. EAS 안드 쿼터 15회 전량 미사용.
+
+### 할 일
+
+1. **eas.json 확인**: 공기계 직설치용 apk 프로파일 — `preview`에 `"android": {"buildType": "apk"}` 없으면 추가 (⚠️ **preview 프로파일 사용** — dev client는 Metro 연결이 필요해서 단독 스모크에 부적합. preview는 임베디드 JS가 빌드 시점 main 최신이라 standalone으로 돎)
+2. **Firebase Android 사전 점검**: `google-services.json` 존재 여부 확인 — 없으면 빌드 실패/로그인 불가이니 **즉시 보고**(예진이 Firebase 콘솔에서 Android 앱 등록 필요). 있으면 진행
+3. `eas build --platform android --profile preview` — 첫 빌드라 **keystore 생성 질문에 EAS 관리(자동 생성)로 답**
+4. 빌드 완료 후 보고: **설치 링크/QR(expo.dev 빌드 페이지 URL)** + apk 다운로드 URL — 예진이 공기계에서 바로 설치
+5. ⚠️ 예상 이슈 미리 기록: 구글 로그인은 EAS keystore의 **SHA-1을 Firebase 콘솔에 등록해야 동작** — 빌드 후 `eas credentials`로 SHA-1 확인해 보고에 포함 (등록은 예진 콘솔 작업). 애플 로그인 버튼은 Android에서 미노출/무동작이 정상인지도 확인 포인트로 명시
+
+### DoD
+
+- [ ] apk 빌드 성공 + 설치 URL·SHA-1 보고
+- [ ] 코드 변경이 있었다면(eas.json 등) 커밋 해시 병기
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-017]. (공기계 스모크 자체는 예진 — QA 항목으로 별도 추가 예정)
+
 ## [P-016] ✅ KB-149 후속 — 프로필 사진 최종 컨벤션: 삭제·미설정 = 기본 path 전송 (null 폐기) — `847f3d3`
 
 종한 최종 확정(7/20, Q-02 답변) — **P-014의 null 방식 대체**:
