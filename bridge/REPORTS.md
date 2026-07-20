@@ -7,6 +7,22 @@
 
 ---
 
+## [P-010] KB-177 탈퇴 후 로컬 잔재 정리 (2026-07-20)
+
+**커밋**: `b178e1c` (main) · **검증**: tsc 0 · jest 126/126 (24 suites, +5 tests)
+
+### 작업 결과
+1. **일괄 정리** `clearMemberLocalState()` 신규 — **지운 것**: 온보딩 draft(`kbap.onboardingDraft.v1`) · 맵기 로컬(`kbap.profile.spice.v1`). **유지한 것(기기 귀속 판단)**: introSeen · lang · installed 센티널 · recentSearches(서버 미전송 기기 검색기록 — 계정 비귀속). 세션(토큰·서버캐시)=withdrawBe, Keychain=freshInstall 각자 담당이라 접점 없음 확인 — 이 함수는 AsyncStorage 회원 데이터 계층 전담(계층 분리 주석 + 새 회원 키 등록 지점 명시). 겸사: SPICE_KEY 중복 정의 3곳 → submit.ts export 1곳으로 해소
+2. **doWithdraw 배선**: withdrawBe → 로컬 정리 → logOut → /login. (기존 `await import`가 jest 미지원이라 파일 내 관례인 lazy require로 통일)
+3. **방어 분기(이중 방어)**: `shouldShowResume()` 순수 함수 추출 — 게스트는 draft/서버 플래그가 어떻든 미노출. 회원은 KB-75 규칙 무변(완료=미노출 / 미완=draft 없어도 노출 / 플래그 없으면 draft 기준)
+4. **로그아웃 draft 판단 기록(범위 확장 안 함)**: 타계정 재로그인 시 이전 draft가 이어질 수 있는 창은 "서버 플래그가 없는 로그인 회원"뿐인데 실회원은 항상 플래그가 오므로 실害 제한적 — 방어 분기가 게스트 노출은 이미 차단. 필요해지면 draft에 계정 ID 태깅이 정석
+
+### 테스트 (신규 5건)
+정리 키 2종 소거+타 키 미접촉 / 게스트 미노출 3케이스(어떤 잔재 조합이든) / 회원 흐름 무변 4케이스 / 탈퇴 배선 통합(동의→확정→withdrawBe+정리+/login 호출 잠금)
+
+### 실기기 확인 포인트 (DoD)
+탈퇴 완주(애플 revoke 포함) → "둘러보기" 게스트 진입 시 재개 모달 **없음** / 정상 회원 온보딩 중단 → 재진입 시 재개 모달 기존대로. ※ JS-only — OTA 가능(스왑)
+
 ## [P-009] KB-174 후속 — 탭별 스켈레톤 (실제 레이아웃 미러) (2026-07-20)
 
 **커밋**: `4ba7106` (main) · **검증**: tsc 0 · jest 121/121 (21 suites, +2 tests·1 강화)
