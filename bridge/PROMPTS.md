@@ -32,7 +32,7 @@ JS-only라 **preview 채널 OTA로 공기계 반영 가능**(재빌드 불요). 
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-020].
 
-## [P-021] ⬜ KB-197 Android UI 정리 — 온보딩 제출 버튼 짤림 + 언어 선택 리플
+## [P-021] 🔄 KB-197 Android UI 정리 — 온보딩 제출 버튼 짤림 + 언어 선택 리플
 
 안드 첫 스모크(Q-14) 발견. iOS 정상, 안드만 렌더 이슈 2건. JS-only(스타일) → preview 채널 OTA 가능.
 
@@ -51,6 +51,28 @@ JS-only → **preview 채널 OTA**로 공기계 반영. 완료 보고에 OTA ID.
 - [ ] 안드 온보딩 제출 버튼 내비바 안 가림 · 언어 선택 배경 깔끔 · iOS 무회귀 · tsc 0 · jest 통과 · preview OTA
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-021].
+
+## [P-022] ⬜ KB-198 Android 스캔 가로 감지 — expo-sensors 세로 유도 오버레이 포팅
+
+안드 스모크(Q-14): 스캔의 "가로로 돌리면 세로 유도 힌트"가 iOS 전용(expo-camera `responsiveOrientationWhenOrientationLocked`·`onResponsiveOrientationChanged` = @platform ios). 안드는 콜백 미발생 → 미동작. **안드 동시 출시라 대응.**
+
+### 방식 (비교 확정 — expo-sensors)
+
+DeviceMotion으로 **기기 물리 방향 직접 감지** → 앱은 세로 고정 유지, 힌트만 반응(iOS와 동일). expo-screen-orientation은 **잠금 상태에서 회전 이벤트가 안 와** 부적합(감지하려면 잠금 해제=가로 스캔 허용, 목표 반대). → 세로 고정+감지가 동시에 되는 건 센서뿐.
+
+### 할 일
+
+1. **`expo-sensors` 추가** — 네이티브 모듈이라 **재빌드 필요(OTA 불가)**. app.json plugins 반영. ⚠️ 이 건은 다음 빌드에 실림 — preview OTA로 못 감(P-021과 발행 경로 다름)
+2. `src/app/scan.tsx`: 안드에서 `DeviceMotion.addListener`로 중력 벡터 → 방향 판정(**임계각+디바운스**로 45° 근처 떨림 방지) → 기존 `camOrientation` state에 공급. 마운트 구독/언마운트 해제. iOS는 현행 expo-camera 콜백 유지 — **안드만 센서 추가**(회귀 최소화, 두 소스가 같은 state 먹임)
+3. 기존 오버레이(`isLandscape`→rotateOverlay, transform rotate) **무변 재사용**
+4. 테스트: 중력 벡터→orientation 판정 순수 함수 단위 테스트(portrait/landscapeLeft/landscapeRight 경계)
+
+### DoD
+
+- [ ] 안드 실기기: 스캔 중 가로로 돌리면 세로 유도 오버레이 표시(iOS와 동일) · 세로 복귀 시 사라짐 · iOS 무회귀 · tsc 0 · jest 통과
+- [ ] 재빌드 산출물에 포함(안드 빌드2 / 다음 iOS 빌드) — OTA 아님을 보고에 명시
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-022].
 
 ## [P-019] ✅ KB-195 온보딩 맵기 스킵 = -1 명시 전송 (스웨거 required 승격) — `8135d3e`
 
