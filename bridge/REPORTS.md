@@ -7,6 +7,15 @@
 
 ---
 
+## [P-026] KB-178 재수정 — 기피 재료 요약 줄 고정 높이 (2026-07-20)
+
+**커밋**: `0ea62e6` (main) · **검증**: tsc 0 · jest 163/163 · **preview OTA 발행(build1 호환)**
+
+- P-011 보고에서 유보했던 "0↔1 전환 1회 높이 변화 — placeholder 판단 요망"이 실기(Q-11 2·6)로 확정됨. 원인: activeCard 안 칩 ScrollView가 selected>0일 때만 렌더 → 첫 선택 시 칩영역+gap이 새로 생기며 아래 목록 1회 밀어냄
+- 수정: 칩 영역을 **항상 고정 높이(36 = rmChip 높이) View**로 — 빈 상태엔 placeholder(`restrictionsEdit.chipPlaceholder` ×10), 선택 시 기존 horizontal ScrollView. 빈↔선택 높이 불변 → 목록 밀림 0. **공용 IngredientFilter라 온보딩·프로필 동시 반영**
+- 테스트: 0건 placeholder+ScrollView 미렌더 / 0↔1 칩영역 높이 36 불변 잠금(밀림 0 근거)
+- **preview OTA**: Android update `019f7f46-3946-7b5a` (runtime `cbbec117` = build1 일치). P-022(expo-sensors) 이후라 build1 호환 스왑(app.json·splash·package.json·scan.tsx pre-P022) 후 복원. 예진: 강제중지→2회 실행 후 첫 재료 선택 시 목록 밀림 없는지
+
 ## [P-024] KB-197 재수정 — 언어 선택 회색 = elevation (2026-07-20)
 
 **커밋**: `567d461` (main) · **검증**: tsc 0 · jest 162/162 · **preview OTA 발행(build1 호환)**
