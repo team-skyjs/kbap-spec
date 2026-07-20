@@ -7,6 +7,19 @@
 
 ---
 
+## [P-022] KB-198 Android 스캔 가로 감지 — expo-sensors 포팅 (2026-07-20)
+
+**커밋**: `eecbe52` (main) · **검증**: tsc 0 · jest 162/162 (+5) · ⚠️ **OTA 아님 — 재빌드 필요**
+
+### 작업 결과
+1. **expo-sensors 추가**(~56.0.6, autolink) — app.json plugins에 `["expo-sensors", {"motionPermission": false}]`: Android DeviceMotion(가속도)은 런타임 권한 불요, iOS는 Platform 가드로 미사용이라 불필요한 NSMotionUsageDescription 선언을 끔(App Store 리뷰 클린). **네이티브 모듈이라 다음 빌드에만 실림**
+2. **`deviceOrientation.ts` 순수 함수**: 중력 벡터 → portrait/landscapeLeft/landscapeRight. **임계각 35° + flat(화면 위/아래 향함) 가드로 45° 근처 떨림 방지**. 좌표계 부호를 KB-141 오버레이 rotate와 일치(landscapeLeft→+90°)
+3. **scan.tsx**: Android 전용 useEffect로 `DeviceMotion.addListener`(200ms) → 기존 `camOrientation` state 공급(두 소스 같은 state, 오버레이·가드 로직 전부 무변). iOS는 expo-camera 콜백 현행 유지 — **안드만 추가(회귀 최소화)**, 언마운트 시 remove
+4. 테스트 +5: 방향 판정 경계(세워듦/임계 미만·이상/flat/거꾸로)
+
+### 발행 (지시대로 명시)
+**OTA 불가** — 네이티브 모듈이라 preview OTA로 못 감(P-021과 발행 경로 다름). **다음 Android 빌드(빌드2) + 다음 iOS 빌드(빌드7과 함께)에 포함**. 실기기 확인은 재빌드 후: 스캔 중 안드 기기를 가로로 돌리면 세로 유도 오버레이(iOS와 동일)·세로 복귀 시 사라짐
+
 ## [P-021] KB-197 Android UI 정리 — 온보딩 CTA 짤림 + 언어 리플 (2026-07-20)
 
 **커밋**: `81deecf` (main) · **검증**: tsc 0 · jest 157/157 · **preview OTA 발행**

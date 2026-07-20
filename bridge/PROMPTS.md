@@ -52,7 +52,7 @@ JS-only → **preview 채널 OTA**로 공기계 반영. 완료 보고에 OTA ID.
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-021].
 
-## [P-022] ⬜ KB-198 Android 스캔 가로 감지 — expo-sensors 세로 유도 오버레이 포팅
+## [P-022] ✅ KB-198 Android 스캔 가로 감지 — expo-sensors 세로 유도 오버레이 포팅 — `eecbe52` (재빌드 필요, OTA 아님)
 
 안드 스모크(Q-14): 스캔의 "가로로 돌리면 세로 유도 힌트"가 iOS 전용(expo-camera `responsiveOrientationWhenOrientationLocked`·`onResponsiveOrientationChanged` = @platform ios). 안드는 콜백 미발생 → 미동작. **안드 동시 출시라 대응.**
 
