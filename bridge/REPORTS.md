@@ -7,6 +7,14 @@
 
 ---
 
+## [OPS] 프로덕션 OTA 발행 — P-006 테플 배포 (2026-07-20)
+
+**요청 경로**: 예진 직접 지시. **결과**: iOS 정상 발행, runtime `8d0d5504`(설치 빌드 일치), update `019f7d42-ac08`. [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/f741357d-00aa-40b5-a571-00c4b8028008)
+
+- 포함: `28e5bae`(P-006 profileImageUrl path 전송 교체) — JS-only 확인(스왑 시 fingerprint 일치)
+- `_photostyle` gitignore 스왑 절차 적용, 트리 클린. 테스터 적용법: 앱 완전 종료 후 재실행 2번
+- 확인 대기: 프로필 사진 교체→렌더(서버 조합 URL) / "절대 URL이 아님" 로그 여부
+
 ## [P-006] KB-149 후속 — profileImageUrl 전송값 path(objectKey) 교체 (2026-07-20)
 
 **커밋**: `28e5bae` (main) · **검증**: tsc 0 · jest 110/110 (19 suites, +3 tests)
