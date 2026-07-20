@@ -34,6 +34,12 @@
 ### 발행 (지시대로 명시)
 **OTA 불가** — 네이티브 모듈이라 preview OTA로 못 감(P-021과 발행 경로 다름). **다음 Android 빌드(빌드2) + 다음 iOS 빌드(빌드7과 함께)에 포함**. 실기기 확인은 재빌드 후: 스캔 중 안드 기기를 가로로 돌리면 세로 유도 오버레이(iOS와 동일)·세로 복귀 시 사라짐
 
+### 🔧 후속 보강 — dev 빌드 크래시 수정 (`1795d3b`)
+실기(iOS dev 빌드, 로컬 metro) 확인 시 **앱 전체 크래시**: `Cannot find native module 'ExponentPedometer'`. 원인 — scan.tsx 최상단 `import { DeviceMotion } from 'expo-sensors'`가 파일 로드 시점에 네이티브 모듈을 즉시 require. **현 dev 빌드는 expo-sensors 추가(P-022) 전에 빌드돼 그 모듈이 없음** → import 자체가 iOS에서도 실행돼(라우트 파일이라) 앱 전체가 죽음. Android 가드는 사용부에만 있어 import는 못 막았음.
+- **수정**: 최상단 import 제거 → Android 가드 **안에서 try-require + catch 폴백**. iOS는 expo-sensors 무접촉(현 dev 빌드 **metro 리로드만으로 즉시 정상**, 재빌드 불필요), Android 네이티브 미탑재(재빌드 전)면 가로 힌트만 조용히 비활성·스캔 정상.
+- 교훈: 특정 플랫폼 전용 네이티브 모듈은 최상단 import 금지 — 해당 플랫폼 코드 경로 안에서 lazy require해야 다른 플랫폼/구버전 빌드를 안 깨뜨림. tsc 0 · jest 162/162.
+- **정리**: iOS 개발은 재빌드 불필요(리로드). Android 가로 감지 실동작만 빌드2 대기(변함없음).
+
 ## [P-021] KB-197 Android UI 정리 — 온보딩 CTA 짤림 + 언어 리플 (2026-07-20)
 
 **커밋**: `81deecf` (main) · **검증**: tsc 0 · jest 157/157 · **preview OTA 발행**
