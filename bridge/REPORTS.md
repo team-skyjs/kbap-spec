@@ -7,6 +7,21 @@
 
 ---
 
+## [P-006] KB-149 후속 — profileImageUrl 전송값 path(objectKey) 교체 (2026-07-20)
+
+**커밋**: `28e5bae` (main) · **검증**: tsc 0 · jest 110/110 (19 suites, +3 tests)
+
+### 작업 결과
+1. **전송값 교체**: `uploadProfileImage()` 반환 publicUrl → path(objectKey) — P-004에 명시해둔 전환 지점 한 곳 교체로 온보딩·수정 PATCH 동시 반영. purpose는 확정값 `PROFILE_IMAGE` 그대로(P-004 질의 ① 소멸, 질의 ②도 이 확정으로 소멸)
+2. **조회 방어**: `adaptProfileImageUrl()` — 비-http 값은 플레이스홀더 처리 + Metro 감지 로그(`조회 profileImageUrl이 절대 URL이 아님 — BE 확인 필요`). 실기기에서 이 로그가 보이면 조회 응답이 path로 오는 것 → BE 확인 요망
+3. **온보딩 미리보기 분리**: 제출용 path는 Image 렌더가 불가라 미리보기는 로컬 파일 uri로 — draft 복귀 시 미리보기는 소실돼도 path는 유지·제출됨(한계 명시). 수정 화면은 기존 PATCH→`['me']` invalidate 재조회 경로 그대로 서버 조합 URL 렌더
+
+### 테스트 (신규/갱신 3건 + 기존 전체 통과)
+uploadProfileImage path 반환·purpose 확정값 잠금(신규) · 조회 비-http → null 방어 · PATCH/온보딩 body 잠금 값 path로 갱신
+
+### 실기기 확인 포인트
+사진 교체 → 탭·수정 화면 렌더(서버 조합 URL) / "절대 URL이 아님" 로그 발견 시 공유. ※ JS-only — 검토 통과 후 OTA 가능(gitignore 스왑 필요)
+
 ## [OPS] 프로덕션 OTA 발행 — P-002~P-005 묶음 테플 배포 (2026-07-16)
 
 **요청 경로**: 예진 직접 지시. **결과**: iOS 정상 발행, runtime `8d0d5504`(설치 빌드 a6aebbf8 일치), update `019f6a21-8998`. [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/3c048736-0ed1-4752-864c-2c8d571646d8)
