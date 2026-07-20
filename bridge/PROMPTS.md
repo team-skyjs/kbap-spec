@@ -32,6 +32,26 @@ JS-only라 **preview 채널 OTA로 공기계 반영 가능**(재빌드 불요). 
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-020].
 
+## [P-021] ⬜ KB-197 Android UI 정리 — 온보딩 제출 버튼 짤림 + 언어 선택 리플
+
+안드 첫 스모크(Q-14) 발견. iOS 정상, 안드만 렌더 이슈 2건. JS-only(스타일) → preview 채널 OTA 가능.
+
+### 할 일
+
+1. **온보딩 제출 버튼 하단 짤림** — `src/app/onboarding/index.tsx` stickyFoot(L273 `paddingBottom: insets.bottom + 14`)에도 안드 하단 내비바에 버튼이 가림. 안드 edge-to-edge/safe-area 하단 인셋 보강(실기기로 3버튼·제스처 내비 둘 다 확인). 필요 시 app.json androidNavigationBar/edge-to-edge 설정 점검
+2. **언어 선택 항목 배경 리플** — `src/components/LanguagePicker.tsx` `rowOn`(L82 `backgroundColor:'rgba(226,88,12,0.06)'`)가 안드 Pressable 눌림 하이라이트/리플과 겹쳐 padding까지 회색 번짐. `android_ripple` 명시 or 눌림 스타일 정리 → 선택 상태는 테두리+옅은 배경만 깔끔히. 프로필 수정 화면 동일 컴포넌트도 확인
+3. iOS 무회귀 확인(스타일 변경이 iOS 렌더 안 바꾸는지)
+
+### 발행
+
+JS-only → **preview 채널 OTA**로 공기계 반영. 완료 보고에 OTA ID. 예진: 강제중지→2회 실행 후 온보딩·언어 화면 재확인.
+
+### DoD
+
+- [ ] 안드 온보딩 제출 버튼 내비바 안 가림 · 언어 선택 배경 깔끔 · iOS 무회귀 · tsc 0 · jest 통과 · preview OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-021].
+
 ## [P-019] ✅ KB-195 온보딩 맵기 스킵 = -1 명시 전송 (스웨거 required 승격) — `8135d3e`
 
 스웨거 재배포(7/20) 대조 결과: `OnboardingRequest.spicinessPreference`가 **required로 승격**. 현행 스킵=필드 생략(P-003)이 서버 검증에 걸리면 온보딩 가입이 400으로 깨진다 — submit.ts의 전환 예약 주석("다르게 저장되는 게 실측되면 -1 명시 전송으로 전환")이 바로 이 시점.
