@@ -8,7 +8,7 @@
 
 ---
 
-## [P-020] ⬜ KB-196 Android 구글 로그인 실패 — accessToken 누락 (getTokens 병행)
+## [P-020] ✅ KB-196 Android 구글 로그인 실패 — accessToken 누락 (getTokens 병행) — `dc984a3` (preview OTA 발행)
 
 안드 공기계 QA(adb logcat 실측): 구글 로그인이 `Exception in HostFunction: accessToken cannot be empty`로 실패. (콘솔 측 SHA-1·Android OAuth 클라이언트는 예진이 해결 — code 10 소멸 확인됨. 이건 순수 FE 버그.)
 

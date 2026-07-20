@@ -7,6 +7,20 @@
 
 ---
 
+## [P-020] KB-196 Android 구글 로그인 accessToken 누락 (2026-07-20)
+
+**커밋**: `dc984a3` (main) · **검증**: tsc 0 · jest 157/157 (+1) · **preview OTA 발행 완료**
+
+### 수정
+- 원인 실측 그대로: `signInWithGoogle`이 `GoogleAuthProvider.credential(idToken)`로 idToken만 전달 — RNFB Android 네이티브는 accessToken도 요구("accessToken cannot be empty"). iOS는 idToken만으로 통과해 iOS만 동작해왔음
+- `GoogleSignin.getTokens()`로 accessToken 받아 `credential(idToken, accessToken)` 2인자 전달. 취소·에러 분기 무변, iOS 무회귀(병행 무해)
+- 테스트 +1: 네이티브 모킹으로 getTokens 호출 + credential 2인자(idToken, accessToken) 잠금
+
+### preview OTA 발행 (지시대로)
+- **Android update `019f7e7b-929e-7b31`** (branch preview, runtime `cbbec117` = 공기계 preview 빌드와 **정확히 일치** — 도달 확인). [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/0b6e51b9-903d-4945-96b5-dec9b478304a)
+- ⚠️ **발행 순간 P-018 이전 에셋(app.json·splash-icon.png)을 `096a954~1`로 스왑**: 공기계 preview 빌드(00ba0336)가 P-018 네이티브 변경 전에 만들어져 fingerprint 매칭 필요(스킬 3-1 선례 — iOS `_photostyle` 스왑과 별개). JS 번들은 에셋 무관이라 셔먼 동일, 발행 후 즉시 복원
+- **예진**: 공기계 앱 강제중지 → 2회 실행 후 구글 재로그인 (계정 선택→온보딩/홈)
+
 ## [P-019] KB-195 온보딩 맵기 스킵 = -1 명시 전송 (2026-07-20)
 
 **커밋**: `8135d3e` (main) · **검증**: tsc 0 · jest 156/156 (+1 test) · **JS-only — OTA 가능**
