@@ -77,10 +77,10 @@
 
 [환경: 테플 or dev]
 
-1. 앱 언어를 ko → zh-Hans → zh-Hant → ja → th 순서로 변경하며 각각 홈·음식 상세·스캔 화면 훑기
-2. ✅ 글자 깨짐(□·?) 없음
+1. 앱 언어를 ko → zh-Hans → zh-Hant → ja → th 순서로 변경하며 각각 홈·음식 상세·스캔 화면 훑기 ❌
+2. ✅ 글자 깨짐(□·?) 없음 ✅
 3. ✅ 제목 굵고 본문 얇은 **굵기 위계**가 살아 있음 (전부 같은 굵기면 ⚠️) ✅
-4. [dev] 스캔 2회 → ✅ Metro에 `[scan] cleaned photo file` 로그 2회
+4. [dev] 스캔 2회 → ✅ Metro에 `[scan] cleaned photo file` 로그 2회 ❌
 
 ### 피드백
 1. 맵기 설명은 다 영어로만 되어있어. 어떤언어를 써도 모든 화면에서 영어로만 나와.
@@ -88,6 +88,192 @@
 3. 홈의 '시작하기 좋은 인기 요리' 이부분도 음식 이름들이 직전 언어로 나와. 갱신을 바로바로 해야할거같아. 그리고 처음에 한글 -> 다른언어로 바꿨을땐 한글만 나왔어. 동일한 원인인거같아 새로 갱신을 안해서. 근데 이것저것 다른거 하고(스캔 등) 홈으로 돌아오니까 제대로 설정 언어로 메뉴명들이 보여지고 있어. 암튼 탭 누를때마다 api 새로 받아와야할거같아. 
 4. 한영 다 나와있는 메뉴판을 스캔했는데, 스캔 list화면에서 언어가 한글/영어만 나오고있어. api response에서 설정언어로 안보내주는건지 먼저 확인하고, 보내주고있는데 이렇게 보이는거라면 수정이 피룡해. detail페이지에는 내가 설정한 언어로 메뉴명들이 잘 나오고있어.
 - **[커맨드 센터 7/20]** 4건 분류 완료: ①맵기 영어 고정 + ②③언어 전환 잔상 = **FE** → KB-187 생성 + P-015 등록 (라벨 i18n ×10 + 전환 시 무효화·스켈레톤, 원인 실조사 포함). ④스캔 name = **BE 계약 문제** — 스펙에 "현재는 항상 한국어" 명시(지역화 미구현), 상세는 lang 파라미터가 있어 정상. 종한에게 스캔 API lang 추가 질의 전달함(예진). BE 배포 후 FE 후속 여부 판단. Q-04의 KB-137 게이트(폰트 렌더 ②③)는 통과 — 4번(dev 스캔 로그)만 남음.
+- 4번 해봤는데 아래 로그만 뜨고, cleaned photo file은 안나와
+```
+
+ LOG  [scan] photo = {"uri":"file:///var/mobile/Containers/Data/Application/B1A9A707-9D9E-477F-97C9-0A6FC35053AD/Library/Caches/Camera/C3A83A3E-F4E0-4F28-A5F0-75D333785369.jpg","w":886,"h":1920}
+ LOG  [scan] scanImage ← photo {"uri":"file:///var/mobile/Containers/Data/Application/B1A9A707-9D9E-477F-97C9-0A6FC35053AD/Library/Caches/Camera/C3A83A3E-F4E0-4F28-A5F0-75D333785369.jpg","width":886,"height":1920}
+ LOG  [ocr] dims reported(point?) = {"fallbackW":886,"fallbackH":1920} | measured(pixel) = {"width":2658,"height":5760} | using = {"pxW":2658,"pxH":5760}
+ LOG  [ocr] recognize ← file:///var/mobile/Containers/Data/Application/B1A9A707-9D9E-477F-97C9-0A6FC35053AD/Library/Caches/Camera/C3A83A3E-F4E0-4F28-A5F0-75D333785369.jpg
+ LOG  [ocr] blocks = 70 | fullText = "les\nTab\nWindow\nHelp\n20 Googl x\nic/1/22/21717/21716792.png\nSkyJs X\nS\nmeog X\nKfood × O\nCertif\nrestaurah\n라이프치희하무스\nPIZZA\n토마토 미트 치즈피자\nTomato Meat Cheese Pizza\n불고구마피자\nSpicy Sweet Potato Cheese Pizza\n게살 치즈 피자\nCrab Cheese Pasta\n17.0\nPASTA\n멜팅 스테이크 파스타\nMelting Steak Pasta\n베이컨 까르보나라\nBacon Carbonara\n게살오이스터 파스타\nCrab Oyster Pasta\n해산물 크림 파스타\nSeafood Cream Pasta\n해산물 토마토 파스타\nSeafood Tomato Pasta\nRISOTTO\n게살오이스터 리조또\narab Oyster Risotto\n베이컨 크림 리조또\nBacon Cream Risotto\n해산물 토마토 리조또\nSeafood Tomato Risotto\n김치리조또\nKimchi Risotto\n17.0\n17.0\n17.0\n17.0\n17.0\n17.0\n17.0\nSALAD\n연어 샐러드\nSalmon Salad\n치킨텐더 샐러드\nChicken Tender Salad\n리코타그린 샐러드\nRicotta Green Salad\n드추가\nalãd\n17.5\n12.5\n16.5\n12.5\n16.5\n12.5\n15,5\n4.5\nQ\nF4\nK\nDI|\nF8\nF5\nF6\nF10\n%\n5\n6\n&\n7\n8\n9\n7 R\nT\nU"
+ LOG  [ocr] block0.line0 raw = {"text":"les","frame":{"top":409,"width":81,"height":51,"left":0}}
+ LOG  [ocr] block0.line0 norm = {"text":"les","box":{"x":0,"y":0.07100694444444444,"width":0.030474040632054177,"height":0.008854166666666666}}
+ LOG  [ocr] block1.line0 raw = {"text":"Tab","frame":{"top":417,"width":95,"height":52,"left":166}}
+ LOG  [ocr] block1.line0 norm = {"text":"Tab","box":{"x":0.062452972159518436,"y":0.07239583333333334,"width":0.03574115876598947,"height":0.009027777777777777}}
+ LOG  [ocr] block2.line0 raw = {"text":"Window","frame":{"top":427,"width":206,"height":58,"left":345}}
+ LOG  [ocr] block2.line0 norm = {"text":"Window","box":{"x":0.12979683972911965,"y":0.07413194444444444,"width":0.07750188111361926,"height":0.010069444444444445}}
+ LOG  [ocr] block3.line0 raw = {"text":"Help","frame":{"top":445,"width":116,"height":62,"left":644}}
+ LOG  [ocr] block3.line0 norm = {"text":"Help","box":{"x":0.24228743416102333,"y":0.07725694444444445,"width":0.0436418359668924,"height":0.010763888888888889}}
+ LOG  [ocr] block4.line0 raw = {"text":"20 Googl x","frame":{"top":607,"width":336,"height":74,"left":540}}
+ LOG  [ocr] block4.line0 norm = {"text":"20 Googl x","box":{"x":0.20316027088036118,"y":0.10538194444444444,"width":0.12641083521444696,"height":0.012847222222222222}}
+ LOG  [ocr] block5.line0 raw = {"text":"ic/1/22/21717/21716792.png","frame":{"top":768,"width":764,"height":101,"left":5}}
+ LOG  [ocr] block5.line0 norm = {"text":"ic/1/22/21717/21716792.png","box":{"x":0.0018811136192626034,"y":0.13333333333333333,"width":0.2874341610233258,"height":0.017534722222222222}}
+ LOG  [ocr] block6.line0 raw = {"text":"SkyJs X","frame":{"top":621,"width":328,"height":86,"left":1003}}
+ LOG  [ocr] block6.line0 norm = {"text":"SkyJs X","box":{"x":0.37735139202407825,"y":0.1078125,"width":0.12340105342362678,"height":0.014930555555555556}}
+ LOG  [ocr] block7.line0 raw = {"text":"S","frame":{"top":651,"width":61,"height":64,"left":1440}}
+ LOG  [ocr] block7.line0 norm = {"text":"S","box":{"x":0.5417607223476298,"y":0.11302083333333333,"width":0.02294958615500376,"height":0.011111111111111112}}
+ LOG  [ocr] block8.line0 raw = {"text":"meog X","frame":{"top":666,"width":242,"height":69,"left":1538}}
+ LOG  [ocr] block8.line0 norm = {"text":"meog X","box":{"x":0.5786305492851769,"y":0.115625,"width":0.09104589917231001,"height":0.011979166666666667}}
+ LOG  [ocr] block9.line0 raw = {"text":"Kfood × O","frame":{"top":676,"width":524,"height":104,"left":1885}}
+ LOG  [ocr] block9.line0 norm = {"text":"Kfood × O","box":{"x":0.7091798344620015,"y":0.11736111111111111,"width":0.19714070729872085,"height":0.018055555555555554}}
+ LOG  [ocr] block10.line0 raw = {"text":"Certif","frame":{"top":714,"width":146,"height":77,"left":2419}}
+ LOG  [ocr] block10.line0 norm = {"text":"Certif","box":{"x":0.9100827689992476,"y":0.12395833333333334,"width":0.05492851768246802,"height":0.013368055555555555}}
+ LOG  [ocr] block11.line0 raw = {"text":"restaurah","frame":{"top":1293,"width":318,"height":63,"left":1167}}
+ LOG  [ocr] block11.line0 norm = {"text":"restaurah","box":{"x":0.43905191873589167,"y":0.22447916666666667,"width":0.11963882618510158,"height":0.0109375}}
+ LOG  [ocr] block12.line0 raw = {"text":"라이프치희하무스","frame":{"top":1433,"width":1330,"height":262,"left":651}}
+ LOG  [ocr] block12.line0 norm = {"text":"라이프치희하무스","box":{"x":0.24492099322799096,"y":0.24878472222222223,"width":0.5003762227238525,"height":0.04548611111111111}}
+ LOG  [ocr] block13.line0 raw = {"text":"PIZZA","frame":{"top":1898,"width":213,"height":75,"left":1367}}
+ LOG  [ocr] block13.line0 norm = {"text":"PIZZA","box":{"x":0.5142964635063958,"y":0.3295138888888889,"width":0.08013544018058691,"height":0.013020833333333334}}
+ LOG  [ocr] block14.line0 raw = {"text":"토마토 미트 치즈피자","frame":{"top":2072,"width":445,"height":78,"left":1360}}
+ LOG  [ocr] block14.line0 norm = {"text":"토마토 미트 치즈피자","box":{"x":0.5116629044394282,"y":0.3597222222222222,"width":0.16741911211437172,"height":0.013541666666666667}}
+ LOG  [ocr] block14.line1 raw = {"text":"Tomato Meat Cheese Pizza","frame":{"top":2136,"width":520,"height":64,"left":1354}}
+ LOG  [ocr] block14.line1 norm = {"text":"Tomato Meat Cheese Pizza","box":{"x":0.509405568096313,"y":0.37083333333333335,"width":0.19563581640331076,"height":0.011111111111111112}}
+ LOG  [ocr] block15.line0 raw = {"text":"불고구마피자","frame":{"top":2277,"width":300,"height":64,"left":1347}}
+ LOG  [ocr] block15.line0 norm = {"text":"불고구마피자","box":{"x":0.5067720090293454,"y":0.3953125,"width":0.11286681715575621,"height":0.011111111111111112}}
+ LOG  [ocr] block15.line1 raw = {"text":"Spicy Sweet Potato Cheese Pizza","frame":{"top":2335,"width":623,"height":69,"left":1343}}
+ LOG  [ocr] block15.line1 norm = {"text":"Spicy Sweet Potato Cheese Pizza","box":{"x":0.5052671181339353,"y":0.4053819444444444,"width":0.2343867569601204,"height":0.011979166666666667}}
+ LOG  [ocr] block16.line0 raw = {"text":"게살 치즈 피자","frame":{"top":2476,"width":287,"height":60,"left":1340}}
+ LOG  [ocr] block16.line0 norm = {"text":"게살 치즈 피자","box":{"x":0.5041384499623778,"y":0.42986111111111114,"width":0.10797592174567344,"height":0.010416666666666666}}
+ LOG  [ocr] block16.line1 raw = {"text":"Crab Cheese Pasta","frame":{"top":2531,"width":350,"height":52,"left":1333}}
+ LOG  [ocr] block16.line1 norm = {"text":"Crab Cheese Pasta","box":{"x":0.5015048908954101,"y":0.43940972222222224,"width":0.13167795334838225,"height":0.009027777777777777}}
+ LOG  [ocr] block17.line0 raw = {"text":"17.0","frame":{"top":2062,"width":101,"height":49,"left":1075}}
+ LOG  [ocr] block17.line0 norm = {"text":"17.0","box":{"x":0.4044394281414597,"y":0.3579861111111111,"width":0.03799849510910459,"height":0.008506944444444444}}
+ LOG  [ocr] block18.line0 raw = {"text":"PASTA","frame":{"top":1835,"width":251,"height":82,"left":336}}
+ LOG  [ocr] block18.line0 norm = {"text":"PASTA","box":{"x":0.12641083521444696,"y":0.3185763888888889,"width":0.09443190368698269,"height":0.01423611111111111}}
+ LOG  [ocr] block19.line0 raw = {"text":"멜팅 스테이크 파스타","frame":{"top":2013,"width":455,"height":79,"left":334}}
+ LOG  [ocr] block19.line0 norm = {"text":"멜팅 스테이크 파스타","box":{"x":0.1256583897667419,"y":0.3494791666666667,"width":0.17118133935289692,"height":0.013715277777777778}}
+ LOG  [ocr] block20.line0 raw = {"text":"Melting Steak Pasta","frame":{"top":2071,"width":392,"height":69,"left":334}}
+ LOG  [ocr] block20.line0 norm = {"text":"Melting Steak Pasta","box":{"x":0.1256583897667419,"y":0.35954861111111114,"width":0.1474793077501881,"height":0.011979166666666667}}
+ LOG  [ocr] block21.line0 raw = {"text":"베이컨 까르보나라","frame":{"top":2219,"width":386,"height":74,"left":336}}
+ LOG  [ocr] block21.line0 norm = {"text":"베이컨 까르보나라","box":{"x":0.12641083521444696,"y":0.38524305555555555,"width":0.145221971407073,"height":0.012847222222222222}}
+ LOG  [ocr] block22.line0 raw = {"text":"Bacon Carbonara","frame":{"top":2271,"width":341,"height":69,"left":333}}
+ LOG  [ocr] block22.line0 norm = {"text":"Bacon Carbonara","box":{"x":0.1252821670428894,"y":0.39427083333333335,"width":0.12829194883370956,"height":0.011979166666666667}}
+ LOG  [ocr] block23.line0 raw = {"text":"게살오이스터 파스타","frame":{"top":2421,"width":434,"height":67,"left":337}}
+ LOG  [ocr] block23.line0 norm = {"text":"게살오이스터 파스타","box":{"x":0.12678705793829947,"y":0.4203125,"width":0.163280662151994,"height":0.011631944444444445}}
+ LOG  [ocr] block23.line1 raw = {"text":"Crab Oyster Pasta","frame":{"top":2476,"width":349,"height":58,"left":334}}
+ LOG  [ocr] block23.line1 norm = {"text":"Crab Oyster Pasta","box":{"x":0.1256583897667419,"y":0.42986111111111114,"width":0.1313017306245297,"height":0.010069444444444445}}
+ LOG  [ocr] block24.line0 raw = {"text":"해산물 크림 파스타","frame":{"top":2614,"width":390,"height":61,"left":334}}
+ LOG  [ocr] block24.line0 norm = {"text":"해산물 크림 파스타","box":{"x":0.1256583897667419,"y":0.45381944444444444,"width":0.14672686230248308,"height":0.010590277777777778}}
+ LOG  [ocr] block24.line1 raw = {"text":"Seafood Cream Pasta","frame":{"top":2666,"width":412,"height":60,"left":335}}
+ LOG  [ocr] block24.line1 norm = {"text":"Seafood Cream Pasta","box":{"x":0.12603461249059444,"y":0.46284722222222224,"width":0.15500376222723852,"height":0.010416666666666666}}
+ LOG  [ocr] block25.line0 raw = {"text":"해산물 토마토 파스타","frame":{"top":2803,"width":468,"height":74,"left":333}}
+ LOG  [ocr] block25.line0 norm = {"text":"해산물 토마토 파스타","box":{"x":0.1252821670428894,"y":0.48663194444444446,"width":0.17607223476297967,"height":0.012847222222222222}}
+ LOG  [ocr] block25.line1 raw = {"text":"Seafood Tomato Pasta","frame":{"top":2852,"width":433,"height":69,"left":334}}
+ LOG  [ocr] block25.line1 norm = {"text":"Seafood Tomato Pasta","box":{"x":0.1256583897667419,"y":0.4951388888888889,"width":0.16290443942814145,"height":0.011979166666666667}}
+ LOG  [ocr] block26.line0 raw = {"text":"RISOTTO","frame":{"top":3041,"width":322,"height":74,"left":338}}
+ LOG  [ocr] block26.line0 norm = {"text":"RISOTTO","box":{"x":0.127163280662152,"y":0.5279513888888889,"width":0.12114371708051166,"height":0.012847222222222222}}
+ LOG  [ocr] block27.line0 raw = {"text":"게살오이스터 리조또","frame":{"top":3189,"width":420,"height":61,"left":335}}
+ LOG  [ocr] block27.line0 norm = {"text":"게살오이스터 리조또","box":{"x":0.12603461249059444,"y":0.5536458333333333,"width":0.1580135440180587,"height":0.010590277777777778}}
+ LOG  [ocr] block28.line0 raw = {"text":"arab Oyster Risotto","frame":{"top":3240,"width":365,"height":58,"left":331}}
+ LOG  [ocr] block28.line0 norm = {"text":"arab Oyster Risotto","box":{"x":0.12452972159518434,"y":0.5625,"width":0.13732129420617006,"height":0.010069444444444445}}
+ LOG  [ocr] block29.line0 raw = {"text":"베이컨 크림 리조또","frame":{"top":3370,"width":373,"height":55,"left":335}}
+ LOG  [ocr] block29.line0 norm = {"text":"베이컨 크림 리조또","box":{"x":0.12603461249059444,"y":0.5850694444444444,"width":0.1403310759969902,"height":0.009548611111111112}}
+ LOG  [ocr] block29.line1 raw = {"text":"Bacon Cream Risotto","frame":{"top":3421,"width":383,"height":48,"left":331}}
+ LOG  [ocr] block29.line1 norm = {"text":"Bacon Cream Risotto","box":{"x":0.12452972159518434,"y":0.5939236111111111,"width":0.14409330323551542,"height":0.008333333333333333}}
+ LOG  [ocr] block30.line0 raw = {"text":"해산물 토마토 리조또","frame":{"top":3546,"width":421,"height":57,"left":329}}
+ LOG  [ocr] block30.line0 norm = {"text":"해산물 토마토 리조또","box":{"x":0.12377727614747931,"y":0.615625,"width":0.15838976674191121,"height":0.009895833333333333}}
+ LOG  [ocr] block30.line1 raw = {"text":"Seafood Tomato Risotto","frame":{"top":3597,"width":440,"height":51,"left":332}}
+ LOG  [ocr] block30.line1 norm = {"text":"Seafood Tomato Risotto","box":{"x":0.12490594431903687,"y":0.6244791666666667,"width":0.1655379984951091,"height":0.008854166666666666}}
+ LOG  [ocr] block31.line0 raw = {"text":"김치리조또","frame":{"top":3716,"width":226,"height":63,"left":329}}
+ LOG  [ocr] block31.line0 norm = {"text":"김치리조또","box":{"x":0.12377727614747931,"y":0.6451388888888889,"width":0.08502633559066967,"height":0.0109375}}
+ LOG  [ocr] block31.line1 raw = {"text":"Kimchi Risotto","frame":{"top":3768,"width":249,"height":46,"left":329}}
+ LOG  [ocr] block31.line1 norm = {"text":"Kimchi Risotto","box":{"x":0.12377727614747931,"y":0.6541666666666667,"width":0.09367945823927765,"height":0.00798611111111111}}
+ LOG  [ocr] block32.line0 raw = {"text":"17.0","frame":{"top":2113,"width":97,"height":46,"left":2073}}
+ LOG  [ocr] block32.line0 norm = {"text":"17.0","box":{"x":0.7799097065462754,"y":0.3668402777777778,"width":0.036493604213694505,"height":0.00798611111111111}}
+ LOG  [ocr] block33.line0 raw = {"text":"17.0","frame":{"top":2264,"width":99,"height":49,"left":1068}}
+ LOG  [ocr] block33.line0 norm = {"text":"17.0","box":{"x":0.4018058690744921,"y":0.39305555555555555,"width":0.03724604966139955,"height":0.008506944444444444}}
+ LOG  [ocr] block34.line0 raw = {"text":"17.0","frame":{"top":2315,"width":97,"height":45,"left":2053}}
+ LOG  [ocr] block34.line0 norm = {"text":"17.0","box":{"x":0.7723852520692249,"y":0.4019097222222222,"width":0.036493604213694505,"height":0.0078125}}
+ LOG  [ocr] block35.line0 raw = {"text":"17.0","frame":{"top":2462,"width":99,"height":48,"left":1060}}
+ LOG  [ocr] block35.line0 norm = {"text":"17.0","box":{"x":0.39879608728367194,"y":0.42743055555555554,"width":0.03724604966139955,"height":0.008333333333333333}}
+ LOG  [ocr] block36.line0 raw = {"text":"17.0","frame":{"top":2512,"width":97,"height":47,"left":2033}}
+ LOG  [ocr] block36.line0 norm = {"text":"17.0","box":{"x":0.7648607975921745,"y":0.4361111111111111,"width":0.036493604213694505,"height":0.008159722222222223}}
+ LOG  [ocr] block37.line0 raw = {"text":"17.0","frame":{"top":2654,"width":96,"height":45,"left":1055}}
+ LOG  [ocr] block37.line0 norm = {"text":"17.0","box":{"x":0.3969149736644093,"y":0.46076388888888886,"width":0.03611738148984198,"height":0.0078125}}
+ LOG  [ocr] block38.line0 raw = {"text":"17.0","frame":{"top":2842,"width":95,"height":46,"left":1048}}
+ LOG  [ocr] block38.line0 norm = {"text":"17.0","box":{"x":0.3942814145974417,"y":0.4934027777777778,"width":0.03574115876598947,"height":0.00798611111111111}}
+ LOG  [ocr] block39.line0 raw = {"text":"SALAD","frame":{"top":3087,"width":233,"height":65,"left":1308}}
+ LOG  [ocr] block39.line0 norm = {"text":"SALAD","box":{"x":0.49209932279909707,"y":0.5359375,"width":0.08765989465763732,"height":0.011284722222222222}}
+ LOG  [ocr] block40.line0 raw = {"text":"연어 샐러드","frame":{"top":3229,"width":244,"height":59,"left":1295}}
+ LOG  [ocr] block40.line0 norm = {"text":"연어 샐러드","box":{"x":0.4872084273890143,"y":0.5605902777777778,"width":0.09179834462001504,"height":0.010243055555555556}}
+ LOG  [ocr] block40.line1 raw = {"text":"Salmon Salad","frame":{"top":3285,"width":241,"height":43,"left":1297}}
+ LOG  [ocr] block40.line1 norm = {"text":"Salmon Salad","box":{"x":0.48796087283671935,"y":0.5703125,"width":0.09066967644845748,"height":0.007465277777777778}}
+ LOG  [ocr] block41.line0 raw = {"text":"치킨텐더 샐러드","frame":{"top":3408,"width":322,"height":63,"left":1285}}
+ LOG  [ocr] block41.line0 norm = {"text":"치킨텐더 샐러드","box":{"x":0.4834462001504891,"y":0.5916666666666667,"width":0.12114371708051166,"height":0.0109375}}
+ LOG  [ocr] block41.line1 raw = {"text":"Chicken Tender Salad","frame":{"top":3460,"width":394,"height":51,"left":1283}}
+ LOG  [ocr] block41.line1 norm = {"text":"Chicken Tender Salad","box":{"x":0.48269375470278403,"y":0.6006944444444444,"width":0.14823175319789314,"height":0.008854166666666666}}
+ LOG  [ocr] block42.line0 raw = {"text":"리코타그린 샐러드","frame":{"top":3584,"width":356,"height":58,"left":1277}}
+ LOG  [ocr] block42.line0 norm = {"text":"리코타그린 샐러드","box":{"x":0.48043641835966894,"y":0.6222222222222222,"width":0.13393528969149737,"height":0.010069444444444445}}
+ LOG  [ocr] block42.line1 raw = {"text":"Ricotta Green Salad","frame":{"top":3636,"width":351,"height":49,"left":1276}}
+ LOG  [ocr] block42.line1 norm = {"text":"Ricotta Green Salad","box":{"x":0.4800601956358164,"y":0.63125,"width":0.13205417607223477,"height":0.008506944444444444}}
+ LOG  [ocr] block43.line0 raw = {"text":"드추가","frame":{"top":3756,"width":227,"height":81,"left":1263}}
+ LOG  [ocr] block43.line0 norm = {"text":"드추가","box":{"x":0.4751693002257336,"y":0.6520833333333333,"width":0.0854025583145222,"height":0.0140625}}
+ LOG  [ocr] block44.line0 raw = {"text":"alãd","frame":{"top":3816,"width":73,"height":24,"left":1287}}
+ LOG  [ocr] block44.line0 norm = {"text":"alãd","box":{"x":0.48419864559819414,"y":0.6625,"width":0.02746425884123401,"height":0.004166666666666667}}
+ LOG  [ocr] block45.line0 raw = {"text":"17.5","frame":{"top":3221,"width":93,"height":42,"left":1032}}
+ LOG  [ocr] block45.line0 norm = {"text":"17.5","box":{"x":0.38826185101580135,"y":0.5592013888888889,"width":0.034988713318284424,"height":0.007291666666666667}}
+ LOG  [ocr] block46.line0 raw = {"text":"12.5","frame":{"top":3266,"width":92,"height":42,"left":1969}}
+ LOG  [ocr] block46.line0 norm = {"text":"12.5","box":{"x":0.7407825432656132,"y":0.5670138888888889,"width":0.0346124905944319,"height":0.007291666666666667}}
+ LOG  [ocr] block47.line0 raw = {"text":"16.5","frame":{"top":3400,"width":91,"height":40,"left":1026}}
+ LOG  [ocr] block47.line0 norm = {"text":"16.5","box":{"x":0.3860045146726862,"y":0.5902777777777778,"width":0.03423626787057938,"height":0.006944444444444444}}
+ LOG  [ocr] block48.line0 raw = {"text":"12.5","frame":{"top":3443,"width":93,"height":43,"left":1953}}
+ LOG  [ocr] block48.line0 norm = {"text":"12.5","box":{"x":0.7347629796839729,"y":0.5977430555555555,"width":0.034988713318284424,"height":0.007465277777777778}}
+ LOG  [ocr] block49.line0 raw = {"text":"16.5","frame":{"top":3574,"width":93,"height":42,"left":1017}}
+ LOG  [ocr] block49.line0 norm = {"text":"16.5","box":{"x":0.38261851015801357,"y":0.6204861111111111,"width":0.034988713318284424,"height":0.007291666666666667}}
+ LOG  [ocr] block50.line0 raw = {"text":"12.5","frame":{"top":3617,"width":91,"height":44,"left":1940}}
+ LOG  [ocr] block50.line0 norm = {"text":"12.5","box":{"x":0.7298720842738902,"y":0.6279513888888889,"width":0.03423626787057938,"height":0.007638888888888889}}
+ LOG  [ocr] block51.line0 raw = {"text":"15,5","frame":{"top":3750,"width":90,"height":39,"left":1011}}
+ LOG  [ocr] block51.line0 norm = {"text":"15,5","box":{"x":0.3803611738148984,"y":0.6510416666666666,"width":0.033860045146726865,"height":0.0067708333333333336}}
+ LOG  [ocr] block52.line0 raw = {"text":"4.5","frame":{"top":3792,"width":70,"height":41,"left":1941}}
+ LOG  [ocr] block52.line0 norm = {"text":"4.5","box":{"x":0.7302483069977427,"y":0.6583333333333333,"width":0.02633559066967645,"height":0.007118055555555555}}
+ LOG  [ocr] block53.line0 raw = {"text":"Q","frame":{"top":4829,"width":59,"height":59,"left":246}}
+ LOG  [ocr] block53.line0 norm = {"text":"Q","box":{"x":0.09255079006772009,"y":0.8383680555555556,"width":0.02219714070729872,"height":0.010243055555555556}}
+ LOG  [ocr] block54.line0 raw = {"text":"F4","frame":{"top":4959,"width":53,"height":32,"left":219}}
+ LOG  [ocr] block54.line0 norm = {"text":"F4","box":{"x":0.08239277652370203,"y":0.8609375,"width":0.0199398043641836,"height":0.005555555555555556}}
+ LOG  [ocr] block55.line0 raw = {"text":"K","frame":{"top":4853,"width":49,"height":54,"left":631}}
+ LOG  [ocr] block55.line0 norm = {"text":"K","box":{"x":0.23739653875094055,"y":0.8425347222222223,"width":0.018434913468773514,"height":0.009375}}
+ LOG  [ocr] block56.line0 raw = {"text":"DI|","frame":{"top":4894,"width":89,"height":51,"left":1744}}
+ LOG  [ocr] block56.line0 norm = {"text":"DI|","box":{"x":0.6561324303987961,"y":0.8496527777777778,"width":0.03348382242287434,"height":0.008854166666666666}}
+ LOG  [ocr] block57.line0 raw = {"text":"F8","frame":{"top":5020,"width":53,"height":34,"left":1775}}
+ LOG  [ocr] block57.line0 norm = {"text":"F8","box":{"x":0.6677953348382242,"y":0.8715277777777778,"width":0.0199398043641836,"height":0.005902777777777778}}
+ LOG  [ocr] block58.line0 raw = {"text":"F5","frame":{"top":4976,"width":51,"height":34,"left":611}}
+ LOG  [ocr] block58.line0 norm = {"text":"F5","box":{"x":0.22987208427389014,"y":0.8638888888888889,"width":0.019187358916478554,"height":0.005902777777777778}}
+ LOG  [ocr] block59.line0 raw = {"text":"F6","frame":{"top":4992,"width":51,"height":34,"left":1002}}
+ LOG  [ocr] block59.line0 norm = {"text":"F6","box":{"x":0.37697516930022573,"y":0.8666666666666667,"width":0.019187358916478554,"height":0.005902777777777778}}
+ LOG  [ocr] block60.line0 raw = {"text":"F10","frame":{"top":5041,"width":77,"height":34,"left":2526}}
+ LOG  [ocr] block60.line0 norm = {"text":"F10","box":{"x":0.9503386004514672,"y":0.8751736111111111,"width":0.028969149736644093,"height":0.005902777777777778}}
+ LOG  [ocr] block61.line0 raw = {"text":"%","frame":{"top":5167,"width":54,"height":58,"left":371}}
+ LOG  [ocr] block61.line0 norm = {"text":"%","box":{"x":0.13957863054928518,"y":0.8970486111111111,"width":0.020316027088036117,"height":0.010069444444444445}}
+ LOG  [ocr] block62.line0 raw = {"text":"5","frame":{"top":5295,"width":65,"height":84,"left":337}}
+ LOG  [ocr] block62.line0 norm = {"text":"5","box":{"x":0.12678705793829947,"y":0.9192708333333334,"width":0.024454477050413845,"height":0.014583333333333334}}
+ LOG  [ocr] block63.line0 raw = {"text":"6","frame":{"top":5312,"width":61,"height":85,"left":761}}
+ LOG  [ocr] block63.line0 norm = {"text":"6","box":{"x":0.28630549285176826,"y":0.9222222222222223,"width":0.02294958615500376,"height":0.014756944444444444}}
+ LOG  [ocr] block64.line0 raw = {"text":"&","frame":{"top":5201,"width":50,"height":55,"left":1191}}
+ LOG  [ocr] block64.line0 norm = {"text":"&","box":{"x":0.44808126410835214,"y":0.9029513888888889,"width":0.018811136192626036,"height":0.009548611111111112}}
+ LOG  [ocr] block64.line1 raw = {"text":"7","frame":{"top":5328,"width":55,"height":81,"left":1184}}
+ LOG  [ocr] block64.line1 norm = {"text":"7","box":{"x":0.4454477050413845,"y":0.925,"width":0.02069224981188864,"height":0.0140625}}
+ LOG  [ocr] block65.line0 raw = {"text":"8","frame":{"top":5339,"width":64,"height":86,"left":1598}}
+ LOG  [ocr] block65.line0 norm = {"text":"8","box":{"x":0.6012039127163281,"y":0.9269097222222222,"width":0.024078254326561323,"height":0.014930555555555556}}
+ LOG  [ocr] block66.line0 raw = {"text":"9","frame":{"top":5351,"width":62,"height":86,"left":2013}}
+ LOG  [ocr] block66.line0 norm = {"text":"9","box":{"x":0.7573363431151241,"y":0.9289930555555556,"width":0.023325808878856283,"height":0.014930555555555556}}
+ LOG  [ocr] block67.line0 raw = {"text":"7 R","frame":{"top":5555,"width":183,"height":97,"left":35}}
+ LOG  [ocr] block67.line0 norm = {"text":"7 R","box":{"x":0.013167795334838224,"y":0.9644097222222222,"width":0.06884875846501129,"height":0.016840277777777777}}
+ LOG  [ocr] block68.line0 raw = {"text":"T","frame":{"top":5570,"width":77,"height":115,"left":582}}
+ LOG  [ocr] block68.line0 norm = {"text":"T","box":{"x":0.21896162528216703,"y":0.9670138888888888,"width":0.028969149736644093,"height":0.019965277777777776}}
+ LOG  [ocr] block69.line0 raw = {"text":"U","frame":{"top":5607,"width":73,"height":98,"left":1481}}
+ LOG  [ocr] block69.line0 norm = {"text":"U","box":{"x":0.5571858540255832,"y":0.9734375,"width":0.02746425884123401,"height":0.017013888888888887}}
+ LOG  [ocr] total usable lines = 83
+ LOG  [scan] segmented dishes = 17 | origins = 0
+ LOG  [scan] sending dishNames = ["라이프치희하무스","토마토 미트 치즈피자","불고구마피자","게살 치즈 피자","멜팅 스테이크 파스타","베이컨 까르보나라","게살오이스터 파스타","해산물 크림 파스타","해산물 토마토 파스타","게살오이스터 리조또","베이컨 크림 리조또","해산물 토마토 리조또","김치리조또","연어 샐러드","치킨텐더 샐러드","리코타그린 샐러드","드추가"]
+ LOG  [scan] upload-url issued | key = dev/images/scan/2026/07/5/ac91aed4-6001-43af-8b4e-b66db586900c.jpg
+ LOG  [scan] image upload complete | path = dev/images/scan/2026/07/5/ac91aed4-6001-43af-8b4e-b66db586900c.jpg
+ LOG  [scan] POST /scans | items = 17 | imagePath = dev/images/scan/2026/07/5/ac91aed4-6001-43af-8b4e-b66db586900c.jpg
+ LOG  [scan] degraded = false | results = [{"name":"멜팅 스테이크 파스타","matched":false,"risk":"unable","price":17000},{"name":"베이컨 까르보나라","matched":false,"risk":"unable","price":17000},{"name":"게살오이스터 파스타","matched":false,"risk":"unable","price":17000},{"name":"해산물 크림 파스타","matched":false,"risk":"unable","price":17000},{"name":"해산물 토마토 파스타","matched":false,"risk":"unable","price":17000},{"name":"게살오이스터 리조또","matched":false,"risk":"unable","price":17500},{"name":"베이컨 크림 리조또","matched":false,"risk":"unable","price":16500},{"name":"해산물 토마토 리조또","matched":false,"risk":"unable","price":16500},{"name":"김치리조또","matched":false,"risk":"unable","price":15500},{"name":"연어 샐러드","matched":false,"risk":"unable","price":12500},{"name":"치킨텐더 샐러드","matched":false,"risk":"unable","price":12500},{"name":"리코타그린 샐러드","matched":false,"risk":"unable","price":12500},{"name":"샐러드 추가","matched":false,"risk":"unable","price":4500}] | photoOnly = 0
+ ```
+
+
+- **[커맨드 센터 7/20 — 4번 로그 미출력]** 버그 아닐 가능성 높음 — 정리 로직은 "스캔 직후"가 아니라 **사진이 화면에서 사라지는 순간** 동작 (결과 오버레이가 사진을 배경으로 쓰는 중이라). 트리거: ① 같은 화면에서 "다시 스캔" 재촬영 순간(이전 파일) ② 스캔 화면 이탈 순간(현재 파일). **정확한 재현**: 스캔→결과→화면 안에서 재촬영 → 그 순간 로그 1회. 이렇게 재시도 후에도 안 뜨면 ⚠️.
+- **[커맨드 센터 7/20 — 로그에서 추가 발견 ⚠️]** 17개 전송→13개 응답: 상호명 제외는 정당하나 **피자 3종(토마토 미트 치즈/불고구마/게살 치즈)이 진짜 메뉴인데 서버 LLM이 비음식 오판으로 제외** → FE 드롭 규칙상 사용자에게 판정이 안 보임. "제외 오판=FE 방어 불가" 경로의 실증 — 종한에게 사례 공유(예진, imagePath 포함 문구 전달함). 보수화(애매→UNKNOWN) 배포 후 동일 메뉴판 재스캔으로 재확인 예정. (부수: "드추가"→"샐러드 추가" LLM 보정은 잘 동작)
 
 ## Q-05 ⬜ Keychain 재설치 (→ KB-152 완료 게이트)
 
