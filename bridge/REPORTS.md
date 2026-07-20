@@ -7,6 +7,23 @@
 
 ---
 
+## [P-017] KB-176 Android 첫 빌드 — 공기계 스모크 apk (2026-07-20)
+
+**빌드 성공** (첫 빌드 ~26분, 콜드 캐시) · **코드 무변경** (PROGRESS 기록만 `0e9f884`)
+
+### 예진 설치·후속 작업
+- **설치**: [빌드 페이지(QR)](https://expo.dev/accounts/rocher/projects/kbap/builds/00ba0336-8fcf-45d0-b6de-505e6c4bc64b) — 공기계 브라우저로 열어 Install / [apk 직링크](https://expo.dev/artifacts/eas/i7TZ7TsjquTfoCclaxe6SFybG-RFcPk-b98pQR-yoPM.apk) (184MB)
+- **⚠️ 구글 로그인 사전 작업**: EAS keystore SHA-1을 Firebase 콘솔(Android 앱 com.rocher.kbap)에 등록해야 동작 —
+  `SHA1: D2:F7:2B:1A:F4:5C:C4:23:13:18:CB:98:D4:65:7D:6D:F8:2A:A3:35`
+  (SHA256: 39:45:A3:20:B4:F5:72:D4:51:34:C4:72:F4:C3:11:71:EA:6F:F4:A8:D2:32:06:77:A3:63:78:01:53:E4:35:94 — App Check용 대비 병기)
+- 애플 로그인 버튼은 Android **미노출이 정상** (appleAvailable = iOS 전용, 기구현 확인)
+
+### 판단·특이사항
+1. **eas.json 무변경**: preview(distribution: internal)는 Android 기본 산출물이 apk — buildType 명시는 동작 동일하면서 **eas.json이 fingerprint 소스라 다음 iOS OTA에 eas.json 스왑 부담 추가**(스킬 3-1 함정 계열) → 생략 판단, 산출물 `.apk` 확장자로 검증 완료
+2. 사전 점검 통과: google-services.json 존재(Firebase Android 기등록) — 즉시 보고 사유 없음
+3. keystore EAS 자동 생성(Build Credentials 3TdEsf5DKE) · preview 채널/브랜치 자동 생성됨
+4. SHA-1 추출은 `eas credentials`가 인터랙티브라 **apk v2 서명 블록 직접 파싱**으로 확보(비대화형)
+
 ## [OPS] 프로덕션 OTA 발행 — P-011~P-016 묶음 테플 배포 (2026-07-20)
 
 **요청 경로**: 예진 직접 지시. **결과**: iOS 정상 발행, runtime `8d0d5504`(설치 빌드 일치), update `019f7de6-afc5`. [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/7a6cb4e2-fc8a-4882-8897-eba653416b06)
