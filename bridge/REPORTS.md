@@ -7,6 +7,25 @@
 
 ---
 
+## [P-007] KB-174 공통 상태 UI — false-empty 제거 (2026-07-20)
+
+**커밋**: `9d64f43` (main) · **검증**: tsc 0 · jest 116/116 (20 suites, +6 tests)
+
+### 핵심 발견
+J 시리즈 원자(StateBlock·SkeletonList·아이콘·states.* i18n ×10)는 **이미 전부 구현돼 있었음** (states.tsx 카탈로그 화면 포함) — 문제는 화면 미적용. 신규 i18n 문구 0건(패리티 스크립트 검증), 순수 배선 작업으로 수렴.
+
+### 작업 결과
+1. **공용 렌더 1개**: `QueryErrorBlock` — J3(err 톤, Try again[+Go back]) / J4(오프라인, Retry) 분기. 화면별 복붙 없음
+2. **오프라인 판별(JS-only, 리빌드 회피)**: 공용 클라이언트가 fetch 거부에 붙이는 `NETWORK:` 프리픽스 = J4, 서버 응답 4xx/5xx = J3. 한계(연결 있으나 DNS만 죽는 경우 offline 묶임) 주석 명시 — 정밀 판별은 NetInfo 도입(리빌드) 때
+3. **적용**: 홈 — isError 분기 신설(**7/20 장애의 false-empty 그 경로 제거**) · 음식 탭 — 자체 에러 블록을 공용으로 교체(오프라인 분기 획득) · 프로필 — 로딩 스켈레톤+에러 블록(백지 제거) · 음식 상세 — 톤 통일+Go back. Try again은 해당 쿼리 `refetch()`만(전면 invalidate 아님)
+4. 빈 상태("아직 스캔이 없어요")는 **성공+0건일 때만** — 테스트로 잠금
+
+### 테스트 (신규 6건 — 탭 풀스크린 렌더)
+홈 에러→J3+빈상태 미렌더(false-empty 잠금) / 홈 성공 0건→빈 상태(오버슈트 방지) / NETWORK→J4 / 음식 탭 에러→J3 / 프로필 에러→J3 / 프로필 로딩→스켈레톤
+
+### 실기기 확인 포인트 (DoD 그대로)
+기내모드: 세 탭 모두 J4+Retry 동작 / BE 5xx(재현 시): 세 탭 J3+Try again 재요청 / 정상 0건 계정: 기존 빈 상태 유지. ※ JS-only — OTA 가능(스왑)
+
 ## [OPS] 프로덕션 OTA 발행 — P-006 테플 배포 (2026-07-20)
 
 **요청 경로**: 예진 직접 지시. **결과**: iOS 정상 발행, runtime `8d0d5504`(설치 빌드 일치), update `019f7d42-ac08`. [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/f741357d-00aa-40b5-a571-00c4b8028008)
