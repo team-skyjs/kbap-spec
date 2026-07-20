@@ -7,6 +7,36 @@
 
 ---
 
+## [P-007] ⬜ KB-174 공통 상태 UI — 에러·오프라인·스켈레톤 적용 (디자인 J 시리즈, false-empty 제거)
+
+배경: 7/20 BE `/auth/refresh` 500 장애 때 실기기 확인 — 홈이 에러인데 "아직 스캔이 없어요"(빈 상태)로 표시(**false-empty**), 음식 탭 텅 빈 배경, 프로필 백지. 디자인의 공통 상태 원자가 미적용.
+
+### 디자인 (Claude Design "KLens Hi-Fi Direction G" — J·Common states 시트)
+
+- **J1 Loading**: 스켈레톤 (카드 자리 회색 블록)
+- **J2 Empty**: 아이콘+제목+설명+주 CTA — 진짜 0건일 때만
+- **J3 Error**: ⚠️ 아이콘 + "Something went wrong" + "We couldn't load this right now. It's on our side, not yours." + [Try again] 주버튼 + [Go back] 보조 (탭 루트에선 Go back 생략)
+- **J4 Offline**: 플러그 아이콘 + "You're offline" + 설명 + [Retry] (+ 탭 맥락 보조 CTA)
+- J5 Unable-to-judge: 기구현 위험도 unable 상태와 동일 개념 — 이번 범위에선 확인만
+- 톤·토큰은 기존 Direction G 화면들과 동일 (신규 색·폰트 금지)
+
+### 할 일
+
+1. 공통 상태 컴포넌트 1개(변형 loading/error/offline/empty)로 J1·J3·J4 구현 — 화면별 복붙 금지
+2. 적용: 홈·음식 탭·프로필 탭(+음식 상세는 기존 에러 처리 있으면 톤만 통일). **React Query `isError` 분기 — 에러를 빈 상태로 위장하는 경로 전수 제거** (특히 홈의 "아직 스캔이 없어요"는 데이터가 성공적으로 비었을 때만)
+3. Try again = `refetch()` (전 화면 invalidate 아님 — 해당 쿼리만)
+4. 오프라인 판별: **신규 네이티브 라이브러리 금지** (NetInfo 추가 = 리빌드 → 7/24 전 회피). fetch 실패의 TypeError('Network request failed') 계열 = offline(J4), 서버 응답 있는 5xx/4xx = error(J3)로 JS-only 분류. 정확도 한계는 주석으로
+5. 로딩: 각 탭 첫 로드에 J1 스켈레톤 (기존 스피너 대체는 홈·음식·프로필만, 과확장 금지)
+6. i18n 신규 문구 ×10 로케일
+
+### DoD
+
+- [ ] (기내모드) 세 탭 모두 J4 + Retry 동작 / (서버 5xx — mock으로) 세 탭 J3 + Try again 재요청
+- [ ] 진짜 0건일 때만 빈 상태 — false-empty 경로 제거를 테스트로 잠금 (에러 → 에러 렌더 단언, 탭별)
+- [ ] tsc 0 · jest 통과 · i18n 패리티
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-007].
+
 ## [P-006] ✅ KB-149 후속 — profileImageUrl 전송값 publicUrl → path(objectKey) 교체 (BE 확정 반영) — `28e5bae`
 
 종한 확정(7/16 저녁): ① purpose `PROFILE_IMAGE` 그대로 확정 (BE가 그 값으로 개발) ② **profileImageUrl 필드에는 전체 URL이 아니라 path(objectKey)만 전송** — CDN distribution 교체 대응을 위해 도메인 조합은 백엔드가 담당.
