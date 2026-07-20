@@ -7,6 +7,19 @@
 
 ---
 
+## [P-021] KB-197 Android UI 정리 — 온보딩 CTA 짤림 + 언어 리플 (2026-07-20)
+
+**커밋**: `81deecf` (main) · **검증**: tsc 0 · jest 157/157 · **preview OTA 발행**
+
+### 원인 정정 + 수정
+1. **온보딩 제출 버튼 짤림**: 지시가 가리킨 stickyFoot(restrictions 전용)은 이미 insets 적용 상태였고, **실제 짤린 "제출" 버튼은 마지막 spice 스텝의 in-scroll `foot`**(marginTop:auto, body paddingBottom 28뿐 — 내비바 클리어런스 전무). 안드 edge-to-edge에서 insets.bottom 과소보고(0) 기기 대비 `bottomInset = android ? Math.max(insets.bottom, 48) : insets.bottom` — in-scroll foot 스텝은 body를 `28+bottomInset`, restrictions stickyFoot는 `bottomInset+14`. iOS는 실측값 그대로(무회귀)
+2. **언어 선택 리플**: LanguagePicker row에 브랜드 `android_ripple({color: rgba(226,88,12,0.12)})` 명시(회색 기본 리플이 padding까지 번지던 것 대체) + row `overflow:'hidden'`로 라운드 코너 클립. 선택 상태는 기존 테두리+틴트(rowOn) 무변. **공용 컴포넌트라 프로필 수정·프로필 탭 동시 반영**. iOS는 android_ripple 무시
+
+### preview OTA 발행
+- **Android update `019f7e9c-bb69-76cd`** (runtime `cbbec117` = 공기계 preview 빌드 일치). [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/cba0600c-438b-4a41-a4df-19e832f0abf9)
+- P-020과 동일하게 발행 순간 P-018 이전 에셋(app.json·splash) `096a954~1` 스왑으로 fingerprint 매칭, 후 복원
+- 스타일-only라 신규 테스트 없음(기존 렌더 스위트가 회귀 커버). **예진**: 강제중지→2회 실행 후 온보딩 마지막 스텝 제출 버튼·언어 선택 화면 재확인
+
 ## [P-020] KB-196 Android 구글 로그인 accessToken 누락 (2026-07-20)
 
 **커밋**: `dc984a3` (main) · **검증**: tsc 0 · jest 157/157 (+1) · **preview OTA 발행 완료**

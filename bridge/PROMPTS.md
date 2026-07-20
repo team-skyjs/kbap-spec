@@ -32,7 +32,7 @@ JS-only라 **preview 채널 OTA로 공기계 반영 가능**(재빌드 불요). 
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-020].
 
-## [P-021] 🔄 KB-197 Android UI 정리 — 온보딩 제출 버튼 짤림 + 언어 선택 리플
+## [P-021] ✅ KB-197 Android UI 정리 — 온보딩 제출 버튼 짤림 + 언어 선택 리플 — `81deecf` (preview OTA)
 
 안드 첫 스모크(Q-14) 발견. iOS 정상, 안드만 렌더 이슈 2건. JS-only(스타일) → preview 채널 OTA 가능.
 
