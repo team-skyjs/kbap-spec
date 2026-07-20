@@ -8,6 +8,22 @@
 
 ---
 
+## [P-019] ⬜ KB-195 온보딩 맵기 스킵 = -1 명시 전송 (스웨거 required 승격)
+
+스웨거 재배포(7/20) 대조 결과: `OnboardingRequest.spicinessPreference`가 **required로 승격**. 현행 스킵=필드 생략(P-003)이 서버 검증에 걸리면 온보딩 가입이 400으로 깨진다 — submit.ts의 전환 예약 주석("다르게 저장되는 게 실측되면 -1 명시 전송으로 전환")이 바로 이 시점.
+
+### 할 일
+
+1. `src/lib/onboarding/submit.ts`: 조건부 스프레드 제거 → `spicinessPreference: spiceTolerance !== UNSET ? spiceTolerance : -1` 명시 전송. 예약 주석을 "required 승격으로 전환 완료(7/20)"로 갱신
+2. 로컬 보관(SPICE_KEY)·맵기 UNSET 처리 등 나머지는 무변 — KB-150 -1 센티널 정책 그대로
+3. 테스트: 스킵 payload에 `spicinessPreference: -1` 포함 잠금 (기존 생략 검증 테스트 있으면 교체)
+
+### DoD
+
+- [ ] 스킵 온보딩 body에 -1 포함 · 설정 시 실값 · tsc 0 · jest 통과 (JS-only — OTA 가능 확인)
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-019].
+
 ## [P-018] ✅ KB-194 스플래시 개선 — 태그라인 제거 + 최소 노출/프리페치 게이팅 — `096a954`
 
 실기기 QA Q-07(7/20, 빌드 6): ① 하단 "SCAN · KNOW · EAT" 태그라인이 너무 작아 가독 불가 → **제거 확정** ② 스플래시가 ~0.1초 반짝 후 진입해 렉처럼 보임 → 부트 게이팅 도입.
