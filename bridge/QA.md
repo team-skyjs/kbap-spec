@@ -33,14 +33,15 @@
 - **조치(예진)**: Google Cloud Console → 사용자 인증 정보 → OAuth 2.0 클라이언트 목록에 `Android`(com.rocher.kbap + 그 SHA-1) 존재 확인. 있으면 전파 지연(강제중지 후 재시도) / 없으면 Firebase에서 SHA-1 삭제→재등록으로 재생성 트리거. adb 무선 연결 유지 중 — 재시도 후 code 변화로 진전 판정.
 - **[커맨드 센터 7/20 — 근본 원인 확정]** Cloud Console 확인(프로젝트 k-bap-eb032, 번호 44799256321): OAuth 클라이언트에 **iOS·Web만 있고 Android 유형이 없음**(둘 다 7/10 자동 생성). SHA-1을 Firebase에 넣었지만 Android OAuth 클라이언트가 **자동 생성 안 됨**(SHA 없이 선등록됐던 앱이라 추정) → 구글 서버가 (com.rocher.kbap+SHA-1)를 대조할 대상이 없어 code 10. **해결: Cloud Console에서 Android OAuth 클라이언트 수동 생성**(유형 Android / 패키지 com.rocher.kbap / SHA-1 D2:F7:…:A3:35). 재빌드·json 재다운로드 불요(서버측 검증 전용). 생성→전파 몇 분→앱 강제중지→재시도. 참고: 프로젝트 선택기에서 이름만 비슷한 빈 "kbap" 프로젝트를 잠깐 잘못 봤던 삽화 있음(올바른 건 k-bap-eb032).
 - **[커맨드 센터 7/20 — 콘솔 해결 후 다음 단계]** Android OAuth 클라이언트 수동 생성 후 재시도 → **code 10 소멸**(콘솔 측 해결 완료). 그러나 에러가 `Exception in HostFunction: accessToken cannot be empty`로 전진 = **FE 버그** (자격증명에 idToken만 전달, Android 네이티브는 accessToken도 요구). **KB-196/P-020 등록** — getTokens로 accessToken 병행, preview 채널 OTA. OTA 반영 후 3번 재확인.
-4. 로그인 성공 시: 온보딩 → 홈 → 스캔 1회(OCR — ML Kit Android 동작) → 상세 → 북마크 → 맵기
+4. 로그인 성공 시: 온보딩 → 홈 → 스캔 1회(OCR — ML Kit Android 동작) → 상세 → 북마크 → 맵기 — **P-021 OTA 후 재개**(현재 온보딩 제출 버튼 짤림으로 중단)
 5. 애플 로그인 버튼: Android에서 미노출 또는 무동작이 **정상** — 노출돼 있고 탭 시 크래시하면 ⚠️
-6. 가로 회전: 스캔 가로 잠금은 iOS 전용 콜백 — 안드에서 크래시만 없으면 OK (기능 미동작은 기록만)
+6. 가로 회전: **KB-198/P-022로 대응 확정**(expo-sensors 포팅, 재빌드) — 빌드2 후 "가로로 돌리면 세로 유도 오버레이" 확인
 
 ### 스모크 발견 (커맨드 센터 7/20 — 안드 첫 실기)
 - ✅ 구글 로그인·온보딩 진입·언어 지역화 동작 / ❌ UI 2건:
-  ① 온보딩 제출 버튼이 안드 하단 내비바에 짤림 ② 언어 선택 항목 배경이 안드 리플과 겹쳐 padding까지 번짐 → **KB-197/P-021 등록** (JS-only 스타일, OTA 가능)
-- 가로 회전(6번): expo-camera `responsiveOrientationWhenOrientationLocked`·`onResponsiveOrientationChanged`가 **@platform ios** — 라이브러리가 안드 미구현(안드 한계 아님). 안드는 세로 스캔 유지가 현 정상. 정식 대응 시 expo-sensors로 방향 감지 포팅 = **별도 백로그**(출시 iOS라 비긴급)
+  ① 온보딩 제출 버튼이 안드 하단 내비바에 짤림 ② 언어 선택 항목 배경이 안드 리플과 겹쳐 padding까지 번짐 → **KB-197/P-021 등록** (JS-only 스타일, preview OTA)
+- 가로 회전(6번): expo-camera `responsiveOrientationWhenOrientationLocked`·`onResponsiveOrientationChanged`가 **@platform ios** — 라이브러리가 안드 미구현(안드 한계 아님). **안드도 동시 출시라 대응 필수** → expo-sensors(DeviceMotion) 방향 감지 포팅으로 확정 = **KB-198/P-022**(재빌드 — OTA 불가, 안드 빌드2에 실림). ~~출시 iOS라 비긴급~~ 정정: iOS+안드 동시 출시.
+- ⚠️ **재확인 게이트**: KB-176 완료 전환은 P-021(UI)·P-022(가로) 반영 후 스모크 4번 완주까지 — 지금은 🔄 유지.
 
 ## Q-13 ⬜ 언어 전환 즉시 반영 + 맵기 라벨 (→ KB-187 완료 게이트)
 
@@ -52,6 +53,10 @@
   - **① FE에 race 실존**: LanguagePicker가 `setLang(next)`(→홈 무효화·즉시 재조회)와 `update.mutate({readerLanguage})`(→PATCH appLanguage)를 **동시** 발사하고 200을 안 기다리고 닫음. 서버가 홈을 회원 DB의 appLanguage로 지역화하면, 홈 재조회가 PATCH 커밋보다 먼저 도착할 때 옛 언어를 받음. 음식탭은 lang을 요청에 직접 실어 race 무관 → 두 탭이 갈리는 이유와 정확히 일치. → **FE 수정 여지 있음**(전환 UI는 즉시 닫되 PATCH 200 후 홈 재무효화로 순서 보장).
   - **② 그래도 남는 잔상 = BE**: 재설치 직후 첫 홈(=race 없는 깨끗한 요청)도, PATCH 커밋 한참 뒤 홈 재진입(60s 경과 재조회)도 옛 언어 → 서버가 최신 appLanguage·Accept-Language 둘 다 안 따름 = **/home 서버측 캐시 or lang 미반영**.
   - **처리 방향 미정 → 종한 답 대기**: /home이 **lang 파라미터를 받게 되면** FE는 /foods처럼 홈도 `lang` 명시가 정석(race도 자동 소멸) / 안 받으면 FE는 PATCH 200 후 무효화로 race만 잡고 BE는 캐시 무효화. **답 오면 P-020 등록.** 그 전 P-020 선등록 보류(수정 내용이 답에 따라 갈림).
+- **[커맨드 센터 7/20 — 종한 답변으로 확정]** 종한 확인: ① **서버 캐싱 없음**(②의 "서버 캐시" 가설 폐기) ② **Accept-Language 아무 API도 안 씀**(FE 헤더 무용) ③ /home은 **회원 DB의 appLanguage로 번역**, /foods는 **lang 파라미터로 번역**(비회원 폰 언어 시절 잔재) — 이 비대칭이 원인.
+  - **최종 판정**: 레이스(회원)와 종한 ②번(언어 미설정 회원·비회원 → 영어)이 **한 뿌리** = /home이 요청 언어를 안 받고 DB만 봄. **해결 = /home도 /foods처럼 `lang` 쿼리 파라미터 받기**(BE) + FE가 현재 UI 언어 전송. 두 문제 동시 해결·즉시 전환 유지.
+  - **"PATCH 200까지 로딩" 대안 기각**: 게스트는 PATCH 자체가 없어 ②번 못 고침 + i18n 전환 자체를 네트워크만큼 멈춰야 해 전환 UX 손상. 파라미터 방식이 우월(근거 예진에게 전달함).
+  - **상태**: 종한에게 "/home lang 파라미터 열기" 요청 전달. **BE가 파라미터 열면 FE는 `fetchHome`에 `?lang=` 한 줄(P-021+ 후보)** — BE 선행이라 대기. appLanguage PATCH는 유지(선호 저장용, 표시는 파라미터가 담당).
 
 [환경: 테플 — 847f3d3 포함 OTA 적용 후 (앱 완전 종료→2회 실행). ⚠️ 7/20 1차 확인은 OTA 미탑재 상태였음 — 재확인 필요]
 
