@@ -22,6 +22,13 @@
 1. 설치·실행 → ✅ 크래시 없이 인트로/홈 진입
 2. 게스트 둘러보기: 홈·음식 탭·상세 → ✅ 렌더 정상 (CJK 폰트 = 안드는 Noto 시스템 폰트 — 굵기 위계 확인)
 3. 구글 로그인 시도 → ⚠️ **실패해도 놀라지 말 것** — EAS keystore SHA-1을 Firebase 콘솔에 등록해야 동작 (FE 보고의 SHA-1로 예진이 등록 후 재시도)
+
+### 3번 진단 (커맨드 센터 7/20 — adb logcat 실측)
+- 증상: 계정 선택 시트는 뜨는데 선택 직후 "로그인이 완료되지 않았어요" — SHA-1 등록 후에도 지속
+- **logcat 에러**: `com.google.android.gms.common.api.ApiException: A non-recoverable sign in failure occurred` = **status code 10 (DEVELOPER_ERROR)**
+- 검증: 설치된 apk 서명 SHA-1을 v2 서명 블록에서 직접 추출 → `D2:F7:2B:...:A3:35` = **등록값과 정확히 일치** / google-services.json의 webClientId도 올바른 WEB(type 3) — iOS 동작이 프로젝트·웹클라 유효성 방증
+- **판정**: 설정은 전부 정확 → 남은 원인 = **Android OAuth 클라이언트(type 1, 패키지+SHA-1)가 구글 클라우드에 아직 전파 안 됨 or 미생성**. iOS는 이 검증을 안 거쳐 통과.
+- **조치(예진)**: Google Cloud Console → 사용자 인증 정보 → OAuth 2.0 클라이언트 목록에 `Android`(com.rocher.kbap + 그 SHA-1) 존재 확인. 있으면 전파 지연(강제중지 후 재시도) / 없으면 Firebase에서 SHA-1 삭제→재등록으로 재생성 트리거. adb 무선 연결 유지 중 — 재시도 후 code 변화로 진전 판정.
 4. 로그인 성공 시: 온보딩 → 홈 → 스캔 1회(OCR — ML Kit Android 동작) → 상세 → 북마크 → 맵기
 5. 애플 로그인 버튼: Android에서 미노출 또는 무동작이 **정상** — 노출돼 있고 탭 시 크래시하면 ⚠️
 6. 가로 회전: 스캔 가로 잠금은 iOS 전용 콜백 — 안드에서 크래시만 없으면 OK (기능 미동작은 기록만)
