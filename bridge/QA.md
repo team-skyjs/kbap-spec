@@ -29,6 +29,7 @@
 - 검증: 설치된 apk 서명 SHA-1을 v2 서명 블록에서 직접 추출 → `D2:F7:2B:...:A3:35` = **등록값과 정확히 일치** / google-services.json의 webClientId도 올바른 WEB(type 3) — iOS 동작이 프로젝트·웹클라 유효성 방증
 - **판정**: 설정은 전부 정확 → 남은 원인 = **Android OAuth 클라이언트(type 1, 패키지+SHA-1)가 구글 클라우드에 아직 전파 안 됨 or 미생성**. iOS는 이 검증을 안 거쳐 통과.
 - **조치(예진)**: Google Cloud Console → 사용자 인증 정보 → OAuth 2.0 클라이언트 목록에 `Android`(com.rocher.kbap + 그 SHA-1) 존재 확인. 있으면 전파 지연(강제중지 후 재시도) / 없으면 Firebase에서 SHA-1 삭제→재등록으로 재생성 트리거. adb 무선 연결 유지 중 — 재시도 후 code 변화로 진전 판정.
+- **[커맨드 센터 7/20 — 근본 원인 확정]** Cloud Console 확인(프로젝트 k-bap-eb032, 번호 44799256321): OAuth 클라이언트에 **iOS·Web만 있고 Android 유형이 없음**(둘 다 7/10 자동 생성). SHA-1을 Firebase에 넣었지만 Android OAuth 클라이언트가 **자동 생성 안 됨**(SHA 없이 선등록됐던 앱이라 추정) → 구글 서버가 (com.rocher.kbap+SHA-1)를 대조할 대상이 없어 code 10. **해결: Cloud Console에서 Android OAuth 클라이언트 수동 생성**(유형 Android / 패키지 com.rocher.kbap / SHA-1 D2:F7:…:A3:35). 재빌드·json 재다운로드 불요(서버측 검증 전용). 생성→전파 몇 분→앱 강제중지→재시도. 참고: 프로젝트 선택기에서 이름만 비슷한 빈 "kbap" 프로젝트를 잠깐 잘못 봤던 삽화 있음(올바른 건 k-bap-eb032).
 4. 로그인 성공 시: 온보딩 → 홈 → 스캔 1회(OCR — ML Kit Android 동작) → 상세 → 북마크 → 맵기
 5. 애플 로그인 버튼: Android에서 미노출 또는 무동작이 **정상** — 노출돼 있고 탭 시 크래시하면 ⚠️
 6. 가로 회전: 스캔 가로 잠금은 iOS 전용 콜백 — 안드에서 크래시만 없으면 OK (기능 미동작은 기록만)
