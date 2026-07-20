@@ -8,6 +8,30 @@
 
 ---
 
+## [P-020] ⬜ KB-196 Android 구글 로그인 실패 — accessToken 누락 (getTokens 병행)
+
+안드 공기계 QA(adb logcat 실측): 구글 로그인이 `Exception in HostFunction: accessToken cannot be empty`로 실패. (콘솔 측 SHA-1·Android OAuth 클라이언트는 예진이 해결 — code 10 소멸 확인됨. 이건 순수 FE 버그.)
+
+**원인**: `src/lib/auth/useSocialAuth.ts` signInWithGoogle이 `GoogleAuthProvider.credential(idToken)`으로 **idToken만** 전달. @react-native-firebase **Android 네이티브는 google 자격증명에 accessToken도 요구**(iOS 네이티브는 idToken만으로 통과 → iOS만 동작해왔음). `GoogleSignin.signIn()` 반환엔 accessToken 없음 → `getTokens()`로 받아야 함.
+
+### 할 일
+
+1. signInWithGoogle에서 idToken 확보(`res.data?.idToken`, 기존 가드 유지) 직후:
+   `const { accessToken } = await GoogleSignin.getTokens();`
+   → `await signInWithCredential(getAuth(), GoogleAuthProvider.credential(idToken, accessToken));`
+2. 취소(`type==='cancelled'`)·에러 분기 무변. iOS는 accessToken 추가돼도 무해(회귀 없음)
+3. 테스트: 자격증명 생성에 accessToken 포함되는지 잠금(모킹 수준) — 무리면 생략 가능, tsc/jest 통과가 우선
+
+### 발행 (중요)
+
+JS-only라 **preview 채널 OTA로 공기계 반영 가능**(재빌드 불요). 완료 보고에 `eas update --channel preview` 발행 여부/ID 기재. 예진: 공기계 앱 강제중지→2회 실행 후 재로그인.
+
+### DoD
+
+- [ ] 안드 실기기 구글 로그인 성공(계정 선택→온보딩/홈) · iOS 무회귀 · tsc 0 · jest 통과 · preview OTA 발행
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-020].
+
 ## [P-019] ✅ KB-195 온보딩 맵기 스킵 = -1 명시 전송 (스웨거 required 승격) — `8135d3e`
 
 스웨거 재배포(7/20) 대조 결과: `OnboardingRequest.spicinessPreference`가 **required로 승격**. 현행 스킵=필드 생략(P-003)이 서버 검증에 걸리면 온보딩 가입이 400으로 깨진다 — submit.ts의 전환 예약 주석("다르게 저장되는 게 실측되면 -1 명시 전송으로 전환")이 바로 이 시점.
