@@ -8,7 +8,7 @@
 
 ---
 
-## [P-023] ⬜ 🔴긴급 KB-199 홈 조회 lang 파라미터 — /home?lang= (없으면 홈 400)
+## [P-023] ✅ 🔴긴급 KB-199 홈 조회 lang 파라미터 — /home?lang= (없으면 홈 400) — `005ed31` (preview+production OTA)
 
 🔴 **BE 배포 완료(7/20 밤) — lang이 모든 대상 API에서 *필수*로 승격**(종한: 메뉴리스트·검색·북마크·상세·홈 모두 lang 필수, 미지원 언어=영어). **FE는 /home만 lang 미전송(useHome.ts:32 `api.get('/home')`) → 지금 홈 조회가 400날 상태.** 최우선.
 

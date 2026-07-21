@@ -7,6 +7,19 @@
 
 ---
 
+## [P-023] 🔴긴급 KB-199 홈 lang 파라미터 — /home?lang= (2026-07-21)
+
+**커밋**: `005ed31` (main) · **검증**: tsc 0 · jest 165/165 · **preview + production OTA 발행**
+
+- BE가 lang을 모든 대상 API에서 **필수 승격**(7/20 밤) — /home만 미전송이라 홈 조회가 400날 상태였음. `fetchHome()`을 `/home?lang=${apiLang()}`로(/foods 동일 패턴), apiLang import 추가. bootGate 프리페치 키는 이미 `['home', lang]`이라 정합
+- 표시 언어를 파라미터가 담당 → **Q-13 언어 전환 잔상·게스트/미설정 영어도 동시 해결**(회원 DB appLanguage 기반 → 요청 언어 기반). appLanguage PATCH(선호 저장) 무변
+- 테스트 +1: /home 요청 URL에 lang 포함 잠금
+- **발행 (최우선, 양 채널)**:
+  - preview(공기계): Android update `019f827f-1b3d-7727` (runtime `cbbec117` = build1 일치)
+  - **production(테플)**: iOS update `019f8283-3088-74f7` (runtime `8d0d5504` = 테플 빌드 일치). [대시보드](https://expo.dev/accounts/rocher/projects/kbap/updates/bc302411-001b-4f8a-b3a0-7d927cdad217)
+  - 프로덕션 스왑 = `_photostyle` gitignore 제거 + app.json·splash·package.json·scan.tsx를 pre-P018/P022(`0e9f884`/`eecbe52~1`)로 (fingerprint 8d0d5504 매칭 검증 후) → 발행 → 전량 복원
+- 테스터: 앱 완전 종료 후 재실행 2번 → 홈 정상 로드 + 언어 전환 즉시 반영
+
 ## [P-027] KB-174 후속 — 음식 탭 오프라인 전체화면 에러 (2026-07-20)
 
 **커밋**: `a762280` (main) · **검증**: tsc 0 · jest 164/164 · **preview OTA 발행(build1 호환)**
