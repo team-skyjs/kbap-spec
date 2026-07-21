@@ -51,7 +51,7 @@
 
 **정본: `ui-polish-plan.md` C 섹션(출시 전 표)** — 수량 스테퍼는 P-030에 흡수, **나머지 8종**. kinetics 각 효과의 damping/stiffness 수치를 reanimated withSpring으로 직역(RN-MAPPING.md 치환표). **P-031 후 착수**(공용 press 피드백·reduced-motion 위에 쌓기).
 
-### 할 일 (8종 — 전부 절제 톤: 바운스는 탭/모멘텀 있는 곳만 소량)
+### 할 일 (9종 — 전부 절제 톤: 바운스는 탭/모멘텀 있는 곳만 소량)
 
 1. **칩 팝인/아웃** — 기피 재료 선택·요약 칩 추가/제거 시 scale 팝 (P-026 고정높이 불변 유지)
 2. **Bookmark Toggle** — 북마크 아이콘 채움+드롭인 (상세·목록 공용)
@@ -61,10 +61,11 @@
 6. **Stagger Entrance** — 스캔 결과 리스트 순차 등장(~60ms 스태거) · **reduced-motion 시 생략**
 7. **Step Progress** — 온보딩 스텝 인디케이터 노드 팝
 8. **Shimmer** — 기존 스켈레톤(KB-174)에 스윕 하이라이트
+9. **Quantity Stepper 값 팝** — P-030 주문카드 수량 변경 시 scale 펄스(P-030이 먼저 완료돼 이쪽으로 이관 — 탭 모멘텀 있어 바운스 소량 허용)
 
 ### DoD
 
-- [ ] 8종 적용 · 절제(장식 금지·상시 루프 금지) · reduced-motion 폴백 · 무회귀 · tsc 0 · jest · preview OTA
+- [ ] 9종 적용 · 절제(장식 금지·상시 루프 금지) · reduced-motion 폴백 · 무회귀 · tsc 0 · jest · preview OTA
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-032].
 
