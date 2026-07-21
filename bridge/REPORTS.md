@@ -7,6 +7,17 @@
 
 ---
 
+## [P-039] 🔴 KB-195 재수정 — 맵기 미조작=미설정 (2026-07-21)
+
+**커밋**: `4d3e9d8` (main) · **검증**: tsc 0 · jest 209/209 (+3) · **preview OTA 발행**
+
+- ① `useState(5)` → `useState<number|null>(null)`: **기본 미선택**. 불꽃을 탭해야만 값 확정, 미조작+계속 = UNSET(→body -1, 건너뛰기와 동일)
+- ② 미선택 UI: 큰 숫자 자리 대시(–/10) + "불꽃을 눌러 선택하세요" 힌트(`onboarding.spiceUnsetHint` ×10 — 실제 조작이 불꽃 탭이라 문구도 탭 기준), 불꽃 전열 회색·트랙 노브 미표시 — "기본 5로 보이는 착시" 제거
+- ③ **기저 버그 추가 발견·수정**: 제출식이 `skipped.spice` 플래그를 참조했는데, 같은 탭에서 setState 직후 finish()가 실행되면 closure가 stale — (a) draft 복귀(skipped=true) 후 **조작해도 UNSET 제출**, (b) 조작 후 건너뛰기가 **실값 제출** 경로. 수정: 제출식에서 skipped 제거하고 **값의 null 여부를 단일 진실**로, `finish(spiceFinal)` 인자화로 계속=화면의 그 값/건너뛰기=null을 명시 전달. 조작 즉시 skip 해제(setLevel 래퍼)로 draft 저장도 일관
+- ④ draft null 왕복 유지(`d.spice ?? null`), 명시 건너뛰기 버튼 존치, 프로필 수정 화면 무변
+- 테스트 +3 (onboardingSpiceUnset.test.tsx — draft 직행 하네스): 미조작+계속→UNSET / 불꽃 7 조작+계속→7 / 건너뛰기→UNSET. **UNSET→body -1은 기존 submit.test가 잠금**(체인 완결)
+- **preview OTA**: Android runtime `cbbec117` = build1(스왑 후 복원·트리 클린). **Metro body 실측(DoD)은 예진 확인 요청** — 미조작+계속 시 `spicinessPreference: -1` 나가는지
+
 ## [P-038] KB-212 빈 프로필 첫 스캔 배너 (2026-07-21)
 
 **커밋**: `acedcd1` (main) · **검증**: tsc 0 · jest 206/206 (+4) · **preview OTA 발행**
