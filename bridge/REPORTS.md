@@ -7,6 +7,23 @@
 
 ---
 
+## [P-032] KB-207 UI 폴리시 2 — kinetics 마이크로 인터랙션 (2026-07-21)
+
+**커밋**: `d692bcb` (main) · **검증**: tsc 0 · jest 199/199 (+1) · **preview OTA 발행**
+
+9종 처리 내역 (전부 JS-only·reanimated 기설치분·절제 톤 — 바운스는 탭 모멘텀 있는 곳만 `spring.pop`):
+- ① **칩 팝인/아웃**: IngredientFilter 요약 칩 ZoomIn.springify/ZoomOut — scale 변형이라 **P-026 고정높이 36 불변**(기존 잠금 테스트 통과로 확인)
+- ② **Bookmark Toggle**: StickyHeader 기존 timing 3단 시퀀스 → 움츠림+스프링 팝으로 통일(상세 헤더가 유일한 토글 아이콘 — 목록엔 토글 없음, 저장 목록은 삭제 행)
+- ③ **Tab Pill Glide**: 스캔 세그먼트 — 라벨 폭이 i18n 가변이라 onLayout 실측 → 흰 인디케이터 스프링 글라이드. 첫 배치는 무애니메이션(등장 시 글라이드 금지)
+- ④ **Error Shake**: 공용 `useShake` 훅(감쇠 진동·재트리거) — 로그인 실패(SocialAuthButtons, phase 복귀 기준이라 같은 에러 재시도도 재트리거) + 온보딩 제출 실패
+- ⑤ **Success Check**: `SuccessCheck` 컴포넌트 — SVG strokeDashoffset 체크 드로잉. 온보딩 제출 성공 시 0.9s 오버레이 후 홈 진입(reduced-motion이면 정적 체크)
+- ⑥ **Stagger Entrance**: 스캔 결과 리스트 FadeInDown 60ms 스태거(지연 상한 8행 — 긴 메뉴판에서 총 대기 무한 증가 방지). reduced-motion 시 전역 config가 생략
+- ⑦ **Step Progress**: TopBar 세그먼트 — 새로 채워지는 노드만 팝
+- ⑧ **Shimmer**: **기구현 확인** — P-009 때 sweep 하이라이트가 이미 구현돼 있어 무변(위치: Skeleton.tsx Shimmer). P-031의 ReducedMotionConfig로 reduce-motion 시 루프도 정지
+- ⑨ **Quantity Stepper 값 팝**: 주문카드(P-030에서 이관) — bump 래퍼로 값 변경 시 소량 바운스 펄스
+- 테스트: +1(orderStepper — bump 클램프 1~5·경계 비활성·문장 갱신). 무회귀 = 기존 전 스위트 통과(칩 고정높이·스캔 기본 뷰·CTA 등). 테스트 reanimated mock 표면 2차 보강(9본 공통)
+- **preview OTA**: Android runtime `cbbec117` = build1(스왑 후 복원·트리 클린). ⚠️ 스캔 화면 효과(③⑥)는 OTA 스왑이 scan.tsx를 pre-P022로 되돌리므로 **build1 preview에는 미포함** — 빌드2부터 보임(기존 스캔 스왑 절차의 알려진 트레이드오프, P-012 이후 동일)
+
 ## [P-031] KB-206 UI 폴리시 1 — 대비·큰글씨·press·시트 스프링·reduced-motion (2026-07-21)
 
 **커밋**: `dc7ddd7` (main) · **검증**: tsc 0 · jest 198/198 (+6) · **preview OTA 발행**
