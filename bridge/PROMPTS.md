@@ -27,7 +27,7 @@
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-023].
 
-## [P-029] ⬜ KB-203 프로필 계정 연동 정보 — provider(Apple/Google) 표시
+## [P-029] ✅ KB-203 프로필 계정 연동 정보 — provider(Apple/Google) 표시 — `2633291` (preview OTA)
 
 프로필 탭>수정 최하단 계정 연동 행이 현재 email 라벨+값(`edit.tsx:185-186` `editProfile.email` / `me?.email`)인데, **email은 프로필 계약에 없어 사실상 undefined**(memberAdapter 주석 L12 "email ← 계약에 없음, 소셜 전용"). BE 프로필 응답에 **`provider`(APPLE/GOOGLE) 추가됨** → 연동 수단으로 교체.
 

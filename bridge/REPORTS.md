@@ -7,6 +7,16 @@
 
 ---
 
+## [P-029] KB-203 프로필 계정 연동 — provider 표시 (2026-07-21)
+
+**커밋**: `2633291` (main) · **검증**: tsc 0 · jest 167/167 (+2) · **preview OTA 발행**
+
+- 실측: `MyProfileResponse.provider` required 배포 확인. Wire→adaptProfile→User 매핑(구서버 방어 옵셔널). 기존 email 행은 계약에 없어 항상 undefined 표시였음 — provider 행으로 교체
+- edit.tsx 연동 행: APPLE→`IconApple` / GOOGLE→`IconGoogleG`(**로그인 화면 SVG 재사용** — 신규 에셋 없음, 헌법 준수) / 미지원·누락→IconProfile+중립 폴백("소셜 계정"). `providerLabelKey()` 순수 함수 — 빈 값 금지
+- i18n `linkedVia/linkedApple/linkedGoogle/linkedSocial` ×10
+- 테스트 +2: providerLabelKey 4케이스 + adaptProfile provider 매핑
+- **preview OTA**: Android `019f828b-21bf-7230` (runtime `cbbec117` = build1 일치, build1 호환 스왑 후 복원). production은 검토 통과 후 묶음 발행 권장(긴급 아님). 예진: 프로필>수정 최하단 — 가입 수단대로 Apple/Google 표시
+
 ## [P-023] 🔴긴급 KB-199 홈 lang 파라미터 — /home?lang= (2026-07-21)
 
 **커밋**: `005ed31` (main) · **검증**: tsc 0 · jest 165/165 · **preview + production OTA 발행**
