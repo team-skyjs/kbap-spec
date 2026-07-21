@@ -28,6 +28,46 @@
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-030].
 
+## [P-031] ⬜ KB-206 UI 폴리시 1 — 대비·글자크기·press 피드백·시트 스프링·reduced-motion
+
+**정본: `specs/001-personalized-menu-mvp/ui-polish-plan.md` A·B 섹션 + kbap-fe `.claude/skills/apple-design/`(SKILL.md·RN-MAPPING.md) — 착수 전 필독.** 전부 JS-only(신규 네이티브 금지 — reanimated 4.3 기설치로 충분).
+
+### 할 일 (플랜 A1~3 + B4~6)
+
+1. **대비**: theme `ink3`(#B0A395, 실측 2.28:1) → 4.5:1 목표로 어둡게 or 소형 텍스트 사용처를 ink2로 승격(사용처 전수 후 판단·보고에 방식 명시). 소형 주황(primary on white 3.73:1) 텍스트 점검. **위험도 4색은 불변(헌법 III — 건드리지 말 것)**
+2. **maxFontSizeMultiplier ×1.3**: Txt 컴포넌트에 기본 적용(전 화면 관통) — 시스템 큰글씨에서 고정높이 잘림 방지. 정식 Dynamic Type 대응은 범위 외
+3. **스캔 unmatched 안내 numberOfLines 2** — 안전 행동 지시 말줄임 제거
+4. **press 즉시 피드백**: 공용 Btn/Pressable 계열 onPressIn scale 0.97(withSpring damped) — 릴리스 대기 금지. 개별 화면 산발 구현 말고 **공용 컴포넌트에서**
+5. **시트/모달 등장 스프링**: timing → withSpring(damped, 바운스 0) 통일
+6. **reduced-motion**: reanimated ReducedMotionConfig + 스태거/슬라이드는 크로스페이드 폴백
+
+### DoD
+
+- [ ] A·B 전 항목 · 위험도 4색 불변 · iOS/안드 무회귀 · tsc 0 · jest · preview OTA (프로덕션은 검토 후 묶음)
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-031].
+
+## [P-032] ⬜ KB-207 UI 폴리시 2 — kinetics 마이크로 인터랙션 8종
+
+**정본: `ui-polish-plan.md` C 섹션(출시 전 표)** — 수량 스테퍼는 P-030에 흡수, **나머지 8종**. kinetics 각 효과의 damping/stiffness 수치를 reanimated withSpring으로 직역(RN-MAPPING.md 치환표). **P-031 후 착수**(공용 press 피드백·reduced-motion 위에 쌓기).
+
+### 할 일 (8종 — 전부 절제 톤: 바운스는 탭/모멘텀 있는 곳만 소량)
+
+1. **칩 팝인/아웃** — 기피 재료 선택·요약 칩 추가/제거 시 scale 팝 (P-026 고정높이 불변 유지)
+2. **Bookmark Toggle** — 북마크 아이콘 채움+드롭인 (상세·목록 공용)
+3. **Tab Pill Glide** — 스캔 결과 리스트/리스크/원본 세그먼트 인디케이터 글라이드
+4. **Error Shake** — 로그인 실패·폼 검증 에러, 감쇠 진동·재트리거 가능
+5. **Success Check** — 온보딩 제출 완료 SVG 스트로크 드로잉
+6. **Stagger Entrance** — 스캔 결과 리스트 순차 등장(~60ms 스태거) · **reduced-motion 시 생략**
+7. **Step Progress** — 온보딩 스텝 인디케이터 노드 팝
+8. **Shimmer** — 기존 스켈레톤(KB-174)에 스윕 하이라이트
+
+### DoD
+
+- [ ] 8종 적용 · 절제(장식 금지·상시 루프 금지) · reduced-motion 폴백 · 무회귀 · tsc 0 · jest · preview OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-032].
+
 ## [P-023] ✅ 🔴긴급 KB-199 홈 조회 lang 파라미터 — /home?lang= (없으면 홈 400) — `005ed31` (preview+production OTA)
 
 🔴 **BE 배포 완료(7/20 밤) — lang이 모든 대상 API에서 *필수*로 승격**(종한: 메뉴리스트·검색·북마크·상세·홈 모두 lang 필수, 미지원 언어=영어). **FE는 /home만 lang 미전송(useHome.ts:32 `api.get('/home')`) → 지금 홈 조회가 400날 상태.** 최우선.
