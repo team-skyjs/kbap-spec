@@ -27,6 +27,23 @@
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-023].
 
+## [P-029] ⬜ KB-203 프로필 계정 연동 정보 — provider(Apple/Google) 표시
+
+프로필 탭>수정 최하단 계정 연동 행이 현재 email 라벨+값(`edit.tsx:185-186` `editProfile.email` / `me?.email`)인데, **email은 프로필 계약에 없어 사실상 undefined**(memberAdapter 주석 L12 "email ← 계약에 없음, 소셜 전용"). BE 프로필 응답에 **`provider`(APPLE/GOOGLE) 추가됨** → 연동 수단으로 교체.
+
+### 할 일
+
+1. **provider 매핑 추가**: MyProfileWire에 `provider: string` → `adaptProfile`에서 User로 태우기(현재 nickname·appLanguage만 매핑, provider 누락). User 타입에 `provider?: 'APPLE'|'GOOGLE'|string` 추가
+2. `edit.tsx` 계정 연동 행: **provider에 따라 "Apple로 로그인" / "Google로 로그인"** 표시(+아이콘 — 애플/구글). 아이콘은 SVG(헌법: 기본 이모지 금지). 이메일 행은 값이 없으니 대체(애플 privaterelay는 무의미)
+3. i18n ×10: `editProfile.linkedVia` + `{apple|google}` 라벨(또는 "{provider}로 로그인" 보간). 미지원/누락 provider면 안전한 폴백(빈 값 금지)
+4. 테스트: provider=APPLE→애플 라벨 / GOOGLE→구글 라벨 잠금
+
+### DoD
+
+- [ ] 프로필 수정 최하단이 provider대로(Apple/Google) 표시 · SVG 아이콘 · i18n ×10 · tsc 0 · jest · OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-029].
+
 ## [P-020] ✅ KB-196 Android 구글 로그인 실패 — accessToken 누락 (getTokens 병행) — `dc984a3` (preview OTA 발행)
 
 안드 공기계 QA(adb logcat 실측): 구글 로그인이 `Exception in HostFunction: accessToken cannot be empty`로 실패. (콘솔 측 SHA-1·Android OAuth 클라이언트는 예진이 해결 — code 10 소멸 확인됨. 이건 순수 FE 버그.)
