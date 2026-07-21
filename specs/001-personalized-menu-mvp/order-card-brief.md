@@ -29,7 +29,7 @@
 - 수량 문구: 국·찌개 "1인분" 이슈는 MVP "1개" 통일 (분류 데이터 생기면 개선 — 백로그)
 
 ### 3) 데이터 (전부 기존 — BE 호출 0)
-- 상세 응답: koreanName, overallRiskStatus / 프로필: avoidanceSubstanceCodes(+종교·식이), 코드→ko 라벨은 FE 81종 매핑 재사용
+- 상세 응답: koreanName, overallRiskStatus / 프로필: avoidanceSubstanceCodes(평면 81종 — 종교·식이 별도 코드 없음), 코드→ko 라벨은 FE 81종 매핑 재사용
 - 조사(을/를) 처리: ko 문장 템플릿에서 받침 분기 (FE 유틸)
 
 ## 헌법 체크
