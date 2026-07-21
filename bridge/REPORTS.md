@@ -7,6 +7,16 @@
 
 ---
 
+## [P-042] Q-18 후속 3건 — press 확산 · 스테퍼 위치 · 노드 팝 제거 (2026-07-21)
+
+**커밋**: `1455b96` (main) · **검증**: tsc 0 · jest 212/212 (+1) · **preview OTA 발행**
+
+- ① **press 확산**: 공용 `PressScale` 래퍼 신설(Btn과 동일 프리셋 spring.press·0.97·onPressIn 즉발) 후 생 Pressable 버튼류 전수 적용 — **StickyHeader**(back·search·bell·bookmark·**Sign in pill**), **SubHeader** back, **search** back, **owner/order** close·Done, 주문 **StepBtn**. **제외 판단(과적용 금지)**: 리스트 행/카드 내비(지시), ranking Cta(기존 pressed 배경 반응 보유), 텍스트 링크류(saveLink 등 — 버튼 모양 아님), 시트 내부 요소, 스캔 화면 버튼(OTA 스왑 표면 밖 — 빌드2 합류 시 별도 1건으로)
+- ② **스테퍼 위치**: 주문카드 수량 스테퍼를 문장 아래 → **Done 검정 버튼 바로 위**(foot 내부)로 이동. 문장 내 {n}개 갱신·값 팝 무변 — 기존 orderStepper 잠금 테스트 통과로 확인
+- ③ **스텝 노드 팝 제거**: TopBar Seg를 plain View로 원복(P-032 ⑦ 폐기) — 제거 사유 주석(P-035 기피 칩 선례와 동일 절제 사례). 성공 체크 드로잉(⑤)은 무변 유지
+- 테스트 +1 (uiPolish — PressScale 즉발·복귀 잠금)
+- **preview OTA**: Android runtime `cbbec117` = build1(스왑 후 복원·트리 클린). 프로덕션은 다음 묶음 후보
+
 ## [P-041] 🔴 KB-152 재수정 — 부트 레이스: 정리→프리페치 직렬화 (2026-07-21, 프라이버시)
 
 **커밋**: `3010a8d` (main) · **검증**: tsc 0 · jest 211/211 (+2) · **preview+production 양 채널 OTA 발행**
