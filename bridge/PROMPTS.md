@@ -8,7 +8,7 @@
 
 ---
 
-## [P-038] ⬜ KB-212 빈 프로필 첫 스캔 배너 — 1줄 넛지
+## [P-038] ✅ KB-212 빈 프로필 첫 스캔 배너 — 1줄 넛지 — `acedcd1` (preview OTA)
 
 기획 확정(7/21 — **정본: `specs/001-personalized-menu-mvp/empty-profile-nudge.md`** 필독). 스킵-완료자(기피 0)의 가치 증명 순간(스캔 직후)에 비차단 1줄 배너.
 
