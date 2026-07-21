@@ -7,6 +7,15 @@
 
 ---
 
+## [P-043] KB-176/198/202 — Android 빌드2 (2026-07-21)
+
+**빌드**: `24277e9c` FINISHED · **runtime `f96ae4f7`** · 코드 무변(기록 커밋 `9b1a431`) · keystore 기존 EAS 관리
+
+- **설치**: 빌드 페이지(QR) https://expo.dev/accounts/rocher/projects/kbap/builds/24277e9c-2b9e-401b-853d-353c7fc403ea · apk 직링크 https://expo.dev/artifacts/eas/Km94RGF5sYIm3DeTRYTxLhzFyisKvKVFZMSRohvfwYk.apk
+- **합류분**: expo-sensors 가로 감지(P-022 — 안드 실동작 첫 탑재), WYSIWYG 캡처 크롭(P-025), 스캔 세그먼트 글라이드·스태거(P-032), 빈 프로필 스캔 배너(P-038) + 최신 JS 전량(P-042까지) — 공기계에서 Q-14 잔여 전부 확인 가능
+- **스왑 절차 완전 소멸 선언**: iOS(7/21 빌드7 `c43664ed`)에 이어 Android도 재베이스라인 — **이후 양 채널 OTA는 스왑 없이 발행**. 구 build1(cbbec117)은 orphan — 공기계는 새 apk 재설치가 기준(구 apk 위 OTA는 더 안 감)
+- 세션 메모리의 스왑 절차 노트 2건 삭제(소멸 반영)
+
 ## [P-042] Q-18 후속 3건 — press 확산 · 스테퍼 위치 · 노드 팝 제거 (2026-07-21)
 
 **커밋**: `1455b96` (main) · **검증**: tsc 0 · jest 212/212 (+1) · **preview OTA 발행**
