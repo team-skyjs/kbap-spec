@@ -8,6 +8,22 @@
 
 ---
 
+## [P-043] ⬜ KB-176/198/202 — Android 빌드2 (preview apk, 네이티브 합류분 탑재)
+
+iOS 빌드7 제출·재베이스라인(09093dd, runtime c43664ed) 완료 — **Android만 빌드2 미완**(보고 명시: build1용 preview 스왑이 빌드2 전까지 잔존). 공기계/에뮬 확인 대기분(P-022 가로 감지·P-025 캡처 크롭·P-032 스캔 효과·P-038 스캔 배너)이 전부 이 빌드에 물림.
+
+### 할 일
+
+1. `eas build --platform android --profile preview` — 현 main(재베이스라인 포함)으로. keystore 기존 EAS 관리 그대로
+2. 완료 보고: 빌드 페이지 링크(설치 QR)·apk 직링크·runtime — **이후 preview OTA도 스왑 소멸** 확인 명시
+3. 빌드 완료 후 preview 채널 기준 재정리(구 build1 runtime cbbec117은 orphan 처리 — 공기계는 새 apk 재설치가 기준)
+
+### DoD
+
+- [ ] 안드 빌드2 FINISHED + 설치 경로 보고 · 스왑 절차 완전 소멸 선언 · 예진 공기계/에뮬 재설치 → Q-14 잔여(가로·크롭·스캔 배너·스캔 효과) 확인 가능
+
+완료 시 상태 ✅+커밋 해시(코드 무변이면 기록만), 보고는 REPORTS.md 최상단 [P-043].
+
 ## [P-042] ✅ Q-18 후속 3건 — press 피드백 확산 · 주문카드 스테퍼 위치 · 스텝 노드 팝 제거 — `1455b96` (preview OTA)
 
 Q-18 실기(예진 7/21): 대비·큰글씨·칩 즉시·북마크/스테퍼 펄스·reduced-motion 통과. 후속 3건:
