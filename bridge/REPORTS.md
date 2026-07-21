@@ -7,6 +7,16 @@
 
 ---
 
+## [P-025] KB-202 스캔 캡처 WYSIWYG — 과다 캡처 크롭 (2026-07-21)
+
+**커밋**: `4bf857a` (main) · **검증**: tsc 0 · jest 176/176 (+5) · ⚠️ **OTA 아님 — 재빌드 필요**
+
+- ① `coverCropRect()` 순수 함수 (src/lib/scan/coverCrop.ts): cover 표시 역산 — 사진/뷰 비율 비교로 잘린 축만 중앙 크롭 rect 산출. 비율 이미 일치하면 null(무의미한 JPEG 재인코딩 생략), 무효 치수도 null(크롭 생략이 안전 폴백)
+- ② capture 경로 배선: CameraView `onLayout` 실측 → `takePictureAsync` 직후 `expo-image-manipulator`(SDK 56 새 API manipulate→renderAsync→saveAsync)로 크롭. **업로드·OCR·결과 "원본 사진" 전부 크롭본** — 미리보기 밖은 어디에도 안 감. 원본(과다 캡처)은 크롭 직후 삭제(KB-137 캐시 위생 연장). 오버레이 마커는 preview 정규화 공간이라 크롭 후 정합 유지(무변). iOS·안드 공통. 갤러리 경로는 대상 아님(미리보기 없던 이미지)
+- ③ expo-image-manipulator는 **지연 require** — expo-sensors(P-022) 크래시 선례와 동일 사유. 미탑재 빌드(현행 전 빌드)에선 크롭만 생략하고 스캔 정상 → 재빌드 전 OTA에 섞여도 무해
+- 테스트 +5 (coverCrop.test.ts): 좌우 크롭(4:3 센서×세로 폰) / 상하 크롭 / 비율 일치 null / 무효 입력 null / rect 경계 불변식
+- ⚠️ **발행: OTA 불가** — 네이티브 모듈 추가. **expo-sensors(P-022)와 같은 빌드(안드 빌드2/차기 iOS 빌드)에 배치** 요청. 빌드 발주는 검토 게이트 판단에 맡김. package.json 변경으로 fingerprint 재회전 — 기존 OTA 스왑 절차(package.json+scan.tsx 복원)가 그대로 커버함
+
 ## [P-028] KB-174 후속 — 검색 화면 오프라인 전체화면 J4 (2026-07-21)
 
 **커밋**: `f8ea807` (main) · **검증**: tsc 0 · jest 171/171 (+4) · **preview OTA 발행**
