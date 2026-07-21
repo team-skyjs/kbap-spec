@@ -7,6 +7,16 @@
 
 ---
 
+## [P-034] KB-203 재수정 — 계정 연동 아이콘 공식 로고 (2026-07-21, Q-16 대응)
+
+**커밋**: `46a14d7` (main) · **검증**: tsc 0 · jest 200/200 (+2) · **preview OTA 발행**
+
+- **방식**: 지시의 "export 또는 icons로 이동" 중 **icons.tsx로 이동** 채택 — edit.tsx가 SocialAuthButtons를 import하면 expo-apple-authentication·소셜 인증 훅까지 끌려와 테스트/의존 오염. icons.tsx의 기존 `IconApple`/`IconGoogleG` 스트로크판을 **이름 그대로 공식 로고로 교체**(사용처 코드 무변): 애플 = 필드(채움) 모노크롬 마크(기본 ink), 구글 = 공식 4색 G(브랜드 고정색 — color prop 무시)
+- SocialAuthButtons의 로컬 GoogleG 삭제 → 공용 `IconGoogleG` 사용(**SSOT** — 로그인 버튼과 연동 행이 같은 마크, 경로/색 완전 동일). 로그인 화면 렌더 결과 무변(애플은 OS 네이티브 버튼 그대로)
+- 스트로크판 다른 사용처 전수: edit.tsx 연동 행뿐 → 제거(교체)로 처리. 중립 폴백(IconProfile) 무변
+- 테스트 +2 (brandIcons.test.tsx): 구글 4색 fill을 RNSVG payload로 고정 잠금 + 애플 채움·스트로크 회귀 방지
+- **preview OTA**: Android runtime `cbbec117` = build1 일치(스왑 후 복원·트리 클린). 프로덕션은 다음 묶음 후보
+
 ## [P-033] KB-205 정정 — 주문카드 종교·식이 문단 제거 (2026-07-21)
 
 **커밋**: `e24c664` (main) · **검증**: tsc 0 · jest 198/198 (−1) · 다음 OTA 편승(단독 발행 없음)
