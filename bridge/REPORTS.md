@@ -7,6 +7,18 @@
 
 ---
 
+## [P-031] KB-206 UI 폴리시 1 — 대비·큰글씨·press·시트 스프링·reduced-motion (2026-07-21)
+
+**커밋**: `dc7ddd7` (main) · **검증**: tsc 0 · jest 198/198 (+6) · **preview OTA 발행**
+
+- **A1 대비 — 방식 명시(요청 항목)**: ① `ink3` 토큰을 #B0A395(2.28:1)→**#837363**으로 어둡게 — 사용처 ~40곳 일괄 해결. white(카드 — 소형 텍스트 대부분의 실배경) **4.57:1 ✓**, surface 4.23:1(목표 근접). **전수 후 판단 근거**: 4.5-on-surface까지 어둡게 하면 ink2(#7C6B5E)와 시각 구분이 소멸해 3단 위계가 죽음 — 여기서 절충, 위계는 크기·굵기 담당. ② 소형 주황: 신규 `primaryText`(#c44a08, white 4.85:1) 토큰 추가, **fontSize ≤14 primary 텍스트 19곳 전환**(링크·라벨). 15px+ 디스플레이 숫자·owner/order 카드 34px 메뉴명은 brand primary 유지(대형 텍스트 3:1 충족). ③ **위험도 4색 불변** — 테스트로 hex 고정 잠금
+- **A2**: `Txt`에 maxFontSizeMultiplier **1.3 기본**(명시 prop 우선) — 전 화면이 Txt 경유라 한 곳으로 관통 · **A3**: 스캔 unmatched 안내 numberOfLines 1→2
+- **B4**: 공용 `Btn` — onPressIn **즉시** scale 0.97 damped 스프링(AnimatedPressable, 릴리스 대기 금지). 프리셋은 신규 `src/lib/motion.ts` 일원화(press/sheet/move — apple-design 실측치 직역)
+- **B5**: AuthGateSheet 시트 `SlideInDown.springify()`(바운스 0, backdrop·퇴장은 Modal fade 유지) · Snackbar 등장 스프링+퇴장 페이드 · StickyHeader 숨김/복귀 timing→withSpring. **판단**: LanguagePicker는 OS 네이티브 slide 유지 — 플랫폼 표준 전환이지 우리가 쓴 timing이 아님(재구현 시 퇴장 애니메이션 상실 리스크만 생김)
+- **B6**: 루트 `ReducedMotionConfig(System)` — reduce-motion 시 reanimated 전역 비활성, Modal fade 경로만 남아 크로스페이드 폴백이 자연 성립
+- 테스트 +6 (uiPolish.test.tsx): **WCAG 대비 수식을 테스트에 내장**(ink3·primaryText·ink2 ≥4.5 on card — 토큰 되돌리면 jest가 잡음)·위험도 4색 hex 불변·Txt 1.3 기본/override·press 스프링 즉발. 기존 테스트 9본의 reanimated mock 표면 보강(withSpring·entering 체인 빌더)
+- **preview OTA**: Android runtime `cbbec117` = build1 일치(스왑 후 복원·트리 클린). iOS 그룹은 상시 발생하는 무해 orphan
+
 ## [P-030] KB-205 음식 상세 주문+고지 원카드 (2026-07-21)
 
 **커밋**: `0d7aa99` (main) · **검증**: tsc 0 · jest 192/192 (+16) · **preview OTA 발행** (JS-only 확인)
