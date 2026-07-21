@@ -7,6 +7,17 @@
 
 ---
 
+## [P-028] KB-174 후속 — 검색 화면 오프라인 전체화면 J4 (2026-07-21)
+
+**커밋**: `f8ea807` (main) · **검증**: tsc 0 · jest 171/171 (+4) · **preview OTA 발행**
+
+- ① 오프라인 판정: 프롬프트의 "useFoods().isError 또는 기존 netinfo 훅"에서 — netinfo 훅은 없고(P-007 때 리빌드 회피로 미도입), `useFoods()`는 검색 empty의 인기 블록이 MOCK이라 에러가 안 섬. **음식탭과 같은 live 쿼리 `useInfiniteFoods()`를 프로브로 재사용**(같은 쿼리 키 → 캐시 공유, 추가 트래픽 없음) — P-027과 동일 메커니즘·동일 `classifyQueryError` 분류
+- ② 오프라인(NETWORK→J4)일 때만 empty(최근+인기)를 전체화면 `QueryErrorBlock`으로 대체. **서버 5xx(J3)는 empty 유지** — 최근 검색·인기는 로컬/mock이라 서버 장애가 가릴 이유가 없음 (홈·음식탭과 다른 점: 거기는 화면 콘텐츠 자체가 그 쿼리)
+- ③ 온라인 동작 무변(인기 6종·최근 검색 로직 그대로 — "변경 금지" 준수, 테스트로 잠금)
+- ④ 재량 항목 채택: 제출 검색 에러(L142)의 StateBlock → `QueryErrorBlock` 교체. 오프라인 중 검색 제출 시에도 J4가 뜨고, 홈·음식탭과 톤 통일 — 코드도 더 짧음
+- 테스트 +4 (`searchOffline.test.tsx`): 오프라인→J4+최근/인기 미렌더 / 온라인→무변 / 프로브 500→empty 유지 / 제출 검색 NETWORK→J4
+- **preview OTA**: Android `019f8292-e2ff-7aa0` (runtime `cbbec117` = build1 일치, build1 호환 스왑 후 복원·트리 클린). production은 검토 후 묶음
+
 ## [P-029] KB-203 프로필 계정 연동 — provider 표시 (2026-07-21)
 
 **커밋**: `2633291` (main) · **검증**: tsc 0 · jest 167/167 (+2) · **preview OTA 발행**
