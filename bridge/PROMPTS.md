@@ -8,6 +8,25 @@
 
 ---
 
+## [P-041] ⬜ 🔴 KB-152 재수정 — 신규 설치 부트 레이스: 프리페치가 토큰 정리보다 먼저 발사 (이전 사용자 홈 잔상)
+
+Q-05 실기(예진 7/21): 로그인→삭제→재설치→게스트 진입 시 **프로필·음식탭은 게스트 정상인데 홈에만 이전 계정(Hi Mina + avoid 8 things)이 표시**. 재시작하면 완전 게스트. **프라이버시 문제**(중고폰·공용폰에서 타인 데이터 노출).
+
+**원인 확정** (`_layout.tsx` L53-56): `gateSplash({ ready, prefetch: prefetchBootData() })` — `cleanupIfFreshInstall()`(Keychain 정리)와 `prefetchBootData()`가 **같은 틱에 병렬 시작**. 신규 설치 첫 부팅에서 프리페치의 `hasBeSession()`이 아직 안 지워진 옛 토큰을 보고 /home·/me를 인증 상태로 프리페치 → 홈 캐시 오염. 정리 완료 후 다른 화면은 게스트(세션 체크), 홈만 오염 캐시 표시. 기존 주석("정리가 항상 먼저")은 렌더 기준 — P-018 프리페치가 네트워크 경로로 그 가정을 깸.
+
+### 할 일
+
+1. **프리페치를 정리 뒤로 직렬화**: `cleanupIfFreshInstall()` 완료 **후에** `prefetchBootData()` 시작 (예: cleanup promise를 분리해 `prefetch: cleanupDone.then(() => prefetchBootData())`). gateSplash의 min/cap 시맨틱 무변 — cleanup은 AsyncStorage 체크 1회라 비신규 설치에서도 지연 무시 가능
+2. 주석 갱신: "정리가 프리페치·렌더 모두보다 선행" 으로 — 이번 레이스 경위 명시
+3. 테스트: **신규 설치 시나리오 — cleanup 완료 전 prefetch 미시작** 잠금(순서 검증 모킹) + 기존 게이트 타이밍 테스트 무회귀
+4. JS-only → preview+**production 즉시** OTA (프라이버시 건 — 프로덕션 우선 발행)
+
+### DoD
+
+- [ ] 재설치→게스트 진입 시 홈 포함 전 화면 게스트(이전 계정 잔상 0) · 정상 부팅 체감 무변 · tsc 0 · jest · 양 채널 OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-041].
+
 ## [P-040] ✅ KB-205 재수정 — 스테퍼 −/+ 텍스트 글리프 → SVG 아이콘 (수직 중심 이탈) — `eb30502` (preview OTA)
 
 Q-17 실기(예진 7/21, 인스펙터 실측): 주문카드 스테퍼의 −/+가 원(44×44) **정중앙보다 위**에 붙음. 컨테이너 정렬은 정확(center/center) — 원인은 **글리프가 아이콘이 아니라 텍스트**(order.tsx `stepText`: Baloo2_700Bold 22/lineHeight 26). 디스플레이 폰트의 어센트 편향이 시각 중심을 위로 밀어냄. **컨테이너 정렬로는 못 고치는 폰트 메트릭 문제.**
