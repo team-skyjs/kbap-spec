@@ -7,6 +7,15 @@
 
 ---
 
+## [P-036] KB-174 재수정 — 음식탭 캐시+오프라인 J4 · 스피너 공전 (2026-07-21, Q-08 대응)
+
+**커밋**: `dee7567` (main) · **검증**: tsc 0 · jest 202/202 (+2) · **preview OTA 발행**
+
+- ① `food.tsx`: 커맨드 센터 원인 분석 그대로 — `isError`면 **FlatList 자체를 전체화면 QueryErrorBlock으로 조건부 대체**(ListEmptyComponent 방식 폐기). 캐시 유무 무관 J3/J4, 리스트 미렌더라 onEndReached·푸터 스피너 경로도 원천 차단. 헤더 미렌더(P-027)·Retry refetch 유지
+- ② `Spinner.tsx`: 회전 래퍼에 `width/height = size` + `alignSelf: 'center'` 고정 — 전폭 stretch 띠 회전(공전) 원천 봉쇄. 사용처 전수(스캔·검색·상세 푸터·저장 목록 등) 확인 — 기존 좁은 컨테이너에선 렌더 결과 동일(무회귀)
+- 테스트 +2: **캐시 존재+NETWORK 에러 → J4 렌더·캐시 카드/헤더 미렌더**(tabStates — Q-08 ① 재현 케이스 그대로 잠금) · Spinner 래퍼 크기·center 고정(uiPolish)
+- **preview OTA**: Android runtime `cbbec117` = build1 일치(스왑 후 복원·트리 클린). 프로덕션은 다음 묶음 후보
+
 ## [P-035] KB-207 재수정 — 기피 칩 애니메이션 제거 (2026-07-21, Q-11 대응)
 
 **커밋**: `c0c485f` (main) · **검증**: tsc 0 · jest 200/200 · **preview OTA 발행**
