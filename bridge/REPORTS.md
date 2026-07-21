@@ -7,6 +7,16 @@
 
 ---
 
+## [P-041] 🔴 KB-152 재수정 — 부트 레이스: 정리→프리페치 직렬화 (2026-07-21, 프라이버시)
+
+**커밋**: `3010a8d` (main) · **검증**: tsc 0 · jest 211/211 (+2) · **preview+production 양 채널 OTA 발행**
+
+- 원인 분석 그대로: `cleanupIfFreshInstall()`과 `prefetchBootData()`가 같은 틱 병렬 발사 — 신규 설치 첫 부팅에서 프리페치의 `hasBeSession()`이 아직 안 지워진 옛 토큰으로 /home·/me 인증 프리페치 → 홈 캐시 오염
+- 수정: bootGate에 `prefetchAfterCleanup(cleanupDone, prefetch)` — **cleanup settle 후에만 프리페치 시작**(순서 불변식의 단일 구현, cleanup 실패해도 프리페치는 진행 — 부트 불막음). `_layout` 배선 + 주석 "정리가 프리페치·렌더 모두보다 선행"으로 갱신(렌더는 entryChecked, 프리페치는 직렬화가 담당). gateSplash min/cap 시맨틱 무변 — cleanup은 AsyncStorage 체크 1회라 비신규 설치 체감 무변
+- 테스트 +2 (bootGate.test): cleanup 완료 전 prefetch 미시작(순서 검증 모킹 — 지시 그대로) / cleanup reject여도 진행. 기존 게이트 타이밍 4케이스 무회귀
+- **발행(프라이버시 — 프로덕션 우선)**: production iOS `019f83b9-e332-7044` (runtime `8d0d5504` = 테플 빌드) + preview Android (runtime `cbbec117` = build1). ⚠️ 두 채널은 gitignore 스왑 여부가 달라 **2단 발행**(production=gitignore 제거 상태, preview=복원 후) — Android fingerprint가 gitignore에도 반응함을 실측, 절차 노트로 남김. 스왑 전량 복원·트리 클린
+- 예진: 재설치→게스트 진입 실기 재확인 부탁 (테플은 재실행 2번 후)
+
 ## [P-040] KB-205 재수정 — 스테퍼 −/+ SVG 교체 (2026-07-21, Q-17 대응)
 
 **커밋**: `eb30502` (main) · **검증**: tsc 0 · jest 209/209 · **preview OTA 발행**
