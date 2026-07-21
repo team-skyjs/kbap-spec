@@ -7,6 +7,18 @@
 
 ---
 
+## [P-030] KB-205 음식 상세 주문+고지 원카드 (2026-07-21)
+
+**커밋**: `0d7aa99` (main) · **검증**: tsc 0 · jest 192/192 (+16) · **preview OTA 발행** (JS-only 확인)
+
+- ① CTA(상세 최하단): `order.cta` — **개인화 판정** safe/caution만 노출, danger·unable·게스트 미노출. 빈 프로필은 false-safe 강등으로 safe→caution이라 CTA 유지(고지 없는 순수 주문 카드로 이어짐 — 테스트로 잠금)
+- ② `order.tsx`: owner.tsx 동일 패밀리(닫기 X·중앙 큰 글자·하단 done 버튼, done은 기존 `owner.done` 재사용). 메뉴명 primary 하이라이트 + 수량 스테퍼 1~5(텍스트 ±, 이모지·신규 에셋 없음), 상세·프로필 **캐시 재사용 — BE 호출 0**
+- ③ 문장 조립은 `orderCard.ts` 순수 함수: ko 라벨 `i18n.getFixedT('ko')` **고정**(UI 언어 무관 — place=ko 헌법), 을/를은 한글 종성 산술 분기(비한글 폴백 '을(를)'), 기피 6개 초과 "외 n개" 접기, **기피 0개 → ②③ 생략**(순수 주문 카드)
+- ④ i18n `order.cta`/`order.caption` ×10 (본문은 i18n 아님 — ko 데이터)
+- 테스트 +16: 을/를 3 · ko 고정 2 · 주문 문장 2 · 고지 생략/접기 4 · lifestyle 2 · CTA 노출 조건 5케이스 + 카드 문단 유무 2 (스위트 orderCard.test.ts / orderCta.test.tsx)
+- **preview OTA**: Android `019f829f-3778-7747` (runtime `cbbec117` = build1, 스왑 후 복원·트리 클린). P-025의 네이티브 추가와 무관 — 이 건 자체는 JS-only(스왑이 package.json·scan.tsx를 되돌려 build1 호환 유지)
+- **특이·BE 질의**: 기획 ③(종교·식이 한 줄)은 구현했으나 **현행 와이어(avoidanceSubstanceCodes)가 재료 81종만 왕복이라 live 프로필에선 도달 불가** — 온보딩이 수집한 religion:/diet: 코드는 전송 시 드롭됨(KB-75 체계). 서버가 종교·식이 코드를 프로필에 실어주면 FE는 수정 없이 자동 활성. BE 논의 필요: 종교·식이 코드 프로필 왕복 지원 여부
+
 ## [P-025] KB-202 스캔 캡처 WYSIWYG — 과다 캡처 크롭 (2026-07-21)
 
 **커밋**: `4bf857a` (main) · **검증**: tsc 0 · jest 176/176 (+5) · ⚠️ **OTA 아님 — 재빌드 필요**
