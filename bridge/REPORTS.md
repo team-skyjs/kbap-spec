@@ -7,6 +7,14 @@
 
 ---
 
+## [P-050] KB-219 CI — GitHub Actions tsc+jest (2026-07-22)
+
+**커밋**: `b5832b9` (main, 푸시됨) · **1회 green 확인**: https://github.com/team-skyjs/kbap-fe/actions/runs/29887022483 (run #1 success — 로컬과 동일 결과 226/226)
+
+- `.github/workflows/ci.yml`: push(main)+PR → `npm ci` → `tsc --noEmit` → `jest --ci`. node 20(로컬 v20 일치)·npm 캐시. 신뢰 불가 이벤트 입력 미사용(정적 명령만)
+- **브랜치 보호 안내(예진 콘솔 몫)**: GitHub → Settings → Branches → main 보호 규칙에서 "Require status checks to pass" 켜고 `check` 잡 지정 — 이후 실패 시 병합 차단
+- 참고: Actions 런타임 Node20 deprecation 어노테이션은 액션 자체 경고(우리 스텝의 node 20과 무관, 무해)
+
 ## [P-049] KB-218 프로필 사진 촬영 (2026-07-22)
 
 **커밋**: `7fcfb35` (main) · **검증**: tsc 0 · jest 226/226 (+6) · **preview OTA 발행** (재빌드 불요 확인 — 기설치 expo-image-picker)

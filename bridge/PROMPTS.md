@@ -74,7 +74,7 @@
 
 완료 시 상태 ✅+커밋 해시, 보고는 [P-049].
 
-## [P-050] ⬜ KB-219 CI — GitHub Actions: push/PR 시 tsc+jest
+## [P-050] ✅ KB-219 CI — GitHub Actions: push/PR 시 tsc+jest — `b5832b9` (run #1 green)
 
 결정(7/22): 출시 전 CI만(빌드/OTA 자동화는 출시 후 — 검토 게이트 원칙 유지).
 
