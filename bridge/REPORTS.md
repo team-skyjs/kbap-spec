@@ -7,6 +7,16 @@
 
 ---
 
+## [P-056] 🔴 KB-176 안드 스캔 오버레이 좌표 2배 오프셋 (2026-07-22)
+
+**커밋**: `c44028f` (main, 푸시·CI) · **검증**: tsc 0 · jest 236/236 (+5) · **preview OTA 발행**(양 채널 도달 — Android `f96ae4f7`·iOS `c43664ed`)
+
+- 실측 원인 그대로 구현: `chooseDenominator` — **frame 최대 좌표(maxRight/maxBottom)를 수용하는 치수 채택**. 우선순위 measured(iOS 정답 — KB-141 무회귀) → reported(안드형: 절반 저장 파일과 ML Kit 원치수 기준 불일치 케이스) → 둘 다 못 담으면 큰 쪽(클램프 손실 최소화). 반올림 여유 2%. 플랫폼 하드코딩 없음 — 두 치수가 정수배 관계면 스케일 보정과 동치
+- **채택 근거 로그**(지시 1): `[ocr] denominator = {pxW, pxH, basis, maxRight, maxBottom}` — 실기 adb로 basis=reported 확인 가능
+- **부수 확인(지시 3 — 조사만)**: 절반 저장은 안드 저장 경로(P-025 ImageManipulator saveAsync 추정). OCR 인식은 정상(부대찌개 등 전 라인 검출) — 2040px면 메뉴판 텍스트 해상도 여유, 화질 이슈 미관측. 필요 시 별도 과제 의견
+- 테스트 +5 (chooseDenominator.test): **adb 실측 케이스 그대로**(top=2051>2040→reported) · iOS형 measured 유지 · measured null 폴백 · larger-fallback · 2% 경계 여유
+- 실기 확인 요청: 안드에서 6개 마커 전부 해당 메뉴 옆 정위치([ocr] denominator basis=reported 로그 동반) + iOS 마커 무회귀
+
 ## [P-055] KB-225 안드 하단 내비바 클리어런스 전수 (2026-07-22)
 
 **커밋**: `1c8a09c` (main, 푸시·CI) · **검증**: tsc 0 · jest 231/231 (+2) · **preview OTA 발행**(P-054 스왑 절차로 — Android `f96ae4f7`=build2·iOS `c43664ed`=빌드7 도달 확인)
