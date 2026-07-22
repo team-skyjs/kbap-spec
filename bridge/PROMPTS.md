@@ -48,14 +48,14 @@
 
 ## [P-048] ⬜ KB-125 랭킹 리뷰 흔적 정리 — '하나 더' 제거 + 리뷰 팩터 dim 예고
 
-결정(7/22 예진): ① breakTotal "리뷰 하나 더 +10점" 행 **제거** ② 숨김 처리된 리뷰 팩터 행(FLAGS.reviewsEnabled)을 **dim으로 노출**: 흐림+자물쇠+"다음 업데이트에 제공" 라벨(i18n ×10) — 리뷰 기능 예고. 점수 로직 무변.
+결정(7/22 예진): ① **하단 "리뷰 쓰기" CTA 버튼(ranking.tsx L163 ctaReview — /food로 보내는 그것) 제거** ② breakTotal "리뷰 하나 더 +10점" 행 **제거** ③ 숨김 처리된 리뷰 팩터 행(FLAGS.reviewsEnabled)을 **dim으로 노출**: 흐림+자물쇠+"다음 업데이트에 제공" 라벨(i18n ×10) — 리뷰 기능 예고. 점수 로직 무변. 스캔 CTA는 유지.
 
 ### 할 일
-1. ranking.tsx: oneMore 행 삭제(하단 radius P-037 처리와 충돌 없게 — 마지막 행 카드 마감 확인) / 리뷰 BreakRow를 FLAGS 무관 상시 렌더하되 disabled 스타일(opacity+IconLock)+예고 라벨, 탭 무반응
+1. ranking.tsx: **ctaReview CTA 삭제**(스캔 CTA 레이아웃 정리) + oneMore 행 삭제(하단 radius P-037 처리와 충돌 없게 — 마지막 행 카드 마감 확인) / 리뷰 BreakRow를 FLAGS 무관 상시 렌더하되 disabled 스타일(opacity+IconLock)+예고 라벨, 탭 무반응
 2. 음식 상세·프로필의 리뷰 흔적은 **범위 외**(이미 FLAGS 숨김 유지 — 랭킹만)
 3. 테스트: oneMore 부재·리뷰 행 dim 렌더 잠금
 ### DoD
-- [ ] 하나 더 행 없음 · 리뷰 팩터 dim+예고 · i18n ×10 · tsc 0 · jest · OTA
+- [ ] 리뷰 쓰기 CTA 없음 · 하나 더 행 없음 · 리뷰 팩터 dim+예고 · i18n ×10 · tsc 0 · jest · OTA
 
 완료 시 상태 ✅+커밋 해시, 보고는 [P-048].
 
