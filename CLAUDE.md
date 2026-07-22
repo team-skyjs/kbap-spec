@@ -45,3 +45,9 @@ Active feature: 001-personalized-menu-mvp
 - API contract (SSOT): **BE Swagger** — https://meogo.handev.site/swagger-ui (meeting 2026-07-02). This repo's specs/001-personalized-menu-mvp/contracts/openapi.yaml is reference-only, NOT the contract SSOT.
 - Constitution: .specify/memory/constitution.md
 <!-- SPECKIT END -->
+
+# 인터뷰 모드 트리거 (2026-07-22 확정)
+
+- **자동 발동**: 기획·새 기능·UX 결정·스펙 작성 요청이면 `interview` 스킬로 진행 (질문으로 요구사항 잠금 후 착수).
+- **현행 유지**: 루틴(브릿지 검토·QA·지라·문서 갱신)은 인터뷰 없이 즉시 처리. 그 외 애매하면 착수 전 선택적 질문.
+- **수동 발동**: 예진이 "인터뷰 모드로 하자"라고 하면 어떤 주제든 즉시 인터뷰 모드.
