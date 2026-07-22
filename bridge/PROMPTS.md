@@ -8,6 +8,26 @@
 
 ---
 
+## [P-055] ⬜ KB-225 Android 하단 내비바 클리어런스 전수 — 시트 '나중에 하기' 짤림
+
+실기(예진 7/22, 스크린샷): 게스트 게이트 시트(AuthGateSheet) 하단 "나중에 하기"가 **3버튼 내비바에 짤림**. P-021(온보딩 CTA)과 동일 원인 — 안드 edge-to-edge에서 insets.bottom 과소보고. P-021이 온보딩에만 국소 처치라 **다른 하단 고정 UI에 동일 병 잠복**.
+
+### 할 일
+
+1. **공용 유틸 승격**: P-021의 `Platform.OS==='android' ? Math.max(insets.bottom, 48) : insets.bottom` 을 훅/유틸(예: `useBottomInset`)로 추출 — 온보딩 것도 교체
+2. **전수 적용** (insets.bottom 사용처 실측 목록 — 커맨드 센터 grep):
+   - `AuthGateSheet`(이번 짤림 — 최우선) · `login.tsx` · `intro.tsx` · `food/[id]/owner.tsx` · `food/[id]/order.tsx` · `scan.tsx`(2곳)
+   - `TabBar`는 기존 `Math.max(insets.bottom, 10)` — 실기 정상이면 무변(과보정 주의), 짤리면 동일 유틸
+3. **화면별 실기 확인 목록을 보고에** — 3버튼 내비 기기 기준(에뮬 설정으로 3버튼 전환 가능)
+4. iOS는 실측 인셋 그대로(무회귀). 테스트: 유틸 분기(안드 max48/iOS 통과) 잠금
+5. JS-only → preview OTA
+
+### DoD
+
+- [ ] 게이트 시트 '나중에 하기' 포함 하단 고정 UI 전부 내비바 안 짤림(3버튼 기준) · iOS 무회귀 · tsc 0 · jest · OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-055].
+
 ## [P-054] ✅ (재빌드·안드) KB-194 후속 — Android 12+ 스플래시 원형 마스크 잘림 — `18de75a` (OTA 불가·안드 빌드3 합류)
 
 실기(예진 7/22, 안드 빌드2): 스플래시의 로고+워드마크가 **원형으로 클립**돼 "K-Bar"처럼 잘림. 원인 = **Android 12+ 시스템 스플래시 규칙**(앱 이미지가 OS의 원형 아이콘 마스크 안에 강제 배치 — windowSplashScreenAnimatedIcon). 세로 조합 이미지(로고+K-Bap)가 원을 벗어나는 부분이 잘리는 것. iOS는 마스크 없음 → 정상.
