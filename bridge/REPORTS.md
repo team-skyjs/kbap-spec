@@ -7,6 +7,16 @@
 
 ---
 
+## [P-051] KB-195 후속 — 맵기 UI 원복: 화면=전송 일치 (2026-07-22)
+
+**커밋**: `13be68e` (main, 푸시·CI 재실행) · **검증**: tsc 0 · jest 226/226 · **preview OTA 발행**
+
+- 확정 원칙 그대로: 기본 **5 표시**(P-039 미선택 UI — 대시·"불꽃을 눌러 선택" 힌트·회색 불꽃·노브 숨김 — 전부 제거), **Continue(미조작 포함) = 화면값 그대로 제출**(기본이면 5), **Skip = -1**(P-019 경로)
+- **P-039의 stale closure 수정은 유지**(지시): 제출은 호출측 인자 — Continue=`finish(spice)`(화면의 그 값), Skip=`finish(null)`(UNSET). skipped 플래그는 draft 기록용으로만
+- draft 호환: 저장값 있으면 그 값, **null(구 스킵분)이면 5 표시** — 테스트 하네스가 null draft 복귀로 이 경로를 겸검증
+- i18n `onboarding.spiceUnsetHint` ×10 제거(미사용화 정리)
+- 테스트 교체(지시 3케이스): 미조작+Continue→**5** / 조작 7+Continue→7 / Skip→UNSET(body -1은 submit.test 체인)
+
 ## [P-050] KB-219 CI — GitHub Actions tsc+jest (2026-07-22)
 
 **커밋**: `b5832b9` (main, 푸시됨) · **1회 green 확인**: https://github.com/team-skyjs/kbap-fe/actions/runs/29887022483 (run #1 success — 로컬과 동일 결과 226/226)
