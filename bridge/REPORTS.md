@@ -7,6 +7,16 @@
 
 ---
 
+## [P-049] KB-218 프로필 사진 촬영 (2026-07-22)
+
+**커밋**: `7fcfb35` (main) · **검증**: tsc 0 · jest 226/226 (+6) · **preview OTA 발행** (재빌드 불요 확인 — 기설치 expo-image-picker)
+
+- **시스템 UI만(지시)**: `choosePhotoSource` — iOS `ActionSheetIOS`(촬영/갤러리/[사진 있으면]**삭제 destructive**/취소), Android **시스템 Alert 3버튼**(촬영/갤러리/취소). ⚠️ Android Alert는 3버튼 상한이라 삭제는 시트에 못 실림 — **기존 화면 삭제 링크 존치**로 커버(iOS는 시트+링크 양쪽)
+- 촬영: `launchCameraAsync` 1:1 크롭(갤러리 경로와 동일 옵션) → 기존 업로드 파이프라인 합류. **권한 거부 = 정직한 안내 + 설정 유도 Alert**(Linking.openSettings) 후 null — 가입/수정 흐름 불막음
+- 적용처: 프로필 수정 + 온보딩 사진 스텝(공용 `pickBySource` 경로 — 온보딩은 삭제 옵션 없음, 재선택 대체 기존과 동일). 삭제 P-016 로직 재사용, busy/에러 표시 무변
+- i18n `photo.*` 6키 ×10. iOS NSCameraUsageDescription은 expo-camera 플러그인 문구 기존재 — **실기 권한 플로우 확인은 예진 요청**(DoD 항목)
+- 테스트 +6 (photoSheet.test): iOS 시트 옵션·인덱스 매핑(사진 유무별) / 안드 3버튼 / 권한 거부·허용·취소
+
 ## [P-048] KB-125 랭킹 리뷰 흔적 정리 (2026-07-22)
 
 **커밋**: `4ec6823` (main) · **검증**: tsc 0 · jest 220/220 (+2) · **preview OTA 발행**
