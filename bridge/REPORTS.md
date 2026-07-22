@@ -7,6 +7,14 @@
 
 ---
 
+## [P-054] KB-194 후속 — Android 12+ 스플래시 원형 마스크 (2026-07-22)
+
+**커밋**: `18de75a` (main, 푸시·CI) · **검증**: tsc 0 · jest 229/229 · ⚠️ **OTA 불가 — 안드 빌드3/차기 iOS 빌드 합류**(제출용 최종 빌드 배치, 커맨드 센터 의견대로 단독 빌드 없음)
+
+- 안드 전용 에셋 분리: 기존 png의 심볼 밴드(300×300, 알파 행 분석으로 추출) → **450 정사각 캔버스 중앙 배치 = 원형 안전영역 2/3** (`assets/images/splash-icon-android.png`). app.json expo-splash-screen에 `android: { image, imageWidth: 200 }` 오버라이드 — iOS는 기존 조합 이미지(230) 무변, 배경 `#E2580C` 무변
+- **미리보기 첨부**: `bridge/assets/p054-android-splash-preview.png` — 원형 마스크 시뮬, 원 안에 K 볼 심볼 온전
+- ⚠️ **특이(운영)**: 이 커밋으로 fingerprint 재회전(안드 `c71456e3` ≠ build2 / iOS `584a401b` ≠ 빌드7) — **빌드3 전 OTA 발행 시 app.json+안드 에셋 2파일 임시 되돌림 필요**(축소판 스왑 부활, FE 세션 메모리에 절차 기록). 빌드3 재베이스라인으로 소멸 예정
+
 ## [P-053] KB-206 반려 — 게이트 시트 애니 원복 (2026-07-22)
 
 **커밋**: `3ef625f` (main, 푸시·CI) · **검증**: tsc 0 · jest 229/229 무회귀 · **preview OTA 발행**
