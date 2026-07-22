@@ -8,6 +8,28 @@
 
 ---
 
+## [P-051] ⬜ KB-195 후속 — 맵기 스텝 UI 원복: 기본 5 표시, Skip만 -1 (P-039 UI 롤백)
+
+Q-03 실기 피드백(예진 7/22): P-039의 미선택 UI("–/10"+회색 불꽃+힌트)가 **이상함** — 원복 결정. **화면 그대로 제출** 원칙으로 확정(예진 7/22):
+
+- 기본 상태: 슬라이더 **5 표시**(P-039 이전처럼 불꽃 5개 활성, "–/10"·"Tap a flame to choose" 힌트 제거)
+- **Continue(미조작 포함) = 화면 값 그대로 제출**(기본이면 5) — 표시=전송 일치
+- **Skip(건너뛰기) = -1** (P-019 경로 유지)
+
+### 할 일
+
+1. `onboarding/index.tsx` spice 스텝: state 기본값 5 복원, 미선택 전용 UI(대시·힌트·회색 불꽃) 제거. P-039의 **stale closure 수정(finish 인자화·값 단일 진실)은 유지** — UI만 롤백
+2. draft 왕복: 저장된 값 있으면 그 값, 없으면 5 표시 (null draft 호환)
+3. 테스트 갱신: 미조작+Continue→**5** / 조작(7)+Continue→7 / Skip→-1 — P-039 테스트 교체
+4. i18n 힌트 키(spiceUnsetHint 등) 미사용화 정리
+5. JS-only → preview OTA
+
+### DoD
+
+- [ ] 기본 5 표시·힌트 없음 · Continue=화면값(기본 5)·Skip=-1 · tsc 0 · jest · OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-051].
+
 ## [P-045] ✅ KB-215 사장님 확인 카드 실데이터 조립 — '이 음식' mock 잔재 (안전 우선) — `23a447a` (preview OTA)
 
 멘토링 발견(7/21): danger 재료 ask owner → "이 음식에 제가 못 먹는 재료가 들어가나요" — 원인은 owner 카드가 **mock**(`src/lib/mocks/owner.ts` PHRASES 사전 2개 음식만 실명, 나머지 DEFAULT '이 음식').
