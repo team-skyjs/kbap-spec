@@ -7,6 +7,15 @@
 
 ---
 
+## [P-048] KB-125 랭킹 리뷰 흔적 정리 (2026-07-22)
+
+**커밋**: `4ec6823` (main) · **검증**: tsc 0 · jest 220/220 (+2) · **preview OTA 발행**
+
+- ① 하단 **리뷰 쓰기 CTA 삭제** — 스캔 CTA를 단독 filled로 정리 ② **breakTotal("리뷰 하나 더 +10점") 행 삭제** — P-037의 하단 radius 보정도 행 제거로 자연 소멸, 마지막 행 카드 마감 정상(패딩 내 종결)
+- ③ 리뷰 팩터를 FLAGS 무관 **dim 예고 행** 상시 노출: opacity 0.55 + IconLock + `ranking.reviewsComing`("다음 업데이트에 제공돼요") ×10 — BreakRow와 같은 골격, 탭 요소 아님(무반응). 점수 로직(ranking.ts) 무변
+- 음식 상세·프로필 리뷰 흔적은 범위 외(지시) — FLAGS 숨김 유지
+- 테스트 +2: oneMore·리뷰 CTA 부재/스캔 CTA 유지 · dim 예고 렌더
+
 ## [P-047] KB-217 헤더 바운싱 — timing 복귀 (2026-07-22)
 
 **커밋**: `ea552db` (main) · **검증**: tsc 0 · jest 218/218 · **preview OTA 발행**
