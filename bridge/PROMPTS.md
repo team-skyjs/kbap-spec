@@ -8,7 +8,7 @@
 
 ---
 
-## [P-045] ⬜ KB-215 사장님 확인 카드 실데이터 조립 — '이 음식' mock 잔재 (안전 우선)
+## [P-045] ✅ KB-215 사장님 확인 카드 실데이터 조립 — '이 음식' mock 잔재 (안전 우선) — `23a447a` (preview OTA)
 
 멘토링 발견(7/21): danger 재료 ask owner → "이 음식에 제가 못 먹는 재료가 들어가나요" — 원인은 owner 카드가 **mock**(`src/lib/mocks/owner.ts` PHRASES 사전 2개 음식만 실명, 나머지 DEFAULT '이 음식').
 

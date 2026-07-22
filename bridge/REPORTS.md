@@ -7,6 +7,15 @@
 
 ---
 
+## [P-045] KB-215 사장님 카드 실데이터 조립 (2026-07-22)
+
+**커밋**: `23a447a` (main) · **검증**: tsc 0 · jest 215/215 (+3) · **preview OTA 발행(스왑 소멸 후 첫 발행 — Android build2 `f96ae4f7` 도달)**
+
+- mock `mocks/owner.ts` **삭제** → `useOwnerConfirmation`을 클라 조립으로 재작성: 상세 캐시 `nameKo`(스캔 미등록 흐름도 decode된 실명) + `ownerQuestionKo()`(81종 코드→ko 라벨 + 신규 **이/가** 조사 유틸 — P-030 을/를과 동일 산술) — 어느 음식이든 `{실명}에 {재료ko}이(가) 들어가나요?`, 재료 없는 진입은 `{실명}에 제가 못 먹는 재료가 들어가나요?`
+- explanationKo 정적 유지(지시대로). renderQuestion 하이라이트는 menuNameKo=실명이라 자연 동작
+- **전수 결과**: 사장님 노출 화면에서 음식명·재료명 mock/하드코딩 잔재는 owner 경로의 PHRASES 사전이 유일했음(삭제) — order.tsx는 기왕 실데이터(nameKo·81종 라벨). MOCK_FOOD_DETAILS는 mock-era 상세 흐름용으로 사장님 화면 자체와 무관(무변)
+- 테스트 +3: iGa 분기 · 재료 있음("김치찌개에 새우가"/"비빔밥에 달걀이") · 재료 없음 일반 질문 — UI 언어 en 상태에서 ko 고정 겸 잠금
+
 ## [P-043] KB-176/198/202 — Android 빌드2 (2026-07-21)
 
 **빌드**: `24277e9c` FINISHED · **runtime `f96ae4f7`** · 코드 무변(기록 커밋 `9b1a431`) · keystore 기존 EAS 관리
