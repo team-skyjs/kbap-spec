@@ -8,7 +8,7 @@
 
 ---
 
-## [P-059] ⬜ KB-175 API 도메인 전환 — dev/prod.kbap.site 배선 (meogo 폐기 준비)
+## [P-059] ✅ KB-175 API 도메인 전환 — dev/prod.kbap.site 배선 (meogo 폐기 준비) — `64d1be6` (발행 불요 — dev 전용)
 
 BE 인프라 전환(7/22 종한): 홈서버 meogo → EC2 **dev.kbap.site / prod.kbap.site**. 커맨드 센터 실측: dev=계약 동일(+admin 시딩 1개, FE 무관)·데이터 20종 정상 / **prod=서버 200이나 DB 0종(시딩 전)** / meogo 아직 생존.
 

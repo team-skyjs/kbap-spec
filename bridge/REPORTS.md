@@ -7,6 +7,15 @@
 
 ---
 
+## [P-059] KB-175 API 도메인 전환 1단계 (2026-07-23)
+
+**커밋**: `64d1be6` (main, 푸시·CI) · **검증**: tsc 0 · jest 240/240 (+2) · 발행 불요(빌드/OTA 무변 — dev 전용 배선)
+
+- 확정 배선 그대로: **dev(Metro/.env)=dev.kbap.site** (.env는 untracked+gitignore, `.env.example` 팀 문서화) / **preview·production=eas.json 각 프로파일 env에 meogo 명시 고정** — dev 도메인이 빌드에 스밀 경로 차단. config.ts에 도메인 로드맵 주석(prod는 시딩 신호 후 후속 P, meogo는 그때 폐기+fallback 정리)
+- **dev 계약 동일 실증(curl)**: `/home`·`/foods`·`/foods/{id}` — 엔벨로프(code/message/payload/success)·payload 키·아이템 필드 **dev=meogo 완전 동일**, dev 20종 시딩 확인. Metro 실기 스모크(스캔 POST 포함)는 예진 확인 요청
+- ⚠️ **fingerprint 영향(지시 2 확인 항목)**: eas.json 편집이 회전 유발 — P-017 선례 재확인. **추가 발견: .gitignore 파일 자체도 해시 대상**. 발행 스왑 목록 확장(app.json·eas.json·.gitignore 되돌림 + 안드 스플래시 에셋·.env 치우기)으로 베이스라인(f96ae4f7/c43664ed) 복원을 실측 검증 — FE 메모리에 절차 갱신, 빌드3 재베이스라인 때 전체 소멸
+- 테스트 +2: BE_BASE env 분기 / meogo fallback
+
 ## [P-058] KB-125 후속 — 다양성 행 dim 예고 (2026-07-22)
 
 **커밋**: `762f3b7` (main, 푸시·CI) · **검증**: tsc 0 · jest 238/238 (+1) · **preview OTA 발행**(양 채널 도달)
