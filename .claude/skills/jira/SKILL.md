@@ -46,8 +46,12 @@ description: >
 
 ## 3. 라벨·담당·스프린트
 - 라벨: `additional_fields: {"labels": ["FE"]}` (BE/FE/기타 중).
-- 담당 accountId: FE=**김예진** `6275ff7c7de1ec00695c019e` · BE=**hanjongsim** `63e3cb0586a66a7cc7a9a1c5`.
-- 스프린트 필드: `customfield_10020` = 스프린트 id(숫자). 현재 활성 계획 스프린트 "KB 2차 스프린트" = **35**.
+- **담당자 지정 필수(예진 지시 7/23 — 할당자 없음 금지)**: 생성 시 `assignee_account_id`를 반드시 넣는다.
+  FE=**김예진** `6275ff7c7de1ec00695c019e` · BE=**hanjongsim** `63e3cb0586a66a7cc7a9a1c5`.
+  빠뜨렸으면 즉시 `editJiraIssue(fields: {"assignee": {"accountId": ...}})`로 소급.
+- 스프린트 필드: `customfield_10020` = 스프린트 id(숫자). **활성 스프린트는 매번 조회로 확인**
+  (`sprint in openSprints()` 이슈 하나의 customfield_10020 참조 — 7/23 기준 "KB 4차 스프린트" = **101**).
+- 포인트: `customfield_10016` (S1/M2/L3/XL5) 병행 지정.
 - 이슈 타입: 에픽=`에픽`, 작업=`작업`. 요약 접두 `[FE]`/`[BE]`/`[기타]`.
 
 ## 4. 생성 절차
