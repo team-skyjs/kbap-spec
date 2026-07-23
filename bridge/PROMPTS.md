@@ -8,7 +8,7 @@
 
 ---
 
-## [P-061] ✅ 7/23 QA 묶음 — 셔터 중복 방지 · 미설정=BE 그대로(헌법 v2.1.0) · 안전 고지 링크 · 알림 UI 전면 제거 — `1034691` (preview OTA)
+## [P-061] ✅ KB-231 7/23 QA 묶음 — 셔터 중복 방지 · 미설정=BE 그대로(헌법 v2.1.0) · 안전 고지 링크 · 알림 UI 전면 제거 — `1034691` (preview OTA)
 
 예진 실기기 QA(7/23) 4건. 전부 JS-only, 즉시 착수 가능.
 
@@ -26,7 +26,7 @@
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-061].
 
-## [P-060] 🔄 언어 설정 대개편 — OS 정본화 (인앱 피커 제거 · /scans lang · appLanguage 철거)
+## [P-060] 🔄 KB-230 언어 설정 대개편 — OS 정본화 (인앱 피커 제거 · /scans lang · appLanguage 철거)
 
 기획 확정(예진 7/23, 정본: `specs/001-personalized-menu-mvp/language-settings-brief.md`):
 **앱 언어의 유일한 정본 = 기기/OS 언어. 서버는 언어를 저장하지 않고 매 요청 `lang`으로만 안다.**
