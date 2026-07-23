@@ -8,7 +8,41 @@
 
 ---
 
-## [P-065] ⬜ KB-233 [반려 보수] 핀치 줌 워클릿 에러 — clampScale/clampPan에 'worklet' 누락
+## [P-067] ⬜ KB-175 도메인 2단계 — prod.kbap.site 전환 (meogo 폐기) — ⛔ 종한 "prod 시딩+배포 완료" 신호 후 착수
+
+예진 확정(7/23 저녁): **meogo 안 씀 — 내일(7/24) prod 전환**, 오늘 Metro는 dev 유지(.env 복귀됨). 신계약(scans lang·appLanguage 삭제)은 dev/prod 계열에만 있으므로 최종 빌드는 반드시 prod를 봐야 함.
+
+### 할 일 (신호 오면)
+
+1. `eas.json` preview·production env → `EXPO_PUBLIC_BE_BASE=https://prod.kbap.site` 명시
+2. `config.ts` fallback도 `https://prod.kbap.site`로 교체(meogo 제거·주석 정리), `.env.example` 갱신
+3. prod 계약 스모크: `/home?lang`·`/foods` curl 200+데이터 확인(시딩 실증)을 보고에 명시
+4. 테스트: config fallback 잠금 반전 · ⚠️ eas.json/fingerprint 영향은 최종 빌드 재베이스라인으로 소멸(스왑 불요 명시)
+
+### DoD
+
+- [ ] 빌드/OTA 대상=prod 실증 · meogo 참조 0곳 · tsc 0 · jest — **최종 빌드(iOS8·안드3) 직전 완료 필수**
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-067].
+
+## [P-066] ⬜ KB-233 [반려 보강] 결과 하단 그라데이션 — 실기기 미표시·파파고 수준으로
+
+예진 실기기: 사진 뷰 하단 그라데이션이 **안 보임**(코드엔 존재 — resultShade 170px·0→0.55). 파파고 캡처 기준으로 보강.
+
+### 할 일
+
+1. **원인 규명 우선**: 실기기에서 안 보이는 이유 — 렌더 순서/줌 컨테이너와의 z 관계·**안드 elevation**(그라데이션에 elevation 없으면 형제 뷰 아래로 깔림) 의심. 재현·원인 한 줄 보고
+2. **파파고 수준 보강**: 높이 ~220px(버튼 영역+여유), 검정 0→0.6, **위험도·원본 뷰에서 버튼 뒤에 항상 표시** — "버튼이 안 보이는 경우가 없도록"(예진). 리스트 뷰는 제외 유지
+3. **피크(꾹) 연동**: 원본 피크 중엔 그라데이션도 버튼과 함께 페이드(파파고 동일 — 원본 감상 방해 금지)
+4. **실기기 확인 후 OTA**(워클릿 규칙과 동일 — 시각 레이어도 실기 1회)
+
+### DoD
+
+- [ ] 위험도·원본 뷰 하단 그라데이션 상시 가시(실기기 스샷 첨부) · 피크 시 소멸 · tsc 0 · jest · OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-066].
+
+## [P-065] ✅ 69b471b KB-233 [반려 보수] 핀치 줌 워클릿 에러 — clampScale/clampPan에 'worklet' 누락
 
 예진 실기기(Metro): 핀치 시작 즉시 `[Worklets] Tried to synchronously call a non-worklet function 'clampScale' on the UI thread` 매 프레임 스팸 — **줌 전체 불능**. 커맨드 센터 판정: `zoom.ts`의 `clampScale`·`clampPan`이 순수 JS 함수인데 `Gesture.Pinch().onUpdate`(UI 스레드 워클릿)에서 호출됨.
 
@@ -102,7 +136,7 @@
 
 완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-061].
 
-## [P-060] 🔄 KB-230 언어 설정 대개편 — OS 정본화 (인앱 피커 제거 · /scans lang · appLanguage 철거)
+## [P-060] ✅ 69b471b KB-230 언어 설정 대개편 — OS 정본화 (인앱 피커 제거 · /scans lang · appLanguage 철거)
 
 기획 확정(예진 7/23, 정본: `specs/001-personalized-menu-mvp/language-settings-brief.md`):
 **앱 언어의 유일한 정본 = 기기/OS 언어. 서버는 언어를 저장하지 않고 매 요청 `lang`으로만 안다.**
