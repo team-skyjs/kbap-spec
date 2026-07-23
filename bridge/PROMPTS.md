@@ -8,6 +8,24 @@
 
 ---
 
+## [P-061] ⬜ 7/23 QA 묶음 — 셔터 중복 방지 · 미설정=BE 그대로(헌법 v2.1.0) · 안전 고지 링크 · 알림 UI 전면 제거
+
+예진 실기기 QA(7/23) 4건. 전부 JS-only, 즉시 착수 가능.
+
+### 할 일
+
+1. **스캔 셔터 중복 방지(전 플랫폼)**: 동그라미 촬영 버튼 첫 탭 즉시 비활성(시각 피드백 포함) — 촬영 처리·화면 전환 완료까지 재활성 금지. 구형 안드(A90)에서 처리 지연 동안 연타로 다중 촬영 재현됨. 갤러리 버튼도 동일 가드 권장
+2. **회피 미설정 사용자 = BE 판정 그대로 표시**: `risk.ts` `personalRisk`의 safe→caution 강등 **폐지**(헌법 v2.1.0 개정 완료 — 파일 상단 SAFETY INVARIANT 주석도 개정 내용으로 갱신할 것). 첫 스캔 '기피 설정' 배너는 유지(안전망). 강등을 잠근 기존 테스트 반전
+3. **프로필 '안전 고지' 행 연결**: `https://team-skyjs.github.io/kbap-legal/safety.html` (신설됨, EN/KO) — 기존 약관·개인정보 행과 동일한 열기 방식으로
+4. **알림 UI 전면 제거(MVP 제외 확정)**: `NotificationsPanel.tsx` 삭제 + 벨 아이콘·진입점 전수 제거(홈·음식·프로필 탭, StickyHeader 등 — `알림|notification|bell` 전수 grep). 관련 i18n 키·테스트 정리. 주석 아웃이 아니라 삭제
+5. JS-only → preview OTA
+
+### DoD
+
+- [ ] 셔터 연타=1촬영 · 미설정 계정 스캔에 safe 초록 표시 · 안전 고지 행→페이지 열림 · 알림 진입점 0곳 · tsc 0 · jest · OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-061].
+
 ## [P-060] 🔄 언어 설정 대개편 — OS 정본화 (인앱 피커 제거 · /scans lang · appLanguage 철거)
 
 기획 확정(예진 7/23, 정본: `specs/001-personalized-menu-mvp/language-settings-brief.md`):
