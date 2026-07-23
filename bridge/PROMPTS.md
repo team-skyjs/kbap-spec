@@ -8,7 +8,7 @@
 
 ---
 
-## [P-063] ⬜ KB-125 랭킹 — 전체 등급(All ranks)을 path → 리스트형으로 교체 (그 외 무변)
+## [P-063] ✅ KB-125 랭킹 — 전체 등급(All ranks)을 path → 리스트형으로 교체 (그 외 무변) — `d8f2419` (preview OTA)
 
 예진 7/23 확정(기다리던 "랭킹 자잘 UI 상세"): **All ranks 섹션만** 디자인의 `ranksLayout='list'`로 교체. **나머지(히어로·게이지·점수 내역·CTA)는 전부 현행 유지** — "이거 빼곤 다 냅둬도 됨". 정본: Claude Design `my-ranking.jsx`의 `LadderRow`(+`.rk-rank` CSS) — 앱 ranking.tsx는 이미 이 파일 미러라 부품(Medallion·TIERS·색) 재사용.
 

@@ -7,6 +7,15 @@
 
 ---
 
+## [P-063] KB-125 랭킹 — All ranks 리스트형 (2026-07-23)
+
+**커밋**: `d8f2419` (main, 푸시·CI) · **검증**: tsc 0 · jest 247/247 (+1) · **preview OTA 발행**(양 채널 도달)
+
+- 확정 스펙 그대로: PathRow·세로 연결선 폐기 → **LadderRow 독립 카드 7행**(gap 8, 카드 bg+헤어라인+r-sm+sh1). 좌 Medallion 42 재사용(done 흰 체크/current 티어색 숫자/locked 뮤트) · 중 티어명 EN+NOW 필(주황)+한국어 병기 · 우 done ✓ 초록 / current `{at}+ pts`(primaryText — P-031 대비 계열) / locked 자물쇠+pts(ink3)
+- **current 행 강조**: primary 7% 틴트 + 2px primary 30% 링 + sh1 / **locked opacity 0.62** — 확정 스샷 상태 표현 일치
+- **스코프 엄수**: 히어로·게이지·점수 내역(리뷰/다양성 dim 정책)·스캔 CTA **diff 0**. 미사용 path/nodeBody/dim류 스타일 정리
+- 테스트: path 잠금 → **리스트 7행·상태 3종(체크/NOW·pts/자물쇠) 잠금**으로 대체(+1)
+
 ## [P-062] KB-232 스캔 화면 디자인 정합 (2026-07-23)
 
 **커밋**: `f328b5d` (main, 푸시·CI) · **검증**: tsc 0 · jest 246/246 (+3) · **preview OTA 발행**(양 채널 도달)
