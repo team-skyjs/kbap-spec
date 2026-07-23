@@ -8,6 +8,27 @@
 
 ---
 
+## [P-063] ⬜ KB-125 랭킹 — 전체 등급(All ranks)을 path → 리스트형으로 교체 (그 외 무변)
+
+예진 7/23 확정(기다리던 "랭킹 자잘 UI 상세"): **All ranks 섹션만** 디자인의 `ranksLayout='list'`로 교체. **나머지(히어로·게이지·점수 내역·CTA)는 전부 현행 유지** — "이거 빼곤 다 냅둬도 됨". 정본: Claude Design `my-ranking.jsx`의 `LadderRow`(+`.rk-rank` CSS) — 앱 ranking.tsx는 이미 이 파일 미러라 부품(Medallion·TIERS·색) 재사용.
+
+### 할 일
+
+1. `PathRow`·세로 연결선 제거 → **독립 카드 행 7개**(gap 8): 카드 bg+헤어라인 테두리+r-sm+sh1
+   - 좌: 기존 `Medallion` 42 (done=흰 체크 / current=티어색+숫자 / locked=뮤트 회색+숫자)
+   - 중: 티어명(EN, display 15.5 bold) + current면 **NOW 필**(주황 bg·흰 mono 소형) / 아래 한국어 병기 12
+   - 우: done=`✓ Done`(safe 초록) / current=`{at}+ pts`(mono, **primary색**) / locked=`IconLock + {at} pts`(mono, ink3)
+   - **current 행 강조**: primary 7% 틴트 bg + 2px primary 30% 링 + sh1 / locked 행 opacity 0.62
+2. 스코프 엄수: 이 섹션 외 변경 금지(리뷰 dim 정책·스캔 CTA 그대로)
+3. 테스트: 기존 path 잠금 테스트 → 리스트 7행·상태 3종(체크/NOW·pts/자물쇠) 잠금으로 대체
+4. JS-only → preview OTA
+
+### DoD
+
+- [ ] All ranks = 리스트 카드 7행(확정 스샷과 동일 상태 표현) · 그 외 화면 diff 0 · tsc 0 · jest · OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-063].
+
 ## [P-062] ✅ KB-232 스캔 화면 디자인 정합 — 셔터 가드 보수 · 샘플 버튼 제거 · D2 로딩 오버레이 · D3 하단 바 — `f328b5d` (preview OTA)
 
 예진 7/23 지시 + P-061① 반려 보수. 디자인 정본: Claude Design **KLens Hi-Fi (Direction G) D섹션**(커맨드 센터가 실물 확인 — 아래 스펙이 그 요약). 전부 JS-only → preview OTA.
