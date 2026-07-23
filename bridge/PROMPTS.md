@@ -8,6 +8,22 @@
 
 ---
 
+## [P-065] ⬜ KB-233 [반려 보수] 핀치 줌 워클릿 에러 — clampScale/clampPan에 'worklet' 누락
+
+예진 실기기(Metro): 핀치 시작 즉시 `[Worklets] Tried to synchronously call a non-worklet function 'clampScale' on the UI thread` 매 프레임 스팸 — **줌 전체 불능**. 커맨드 센터 판정: `zoom.ts`의 `clampScale`·`clampPan`이 순수 JS 함수인데 `Gesture.Pinch().onUpdate`(UI 스레드 워클릿)에서 호출됨.
+
+### 할 일
+
+1. `zoom.ts`의 `clampScale`·`clampPan` 첫 줄에 **`'worklet';` 지시자 추가** (순수성·유닛 테스트 영향 없음). ScanResultOverlay의 제스처 콜백에서 호출되는 다른 JS 헬퍼도 전수 점검(더블탭 핸들러 포함)
+2. **실기기 검증 후 OTA**: Metro에서 핀치/팬/더블탭 실동작 확인(에러 0)을 보고에 명시 — jest는 워클릿 경계를 못 잡으므로 이번 건 재발 방지로 **"제스처·워클릿 코드는 실기기 확인 후 발행" 규칙을 FE CLAUDE.md에 추가**
+3. preview OTA 재발행
+
+### DoD
+
+- [ ] 핀치 줌 실동작(에러 0, 마커 추종) · 'worklet' 지시자 · CLAUDE.md 규칙 추가 · tsc 0 · jest · OTA
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-065].
+
 ## [P-064] ✅ KB-233 스캔 결과 파파고식 개편 — 스캔라인 왕복 · 풀블리드 사진 · 원본 피크 · 핀치 줌 — `39eb672` (preview OTA)
 
 예진 7/23 지시(파파고 스캔 결과 벤치마크). P-062의 D3 하단 바를 하루 만에 재개편하는 것 맞음(예진 확정 — 파파고 실물 보고 결정). 전부 JS-only → preview OTA.
