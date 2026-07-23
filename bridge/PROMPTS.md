@@ -8,6 +8,30 @@
 
 ---
 
+## [P-059] ⬜ KB-175 API 도메인 전환 — dev/prod.kbap.site 배선 (meogo 폐기 준비)
+
+BE 인프라 전환(7/22 종한): 홈서버 meogo → EC2 **dev.kbap.site / prod.kbap.site**. 커맨드 센터 실측: dev=계약 동일(+admin 시딩 1개, FE 무관)·데이터 20종 정상 / **prod=서버 200이나 DB 0종(시딩 전)** / meogo 아직 생존.
+
+### 확정 배선 (예진 7/22)
+
+- **dev 환경(Metro/dev client)** → `https://dev.kbap.site`
+- **preview·production 빌드/OTA** → **당분간 meogo 유지** — ⚠️ prod.kbap.site는 DB가 비어 **시딩 완료 신호 전 전환 금지**(빈 앱 됨). 신호 오면 후속 P로 prod 전환
+- 기본값(fallback)도 단계적: 지금은 meogo 유지, prod 전환 때 정리
+
+### 할 일
+
+1. `.env`(개발용, gitignore 확인): `EXPO_PUBLIC_BE_BASE=https://dev.kbap.site` — Metro가 자동 로드. `.env.example` 갱신(팀 공유)
+2. `eas.json` 각 프로파일 env에 **명시적으로** `EXPO_PUBLIC_BE_BASE=https://meogo.handev.site` 고정(preview·production) — dev.kbap.site가 실수로 빌드에 스미지 않게. ⚠️ eas.json 변경=fingerprint 영향 여부 확인해 보고에 명시(P-017 선례)
+3. `config.ts` 주석 갱신: 도메인 로드맵(dev/prod.kbap.site, meogo 폐기 예정) 기록
+4. dev 실연결 확인: Metro로 홈·음식·스캔 1회 스모크(계약 동일 실증) — 보고에 결과
+5. 테스트: config 분기 잠금(env 있음/없음)
+
+### DoD
+
+- [ ] Metro=dev.kbap.site 실동작(스모크) · 빌드/OTA=meogo 불변(회귀 0) · env 예시 문서화 · tsc 0 · jest
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-059].
+
 ## [P-058] ✅ KB-125 랭킹 후속 — 음식 다양성(Food variety) 행도 dim 예고 처리 — `762f3b7` (preview OTA)
 
 예진 지시(7/22): 다양성 점수는 **리뷰 작성에서 적립**되는 구조 — 리뷰 기능이 MVP 제외인 지금은 다양성도 죽은 지표. **P-048의 리뷰 팩터와 동일하게** dim 예고 처리.
