@@ -8,6 +8,28 @@
 
 ---
 
+## [P-060] ⬜ 언어 설정 대개편 — OS 정본화 (인앱 피커 제거 · /scans lang · appLanguage 철거)
+
+기획 확정(예진 7/23, 정본: `specs/001-personalized-menu-mvp/language-settings-brief.md`):
+**앱 언어의 유일한 정본 = 기기/OS 언어. 서버는 언어를 저장하지 않고 매 요청 `lang`으로만 안다.**
+트리거: 스캔 결과가 앱 언어 무시하고 영어 응답(S22·A90 재현) — 뿌리는 DB appLanguage 정합성.
+BE(종한)가 오늘 중 ① `/scans`에 lang 쿼리 추가 ② appLanguage 3곳+DB 삭제 예정 — **2·3번은 스웨거 갱신 후 착수**(1·4·5번은 즉시 가능).
+
+### 할 일
+
+1. **LocaleProvider 단순화**: AsyncStorage(`kbap.lang`) 저장·복원 제거, 항상 `getLocales()` → `resolveLang`(지원 외=en). `setLang`/라이브 전환·언어 쿼리 무효화(P-015·P-018 계열) 정리 — OS 앱별 언어 변경은 iOS·안드 모두 앱 재시작이라 라이브 전환 자체가 소멸
+2. **appLanguage 전송 중단**: onboarding submit + useMe PATCH에서 필드 제거 (BE 계약 삭제와 동보조)
+3. **`/scans`에 `lang` 전달**: 타 엔드포인트와 동일하게 현재 언어 쿼리 부착
+4. **인앱 피커 철거**: `LanguagePicker.tsx` 삭제, 온보딩 언어 스텝 삭제(스텝 수·진행 표시 조정), 프로필 '언어' 행은 **OS 앱 언어 설정 열기**로 교체(iOS + 안드13+ / **안드12 이하는 행 숨김** — Platform.Version 분기)
+5. **OS 앱별 언어 선언**: 설정>앱>K-Bap>언어에 지원 10종 노출 — iOS `CFBundleLocalizations`, 안드13+ `localeConfig`(생성 방법은 FE 확인, 필요시 config plugin). ⚠️ **네이티브 변경 = 새 빌드 필요(OTA 불가), fingerprint 회전** — 어차피 최종 빌드(iOS 8·안드 3)에 탑승. JS 변경분(1~4)만 OTA 가능
+6. 테스트: LocaleProvider 기기 언어 추종·en 폴백 잠금, onboarding body에 appLanguage 부재 잠금
+
+### DoD
+
+- [ ] 인앱 언어 선택 진입점 0곳 · 기기 언어 자동(미지원=en) · /scans 지역화 응답 실확인(Metro) · appLanguage 미전송 · OS 설정 노출은 빌드 후 확인 항목으로 보고에 명시 · tsc 0 · jest
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-060].
+
 ## [P-059] ✅ KB-175 API 도메인 전환 — dev/prod.kbap.site 배선 (meogo 폐기 준비) — `64d1be6` (발행 불요 — dev 전용)
 
 BE 인프라 전환(7/22 종한): 홈서버 meogo → EC2 **dev.kbap.site / prod.kbap.site**. 커맨드 센터 실측: dev=계약 동일(+admin 시딩 1개, FE 무관)·데이터 20종 정상 / **prod=서버 200이나 DB 0종(시딩 전)** / meogo 아직 생존.
