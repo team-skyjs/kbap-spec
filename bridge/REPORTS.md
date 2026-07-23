@@ -7,6 +7,16 @@
 
 ---
 
+## [P-061] 7/23 QA 묶음 (2026-07-23)
+
+**커밋**: `1034691` (main, 푸시·CI) · **검증**: tsc 0 · jest 243/243 (+2, 강등 잠금 1건 반전) · **preview OTA 발행**(양 채널 — ⚠️ P-060 1차분 동반 탑승, 아래)
+
+- **① 셔터 중복 방지**: `capturing` 상태 — 첫 탭 즉시 비활성(+opacity 피드백), 처리 종료 시 finally 복구. 갤러리 버튼 동일 가드(권장 채택). 전 플랫폼
+- **② 미설정=BE 그대로**: 착수 전 **헌법 v2.1.0 개정을 spec 정본에서 실확인** 후 `personalRisk` 강등 폐지 — SAFETY INVARIANT 주석 v2.1.0으로 개정, chokepoint·시그니처는 유지(정책 재변경 대비 한 곳). 스캔 '기피 설정' 배너 안전망 유지. orderCta 강등 잠금 반전 + risk.test 신설(미설정 4상태 그대로)
+- **③ 안전 고지 행**: `safety.html` 열기(Linking.openURL) 연결. **실측**: "기존 약관·개인정보 행"은 코드에 부재 — 안전 고지 행만 존재(미연결 상태)했음, openURL 표준 방식 채택
+- **④ 알림 UI 전면 삭제**: NotificationsPanel.tsx 삭제 · StickyHeader bell/bellDot/패널/게이트 제거 · 홈/음식/프로필 진입점 제거 · 프로필 알림 행 삭제 · GateContext 'notifications' 제거 · i18n(notifications.*, profile.notifications, gate.notif*) ×10 정리 — 주석 아웃 아닌 삭제
+- **OTA 참고**: main에 P-060 1차분(피커 철거·OS 정본화)이 있어 동반 탑승 — preview 기기의 언어 확인은 **기기 전체 언어 변경**으로 가능(앱별 언어 항목은 최종 빌드부터). P-061 지시의 OTA를 우선함
+
 ## [P-060] 언어 OS 정본화 — 1차 중간 보고 (2026-07-23, 🔄 진행 중)
 
 **커밋**: `0b7c02b` (main, 푸시·CI) · **검증**: tsc 0 · jest 241/241 (+2, P-015 라이브 전환 테스트 폐기) · **OTA 미발행(사유 아래)**
