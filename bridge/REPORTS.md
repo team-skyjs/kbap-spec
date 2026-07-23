@@ -7,6 +7,21 @@
 
 ---
 
+## [P-060] 언어 OS 정본화 — 1차 중간 보고 (2026-07-23, 🔄 진행 중)
+
+**커밋**: `0b7c02b` (main, 푸시·CI) · **검증**: tsc 0 · jest 241/241 (+2, P-015 라이브 전환 테스트 폐기) · **OTA 미발행(사유 아래)**
+
+즉시 가능분(1·4·5·6) 완료:
+- **① LocaleProvider 단순화**: kbap.lang 저장·복원/`setLang`/라이브 전환·언어 쿼리 무효화(P-015·P-018 계열) 전부 제거 — 언어 = `getLocales()` 기기 언어(미지원=en), `resolveInitialLang` 시그니처 유지(bootGate 무변). 온보딩 국적→언어 제안도 소멸
+- **④ 피커 철거**: `LanguagePicker.tsx` 삭제 · 온보딩 언어 입력 삭제 — **실측: 별도 스텝이 아니라 프로필 스텝 내 필드**였음 → 필드 행 삭제, 스텝 수·진행 표시 무변 · 프로필 탭+수정 화면 언어 행 → `Linking.openSettings()`(iOS 앱 설정·안드13+ 앱 정보의 언어 항목), **안드12- 행 숨김**(Platform.Version<33)
+- **⑤ OS 로케일 선언**: expo-localization plugin `supportedLocales`(ios/android ×10종) — `CFBundleLocalizations` 생성은 expo config로 확인, 안드 localeConfig는 빌드 시 생성. **네이티브 — 최종 빌드(iOS8/안드3) 탑승, OS 설정 노출은 빌드 후 확인 항목**. app.json 회전은 기존 발행 스왑이 커버(추가 항목 없음)
+- **⑥ 테스트**: 기기 언어 추종·en 폴백·resolveInitialLang=기기 잠금 +2
+
+잔여(스웨거 게이트):
+- **②appLanguage 전송 중단·③/scans lang** — 착수 시점 실측: dev 스웨거에 /scans lang 파라미터 없음·appLanguage 11회 잔존(마감 시점 재확인도 동일). **BE 갱신 신호 오면 즉시 이어서**
+
+**OTA 보류 판단(보고 요망 사항)**: 피커 제거를 OTA로 선발행하면 ⑤(OS 언어 항목)가 빌드 전이라 **언어 변경 수단 공백** 구간이 생김 — 브리프 타이밍(7/24 제출 빌드 일괄)에 맞춰 빌드 탑승이 정합. Metro(dev client)에선 지금 즉시 확인 가능
+
 ## [P-059] KB-175 API 도메인 전환 1단계 (2026-07-23)
 
 **커밋**: `64d1be6` (main, 푸시·CI) · **검증**: tsc 0 · jest 240/240 (+2) · 발행 불요(빌드/OTA 무변 — dev 전용 배선)

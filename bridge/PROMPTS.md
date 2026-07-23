@@ -8,7 +8,7 @@
 
 ---
 
-## [P-060] ⬜ 언어 설정 대개편 — OS 정본화 (인앱 피커 제거 · /scans lang · appLanguage 철거)
+## [P-060] 🔄 언어 설정 대개편 — OS 정본화 (인앱 피커 제거 · /scans lang · appLanguage 철거)
 
 기획 확정(예진 7/23, 정본: `specs/001-personalized-menu-mvp/language-settings-brief.md`):
 **앱 언어의 유일한 정본 = 기기/OS 언어. 서버는 언어를 저장하지 않고 매 요청 `lang`으로만 안다.**
