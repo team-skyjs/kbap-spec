@@ -8,6 +8,23 @@
 
 ---
 
+## [P-073] ⬜ 🚨 [긴급 반려] 묶음 OTA env 오염 — meogo 폴백으로 발행됨, 즉시 재발행
+
+커맨드 센터 판정(증거 실측): 빌드8 임베드=dev 확정(IPA 번들 grep: dev 1·meogo 0) + 빌드8 런타임 production 채널에 오늘 16:44 묶음 OTA 존재(EAS 이력) + 증상(첫 실행=dev 로그인 → 재실행부터 meogo·프로필 400) → **묶음 OTA가 EXPO_PUBLIC_BE_BASE 미주입(=meogo 폴백)으로 번들링됨**. 발행 시 로컬 .env가 안 먹은 것(--environment/셸 환경 의심).
+
+### 할 일 (순서대로, 지금)
+
+1. **재발행**: 같은 내용(1eb3a3f)을 `EXPO_PUBLIC_BE_BASE=https://dev.kbap.site`를 **명령 앞 인라인으로 강제 주입**해 production(+안드 새 런타임도 함께) 재발행
+2. **발행 전 검증 의무**: 같은 셸에서 `npx expo export` → dist 번들 `grep dev.kbap.site`(1+)·`grep meogo`(0) 확인 후 update 실행 — 결과를 보고에 명시
+3. **재발 방지 2종**: ① [api] 로거에 **호스트 포함 full URL** 출력(다음 사고는 폰 로그 1줄로 즉진단) ② CLAUDE.md에 "eas update는 env 인라인 + export 사전 grep 검증 필수" 영구 규칙
+4. 원인 1줄 보고: 이번 발행 명령이 정확히 뭐였는지(플래그·셸) — 절차 구멍 확인용
+
+### DoD
+
+- [ ] 재발행 OTA 번들 grep 실증(dev 1·meogo 0) · 오염 기기 복구 확인(강제종료 2회 후 dev 복귀) · 로거·규칙 반영
+
+완료 시 상태 ✅+커밋 해시, 보고는 REPORTS.md 최상단 [P-073].
+
 ## [P-072] ⬜ KB-240 후속 — 마커 말줄임 상한 축소 (긴 영문명 열 교차 잔여 보수)
 
 P-071(가격 제거) 후에도 잔여 밀림(예진 실기): "Crab Meat Oyster Sauce Pasta" 등 **긴 영문명 pill이 열 경계를 넘어** 우측 열과 교차 → 교차 pill만 1단(34pt) 스태거. 스샷 패턴(짧은 이름 정위치·긴 이름 구간부터 밀림)으로 확정.
